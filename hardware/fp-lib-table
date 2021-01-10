@@ -1,0 +1,8 @@
+(fp_lib_table
+  (lib (name Lumex)(type KiCad)(uri ${KIPRJMOD}/Lumex.pretty)(options "")(descr ""))
+  (lib (name Nexperia)(type KiCad)(uri ${KIPRJMOD}/Nexperia.pretty)(options "")(descr ""))
+  (lib (name ONSemi)(type KiCad)(uri ${KIPRJMOD}/ONSemi.pretty)(options "")(descr ""))
+  (lib (name TI)(type KiCad)(uri ${KIPRJMOD}/TI.pretty)(options "")(descr ""))
+  (lib (name reDIP)(type KiCad)(uri ${KIPRJMOD}/reDIP.pretty)(options "")(descr ""))
+  (lib (name HRO)(type KiCad)(uri ${KIPRJMOD}/HRO.pretty)(options "")(descr ""))
+)

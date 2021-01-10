@@ -1,0 +1,15 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP SN74CB3T16211
+D Low-voltage 24-bit FET bus switch with 5V tolerant level shifter
+K bus switch
+F https://www.ti.com/lit/ds/symlink/sn74cb3t16211.pdf
+$ENDCMP
+#
+$CMP SN74CBTD16211
+D 24-bit FET bus switch with level shifting
+K bus switch
+F https://www.ti.com/lit/ds/symlink/sn74cbtd16211.pdf
+$ENDCMP
+#
+#End Doc Library

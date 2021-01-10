@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP APS6404L-3SQR
+D 64 Mbit QSPI PSRAM
+K QSPI PSRAM
+F https://www.apmemory.com/wp-content/uploads/APM_PSRAM_QSPI-APS6404L-3SQR-v2.3-PKG.pdf
+$ENDCMP
+#
+#End Doc Library
