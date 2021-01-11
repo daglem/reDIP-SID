@@ -6,18 +6,18 @@
 ## Overview
 The reDIP SID is an open source hardware development board which combines the following in a DIP-28 size package:
 
-* iCE40UP5K FPGA
-* SGTL5000 Audio Codec
+* Lattice iCE40UP5K FPGA
+* NXP SGTL5000 Audio Codec
 * 128Mbit FLASH
 * 64Mbit PSRAM
-* LED
+* User LED
 * Push button
 * USB-C receptacle for power and FPGA Full Speed USB
 * 5V tolerant I/O
 
 The reSID SID is a leaner relative of the [reSID sx](https://github.com/daglem/reDIP-sx),
-more squarely focused on providing a platform for MOS 6581/8580 SID emulation.
-It also aims to be a good no-frills choice for generic FPGA projects which may find use for audio and/or 5V tolerant I/O.
+more squarely focused on providing an open source hardware platform for MOS 6581/8580 SID emulation.
+It also aims to be a good no-frills choice for generic FPGA projects, which may find use for audio and/or 5V tolerant I/O.
 
 ## General use
 
@@ -34,7 +34,7 @@ It also aims to be a good no-frills choice for generic FPGA projects which may f
 
 All FPGA I/O is 5V tolerant, and can drive 5V TTL. JP1 can be shorted to make the 5V input pin bidirectional, e.g. for powering 5V TTL devices.
 
-The number of FPGA I/O is sufficient for e.g. 5 six-pin PMOD interfaces, or two twelve-pin and one six-pin PMOD interfaces.
+The number of FPGA I/O is sufficient for e.g. 5 six-pin PMOD interfaces, or two twelve-pin and one six-pin PMOD interface.
 
 #### FPGA SPI / Programming:
 
