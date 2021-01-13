@@ -1337,10 +1337,10 @@ Text Label 1000 5800 2    50   ~ 0
 USB_D-
 Text Label 1000 5900 2    50   ~ 0
 USB_D+
-Text Label 1000 7100 2    50   ~ 0
-ICE_~IO1~
 Text Label 1000 7400 2    50   ~ 0
-USB_CONN
+ICE_~IO1~
+Text Label 1000 7100 2    50   ~ 0
+USB_~CONN~
 $Comp
 L power:GND #PWR046
 U 1 1 5F460CCC
@@ -1746,10 +1746,10 @@ F 6 "PDTA143ZMB\\,315" H 2150 2250 50  0001 C CNN "PN"
 	1    0    0    1   
 $EndComp
 Text Label 1800 2250 2    50   ~ 0
-USB_CONN
+USB_~CONN~
 Wire Wire Line
 	2200 2900 2200 3150
-Text Label 2200 2500 0    50   ~ 0
+Text Label 2200 2500 2    50   ~ 0
 USB_LINK
 Text Label 1950 3350 2    50   ~ 0
 D-

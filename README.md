@@ -17,7 +17,8 @@ The reDIP SID is an open source hardware development board which combines the fo
 
 The reSID SID is a leaner relative of the [reSID sx](https://github.com/daglem/reDIP-sx),
 more squarely focused on providing an open source hardware platform for MOS 6581/8580 SID emulation.
-It also aims to be a good no-frills choice for generic FPGA projects, which may find use for audio and/or 5V tolerant I/O.
+
+The reSID SID also aims to be a good no-frills generic choice for FPGA projects which may find use for audio and/or 5V tolerant I/O.
 
 ## General use
 
@@ -27,14 +28,12 @@ It also aims to be a good no-frills choice for generic FPGA projects, which may 
 
 * 5V input
 * 3.3V output
-* 20 FPGA GPIO
-* 2 FPGA current drive / open-drain I/O
+* 19 FPGA GPIO
+* 3 FPGA current drive / open-drain I/O
 * 3 audio pins (line input, stereo headphone output)
 * GND
 
 All FPGA I/O is 5V tolerant, and can drive 5V TTL. JP1 can be shorted to make the 5V input pin bidirectional, e.g. for powering 5V TTL devices.
-
-The number of FPGA I/O is sufficient for e.g. 5 six-pin PMOD interfaces, or two twelve-pin and one six-pin PMOD interface.
 
 #### FPGA SPI / Programming:
 
