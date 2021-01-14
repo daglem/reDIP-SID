@@ -15,10 +15,10 @@ The reDIP SID is an open source hardware development board which combines the fo
 * USB-C receptacle for power and FPGA Full Speed USB
 * 5V tolerant I/O
 
-The reSID SID is a leaner relative of the [reSID sx](https://github.com/daglem/reDIP-sx),
+The reDIP SID is a leaner relative of the [reDIP sx](https://github.com/daglem/reDIP-sx),
 more squarely focused on providing an open source hardware platform for MOS 6581/8580 SID emulation.
 
-The reSID SID also aims to be a good no-frills generic choice for FPGA projects which may find use for audio and/or 5V tolerant I/O.
+The reDIP SID also aims to be a good no-frills generic choice for FPGA projects which may find use for audio and/or 5V tolerant I/O.
 
 ## General use
 
