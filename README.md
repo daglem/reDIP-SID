@@ -1,6 +1,6 @@
 # reDIP SID
 
-## iCE40UP5K / SGTL5000 development board with MOS 6581/8580 SID pinout
+## MOS 6581/8580 SID FPGA emulation platform
 ![Board](documentation/reDIP-SID-board.png)
 
 ## Overview
