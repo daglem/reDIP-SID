@@ -33,7 +33,7 @@ The reDIP SID also aims to be a good no-frills generic choice for FPGA projects 
 * 3 audio pins (line input, stereo headphone output)
 * GND
 
-All FPGA I/O is 5V tolerant, and can drive 5V TTL. JP1 can be shorted to make the 5V input pin bidirectional, e.g. for powering 5V TTL devices.
+All FPGA I/O is 5V tolerant, and can drive 5V TTL. JP1 can be shorted to make the 5V input pin bidirectional, e.g. to power 5V TTL devices.
 
 #### FPGA SPI / Programming:
 
