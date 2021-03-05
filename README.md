@@ -55,7 +55,7 @@ For anyone wanting to experiment with a SID setup, while avoiding damaged socket
 
 ## Disclaimer
 
-Please note that this is only my second board - rookie mistakes are probably made, and feedback is welcome. The board has not been manufactured yet, and is thus completely untested.
+Please note that this is only my second board - rookie mistakes are probably made, and [feedback](https://github.com/daglem/reDIP-SID/discussions/2) is welcome. The board has not been manufactured yet, and is thus completely untested.
 
 ## Board Front
 ![Board Front](documentation/reDIP-SID-board-front.png)
