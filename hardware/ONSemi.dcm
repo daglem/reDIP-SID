@@ -1,5 +1,11 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP NCP115AMX120TCG
+D LDO Regulator - High PSRR
+K LDO, Regulator
+F https://www.onsemi.com/pdf/datasheet/ncp115-d.pdf
+$ENDCMP
+#
 $CMP NCP163AMX120TBG
 D LDO Regulator - Ultra-LowNoise, High PSRR, RF andAnalog Circuits
 K LDO, Regulator

@@ -1231,7 +1231,7 @@
     (pad "" smd circle (at 0 0) (size 0.5 0.5) (layers B.Mask))
   )
 
-  (module ONSemi:CASE711AJ_1.0x1.0mm_P0.65mm (layer F.Cu) (tedit 5FE12967) (tstamp 5FD5F2D0)
+  (module ONSemi:CASE_711AJ_1.0x1.0mm_P0.65mm (layer F.Cu) (tedit 5FE12967) (tstamp 5FD5F2D0)
     (at 105.38 109.32)
     (descr XDFN4)
     (path /610BA994)
@@ -1298,7 +1298,7 @@
     )
   )
 
-  (module ONSemi:CASE711AJ_1.0x1.0mm_P0.65mm (layer F.Cu) (tedit 5FE12967) (tstamp 6015CFB4)
+  (module ONSemi:CASE_711AJ_1.0x1.0mm_P0.65mm (layer F.Cu) (tedit 5FE12967) (tstamp 6015CFB4)
     (at 103.08 109.32)
     (descr XDFN4)
     (path /610BB8C3)
@@ -1553,7 +1553,7 @@
     )
   )
 
-  (module ONSemi:CASE463A_1.6x1.2mm_P0.5mm (layer F.Cu) (tedit 5FDE71CD) (tstamp 5FDB1A73)
+  (module ONSemi:CASE_463A_1.6x1.2mm_P0.5mm (layer F.Cu) (tedit 5FDE71CD) (tstamp 5FDB1A73)
     (at 107.28 107.74 90)
     (descr SOT563)
     (tags SOT-563)
