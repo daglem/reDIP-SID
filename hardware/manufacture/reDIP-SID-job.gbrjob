@@ -7,7 +7,7 @@
       "Application": "Pcbnew",
       "Version":     "5.1.9-1.fc33"
     },
-    "CreationDate":  "2021-03-04T21:04:25+01:00"
+    "CreationDate":  "2021-04-22T06:32:05+02:00"
   },
   "GeneralSpecs":
   {
@@ -15,14 +15,14 @@
     {
       "Name": "reDIP-SID",
       "GUID": "72654449-502d-4534-9944-2e6b69636164",
-      "Revision": "0.1"
+      "Revision": "0.2"
     },
     "Size":
     {
       "X": 18.280,
       "Y": 36.060
     },
-    "LayerNumber": 6,
+    "LayerNumber": 4,
     "BoardThickness":  1.600
   },
   "DesignRules":
@@ -64,18 +64,8 @@
       "FilePolarity":  "Positive"
     },
     {
-      "Path":  "reDIP-SID-In3_Cu.gbr",
-      "FileFunction":  "Copper,L4,Inr",
-      "FilePolarity":  "Positive"
-    },
-    {
-      "Path":  "reDIP-SID-In4_Cu.gbr",
-      "FileFunction":  "Copper,L5,Inr",
-      "FilePolarity":  "Positive"
-    },
-    {
       "Path":  "reDIP-SID-B_Cu.gbr",
-      "FileFunction":  "Copper,L6,Bot",
+      "FileFunction":  "Copper,L4,Bot",
       "FilePolarity":  "Positive"
     },
     {
@@ -164,24 +154,6 @@
       "Type":  "Dielectric",
       "Material":  "FR4",
       "Notes":  "Layers L3/L4"
-    },
-    {
-      "Type":  "Copper",
-      "Notes":  "Layer In3.Cu"
-    },
-    {
-      "Type":  "Dielectric",
-      "Material":  "FR4",
-      "Notes":  "Layers L4/L5"
-    },
-    {
-      "Type":  "Copper",
-      "Notes":  "Layer In4.Cu"
-    },
-    {
-      "Type":  "Dielectric",
-      "Material":  "FR4",
-      "Notes":  "Layers L5/L6"
     },
     {
       "Type":  "Copper",
