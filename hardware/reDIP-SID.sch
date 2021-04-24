@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "reDIP SID"
-Date "2021-04-21"
+Date "2021-04-25"
 Rev "0.2"
 Comp "Nimrod"
 Comment1 "© 2021 Dag Lem"
@@ -580,12 +580,12 @@ L Oscillator:ASCO X1
 U 1 1 5FCDB7D7
 P 6150 7150
 F 0 "X1" H 6300 7400 50  0000 L CNN
-F 1 "ASCO-24.576MHZ-EK-T3" H 5750 6850 50  0000 L CNN
-F 2 "Oscillator:Oscillator_SMD_Abracon_ASCO-4Pin_1.6x1.2mm" H 6250 6800 50  0001 C CNN
+F 1 "ASCO-24.000MHZ-EK-T3" H 5750 6850 50  0000 L CNN
+F 2 "reDIP:Oscillator_SMD-4Pin_1.6x1.2mm" H 6250 6800 50  0001 C CNN
 F 3 "https://abracon.com/Oscillators/ASCO.pdf" H 5925 7275 50  0001 C CNN
-F 4 "OSC 24.576 MHz" H 6150 7150 50  0001 C CNN "Description"
+F 4 "OSC 24 MHz 30 ppm 1.6x1.2 mm" H 6150 7150 50  0001 C CNN "Description"
 F 5 "Abracon" H 6150 7150 50  0001 C CNN "Mfg"
-F 6 "ASCO-24.576MHZ-EK-T3" H 6150 7150 50  0001 C CNN "PN"
+F 6 "ASCO-24.000MHZ-EK-T3" H 6150 7150 50  0001 C CNN "PN"
 	1    6150 7150
 	1    0    0    -1  
 $EndComp
@@ -674,9 +674,9 @@ Text Label 7550 2300 0    50   ~ 0
 POT_Y
 Text Label 7550 2400 0    50   ~ 0
 POT_X
-Text Label 7550 3000 0    50   ~ 0
-A8
 Text Label 7550 2900 0    50   ~ 0
+A8
+Text Label 7550 2800 0    50   ~ 0
 A5
 $Comp
 L TI:SN74CBTD16211 U3
@@ -692,12 +692,8 @@ F 6 "SN74CBTD16211DGVR " H 6950 2500 50  0001 C CNN "PN"
 	1    6950 2500
 	1    0    0    -1  
 $EndComp
-Text Label 7550 2500 0    50   ~ 0
-VBUS
 Wire Wire Line
 	7350 3000 7550 3000
-Text Label 6350 2500 2    50   ~ 0
-USB_3V3
 Wire Wire Line
 	6550 3000 6350 3000
 Wire Wire Line
@@ -768,17 +764,15 @@ Text Label 7550 1700 0    50   ~ 0
 ICE_D5
 Text Label 7550 1900 0    50   ~ 0
 ICE_D7
-Wire Wire Line
-	6550 3900 6350 3900
 Text Label 6350 3700 2    50   ~ 0
 ICE_R_~W~
-Text Label 6350 2900 2    50   ~ 0
-ICE_A5
-Text Label 6350 3000 2    50   ~ 0
-ICE_A8
 Text Label 6350 2800 2    50   ~ 0
+ICE_A5
+Text Label 6350 2900 2    50   ~ 0
+ICE_A8
+Text Label 6350 2500 2    50   ~ 0
 ICE_~IO1~
-Text Label 7550 2800 0    50   ~ 0
+Text Label 7550 2500 0    50   ~ 0
 ~IO1~
 Wire Wire Line
 	7550 2500 7350 2500
@@ -798,8 +792,6 @@ Wire Wire Line
 	6550 3400 6350 3400
 Wire Wire Line
 	6550 3500 6350 3500
-Wire Wire Line
-	7350 3900 7550 3900
 Text Label 6350 3100 2    50   ~ 0
 A4
 Text Label 6350 3300 2    50   ~ 0
@@ -812,7 +804,7 @@ Text Label 6350 3500 2    50   ~ 0
 A0
 Text Label 7550 3700 0    50   ~ 0
 R_~W~
-Text Label 7550 3900 0    50   ~ 0
+Text Label 7550 3000 0    50   ~ 0
 Ø2
 Wire Wire Line
 	7350 3600 7550 3600
@@ -905,7 +897,7 @@ Text Label 6350 2400 2    50   ~ 0
 ICE_POT_X
 Text Label 6350 3800 2    50   ~ 0
 ICE_~RES~
-Text Label 6350 3900 2    50   ~ 0
+Text Label 6350 3000 2    50   ~ 0
 ICE_Ø2
 Text Label 7550 3400 0    50   ~ 0
 ICE_~CS~
@@ -1196,26 +1188,10 @@ F 3 "" H 2500 6000 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	2500 6100 2600 6100
-Text Label 2450 6700 2    50   ~ 0
-ICE_D2
-Text Label 2450 7200 2    50   ~ 0
-ICE_D4
-Text Label 2450 7300 2    50   ~ 0
-ICE_D5
 Wire Wire Line
 	2450 7400 2700 7400
 Wire Wire Line
 	2450 7300 2700 7300
-Text Label 2450 6800 2    50   ~ 0
-ICE_D7
-Text Label 2450 7000 2    50   ~ 0
-ICE_D6
-Text Label 2450 6900 2    50   ~ 0
-ICE_D0
-Text Label 2450 7400 2    50   ~ 0
-ICE_D3
-Text Label 2450 7100 2    50   ~ 0
-ICE_D1
 Wire Wire Line
 	2450 7000 2700 7000
 Wire Wire Line
@@ -1309,9 +1285,9 @@ Wire Wire Line
 	1000 6500 1250 6500
 Text Label 1000 6000 2    50   ~ 0
 ICE_A0
-Text Label 1000 6700 2    50   ~ 0
+Text Label 4150 6600 2    50   ~ 0
 ICE_~RES~
-Text Label 1000 6600 2    50   ~ 0
+Text Label 2450 6900 2    50   ~ 0
 ICE_Ø2
 Wire Wire Line
 	1000 6400 1250 6400
@@ -1331,7 +1307,7 @@ Wire Wire Line
 	1200 5900 1250 5900
 Wire Wire Line
 	1200 5800 1250 5800
-Text Label 1000 6900 2    50   ~ 0
+Text Label 1000 7100 2    50   ~ 0
 ICE_A5
 Text Label 1000 7000 2    50   ~ 0
 ICE_A8
@@ -1341,8 +1317,6 @@ Text Label 900  5900 2    50   ~ 0
 USB_D-
 Text Label 1000 7400 2    50   ~ 0
 ICE_~IO1~
-Text Label 1000 7100 2    50   ~ 0
-USB_~CONN~
 $Comp
 L power:GND #PWR049
 U 1 1 5F460CCC
@@ -1496,7 +1470,7 @@ Text Label 4150 6300 2    50   ~ 0
 I2S_DIN
 Text Label 4150 6400 2    50   ~ 0
 I2S_DOUT
-Text Label 4150 6600 2    50   ~ 0
+Text Label 1000 6600 2    50   ~ 0
 SPI_RAM_~CS~
 Wire Wire Line
 	4150 5800 4400 5800
@@ -2340,7 +2314,7 @@ U 1 1 60F943DD
 P 6350 6200
 F 0 "SW1" H 6350 6350 50  0000 C CNN
 F 1 "KXT331LHS" H 6350 6100 50  0000 C CNN
-F 2 "Button_Switch_SMD:SW_SPST_CK_KXT3" H 6350 6400 50  0001 C CNN
+F 2 "CK:SW_SPST_CK_KXT3" H 6350 6400 50  0001 C CNN
 F 3 "https://www.ckswitches.com/media/1465/kxt3.pdf" H 6350 6400 50  0001 C CNN
 F 4 "SW TACT 3.0 x 2.0 mm" H 6350 6200 50  0001 C CNN "Description"
 F 5 "C&K" H 6350 6200 50  0001 C CNN "Mfg"
@@ -2744,28 +2718,8 @@ Text Label 3150 3350 0    50   ~ 0
 USB_D-
 Text Label 3150 3150 0    50   ~ 0
 USB_D+
-Wire Wire Line
-	3050 2150 3050 2050
-Text Label 3050 2600 2    50   ~ 0
-USB_LINK
-Text Label 2650 2350 2    50   ~ 0
-USB_~CONN~
-$Comp
-L Device:Q_PNP_BEC_BRT Q1
-U 1 1 61E05EF8
-P 3000 2350
-F 0 "Q1" H 3140 2396 50  0000 L CNN
-F 1 "PDTA143ZMB" H 2450 2150 50  0000 L CNN
-F 2 "Nexperia:SOT-883" H 3000 2350 50  0001 C CNN
-F 3 "https://assets.nexperia.com/documents/data-sheet/PDTA143ZMB.pdf" H 3000 2350 50  0001 C CNN
-F 4 "TRANSISTOR PNP RET R1=4.7kΩ R2=47kΩ 100mA SOT883B" H 3000 2350 50  0001 C CNN "Description"
-F 5 "Nexperia" H 3000 2350 50  0001 C CNN "Mfg"
-F 6 "PDTA143ZMB\\,315" H 3000 2350 50  0001 C CNN "PN"
-	1    3000 2350
-	1    0    0    1   
-$EndComp
-Text Label 3050 2050 0    50   ~ 0
-USB_3V3
+Text Label 3050 2550 0    50   ~ 0
+USB_CONN
 Wire Wire Line
 	3050 3000 3050 3150
 Connection ~ 3050 3150
@@ -2807,4 +2761,24 @@ F 3 "~" H 2050 2200 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3050 2700 3050 2550
+Text Label 1000 6700 2    50   ~ 0
+USB_CONN
+Text Label 2450 7000 2    50   ~ 0
+ICE_D7
+Text Label 2450 7300 2    50   ~ 0
+ICE_D5
+Text Label 2450 7200 2    50   ~ 0
+ICE_D4
+Text Label 2450 7400 2    50   ~ 0
+ICE_D3
+Text Label 2450 6800 2    50   ~ 0
+ICE_D2
+Text Label 2450 6700 2    50   ~ 0
+ICE_D1
+Text Label 1000 6900 2    50   ~ 0
+ICE_D6
+Text Label 2450 7100 2    50   ~ 0
+ICE_D0
+NoConn ~ 6550 3900
+NoConn ~ 7350 3900
 $EndSCHEMATC
