@@ -4,4 +4,5 @@
   (lib (name APMemory)(type Legacy)(uri ${KIPRJMOD}/APMemory.lib)(options "")(descr ""))
   (lib (name Winbond)(type Legacy)(uri ${KIPRJMOD}/Winbond.lib)(options "")(descr ""))
   (lib (name reDIP)(type Legacy)(uri ${KIPRJMOD}/reDIP.lib)(options "")(descr ""))
+  (lib (name ECS)(type Legacy)(uri ${KIPRJMOD}/ECS.lib)(options "")(descr ""))
 )

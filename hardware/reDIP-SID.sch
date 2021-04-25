@@ -576,16 +576,16 @@ Text Label 9600 5500 2    50   ~ 0
 SPI_FLASH_~CS~
 NoConn ~ 8850 2300
 $Comp
-L Oscillator:ASCO X1
+L ECS:ECS-1612MV-240-CN-TR X1
 U 1 1 5FCDB7D7
 P 6150 7150
 F 0 "X1" H 6300 7400 50  0000 L CNN
-F 1 "ASCO-24.000MHZ-EK-T3" H 5750 6850 50  0000 L CNN
+F 1 "ECS-1612MV-240-CN-TR" H 5750 6850 50  0000 L CNN
 F 2 "reDIP:Oscillator_SMD-4Pin_1.6x1.2mm" H 6250 6800 50  0001 C CNN
-F 3 "https://abracon.com/Oscillators/ASCO.pdf" H 5925 7275 50  0001 C CNN
-F 4 "OSC 24 MHz 30 ppm 1.6x1.2 mm" H 6150 7150 50  0001 C CNN "Description"
-F 5 "Abracon" H 6150 7150 50  0001 C CNN "Mfg"
-F 6 "ASCO-24.000MHZ-EK-T3" H 6150 7150 50  0001 C CNN "PN"
+F 3 "https://ecsxtal.com/store/pdf/ECS-1612MV.pdf" H 5925 7275 50  0001 C CNN
+F 4 "OSC 24 MHz 25 ppm 1.6x1.2 mm" H 6150 7150 50  0001 C CNN "Description"
+F 5 "ECS" H 6150 7150 50  0001 C CNN "Mfg"
+F 6 "ECS-1612MV-240-CN-TR" H 6150 7150 50  0001 C CNN "PN"
 	1    6150 7150
 	1    0    0    -1  
 $EndComp
@@ -615,7 +615,6 @@ F 3 "" H 6150 6800 50  0001 C CNN
 	1    6150 6800
 	1    0    0    -1  
 $EndComp
-NoConn ~ 5750 7150
 Wire Wire Line
 	6550 7150 6600 7150
 Text Label 6600 7150 0    50   ~ 0
@@ -651,7 +650,7 @@ Wire Wire Line
 	10400 3000 10600 3000
 Text Label 10600 3000 0    50   ~ 0
 AUDIO_OUT_2
-Text Notes 5600 6950 0    50   ~ 0
+Text Notes 5550 6900 0    50   ~ 0
 Decoupling\nshared with\nSGTL5000\nVDDIO
 $Comp
 L Device:C_Small C11
@@ -764,7 +763,7 @@ Text Label 7550 1700 0    50   ~ 0
 ICE_D5
 Text Label 7550 1900 0    50   ~ 0
 ICE_D7
-Text Label 6350 3700 2    50   ~ 0
+Text Label 6350 3800 2    50   ~ 0
 ICE_R_~W~
 Text Label 6350 2800 2    50   ~ 0
 ICE_A5
@@ -777,10 +776,10 @@ Text Label 7550 2500 0    50   ~ 0
 Wire Wire Line
 	7550 2500 7350 2500
 Wire Wire Line
-	7350 3800 7550 3800
+	7350 3900 7550 3900
 Wire Wire Line
-	6350 3800 6550 3800
-Text Label 7550 3800 0    50   ~ 0
+	6350 3900 6550 3900
+Text Label 7550 3900 0    50   ~ 0
 ~RES~
 Wire Wire Line
 	6550 3100 6350 3100
@@ -802,7 +801,7 @@ Text Label 6350 3600 2    50   ~ 0
 A1
 Text Label 6350 3500 2    50   ~ 0
 A0
-Text Label 7550 3700 0    50   ~ 0
+Text Label 7550 3800 0    50   ~ 0
 R_~W~
 Text Label 7550 3000 0    50   ~ 0
 Ø2
@@ -860,7 +859,7 @@ Wire Wire Line
 Wire Wire Line
 	7550 2800 7350 2800
 Wire Wire Line
-	7550 3700 7350 3700
+	7550 3800 7350 3800
 Wire Wire Line
 	7550 1600 7350 1600
 Wire Wire Line
@@ -888,14 +887,14 @@ Wire Wire Line
 Wire Wire Line
 	7350 2900 7550 2900
 Wire Wire Line
-	6350 3700 6550 3700
+	6350 3800 6550 3800
 Wire Wire Line
 	6350 2500 6550 2500
 Text Label 6350 2300 2    50   ~ 0
 ICE_POT_Y
 Text Label 6350 2400 2    50   ~ 0
 ICE_POT_X
-Text Label 6350 3800 2    50   ~ 0
+Text Label 6350 3900 2    50   ~ 0
 ICE_~RES~
 Text Label 6350 3000 2    50   ~ 0
 ICE_Ø2
@@ -2779,6 +2778,13 @@ Text Label 1000 6900 2    50   ~ 0
 ICE_D6
 Text Label 2450 7100 2    50   ~ 0
 ICE_D0
-NoConn ~ 6550 3900
-NoConn ~ 7350 3900
+NoConn ~ 6550 3700
+NoConn ~ 7350 3700
+Wire Wire Line
+	6150 6850 5750 6850
+Wire Wire Line
+	5750 6850 5750 7150
+Connection ~ 6150 6850
+Text Notes 500  5650 0    50   ~ 0
+Note: G0 and G1\nbecome output-only\nwhen the PLL is used
 $EndSCHEMATC
