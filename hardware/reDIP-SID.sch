@@ -687,7 +687,7 @@ F 2 "TI:Texas_TVSOP-56_4.4x11.3mm_P0.4mm" H 6950 3300 50  0001 C CNN
 F 3 "https://www.ti.com/lit/ds/symlink/sn74cbtd16211.pdf" H 6950 3300 50  0001 C CNN
 F 4 "IC BUS SWITCH WITH LEVEL SHIFTER TVSOP-56" H 6950 2500 50  0001 C CNN "Description"
 F 5 "TI" H 6950 2500 50  0001 C CNN "Mfg"
-F 6 "SN74CBTD16211DGVR " H 6950 2500 50  0001 C CNN "PN"
+F 6 "SN74CBTD16211DGVR" H 6950 2500 50  0001 C CNN "PN"
 	1    6950 2500
 	1    0    0    -1  
 $EndComp
@@ -1646,6 +1646,7 @@ F 3 "http://www.krhro.com/uploads/soft/180320/1-1P320120243.pdf" H 1250 3150 50 
 F 4 "HRO" H 1100 3150 50  0001 C CNN "Mfg"
 F 5 "TYPE-C-31-M-12" H 1100 3150 50  0001 C CNN "PN"
 F 6 "CONN USB-C" H 1100 3150 50  0001 C CNN "Description"
+F 7 "PIN-IN-PASTE, paste overprinting included in design" H 1100 3150 50  0001 C CNN "Notes"
 	1    1100 3150
 	1    0    0    -1  
 $EndComp
