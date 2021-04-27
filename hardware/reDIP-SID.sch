@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "reDIP SID"
-Date "2021-04-25"
+Date "2021-04-27"
 Rev "0.2"
 Comp "Nimrod"
 Comment1 "© 2021 Dag Lem"
@@ -904,8 +904,6 @@ Wire Wire Line
 	3550 6100 3550 6200
 Wire Wire Line
 	3200 6100 3550 6100
-Wire Wire Line
-	3200 4950 2450 4950
 $Comp
 L power:GND #PWR056
 U 1 1 5E747883
@@ -922,92 +920,67 @@ Wire Wire Line
 Wire Wire Line
 	3300 5250 3300 4950
 Wire Wire Line
-	4450 4950 4450 4850
+	4400 4950 4400 4850
 $Comp
 L power:+1V2 #PWR038
 U 1 1 5E627C14
-P 4450 4850
-F 0 "#PWR038" H 4450 4700 50  0001 C CNN
-F 1 "+1V2" H 4465 5023 50  0000 C CNN
-F 2 "" H 4450 4850 50  0001 C CNN
-F 3 "" H 4450 4850 50  0001 C CNN
-	1    4450 4850
+P 4400 4850
+F 0 "#PWR038" H 4400 4700 50  0001 C CNN
+F 1 "+1V2" H 4415 5023 50  0000 C CNN
+F 2 "" H 4400 4850 50  0001 C CNN
+F 3 "" H 4400 4850 50  0001 C CNN
+	1    4400 4850
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4350 4950 4450 4950
+	4300 4950 4400 4950
 Wire Wire Line
-	4150 4950 3950 4950
+	4100 4950 3900 4950
 Wire Wire Line
 	3600 4950 3600 5050
-Connection ~ 3600 4950
-Wire Wire Line
-	3600 4950 3300 4950
-Wire Wire Line
-	3950 4950 3950 5000
-Connection ~ 3950 4950
-Wire Wire Line
-	3950 4950 3600 4950
 Wire Wire Line
 	3600 5250 3600 5350
-Wire Wire Line
-	3600 5350 3800 5350
 $Comp
 L power:GND #PWR053
 U 1 1 5E6E1058
-P 3800 5450
-F 0 "#PWR053" H 3800 5200 50  0001 C CNN
-F 1 "GND" H 3805 5277 50  0000 C CNN
-F 2 "" H 3800 5450 50  0001 C CNN
-F 3 "" H 3800 5450 50  0001 C CNN
-	1    3800 5450
+P 3750 5450
+F 0 "#PWR053" H 3750 5200 50  0001 C CNN
+F 1 "GND" H 3755 5277 50  0000 C CNN
+F 2 "" H 3750 5450 50  0001 C CNN
+F 3 "" H 3750 5450 50  0001 C CNN
+	1    3750 5450
 	-1   0    0    -1  
 $EndComp
 Wire Wire Line
-	3950 5300 3950 5350
-Wire Wire Line
 	3200 5250 3200 4950
 Wire Wire Line
-	3800 5450 3800 5350
-Connection ~ 3800 5350
-Wire Wire Line
-	3800 5350 3950 5350
+	3750 5450 3750 5350
 $Comp
 L power:+1V2 #PWR036
 U 1 1 5EB96B60
-P 1850 4850
-F 0 "#PWR036" H 1850 4700 50  0001 C CNN
-F 1 "+1V2" H 1865 5023 50  0000 C CNN
-F 2 "" H 1850 4850 50  0001 C CNN
-F 3 "" H 1850 4850 50  0001 C CNN
-	1    1850 4850
+P 2100 4850
+F 0 "#PWR036" H 2100 4700 50  0001 C CNN
+F 1 "+1V2" H 2115 5023 50  0000 C CNN
+F 2 "" H 2100 4850 50  0001 C CNN
+F 3 "" H 2100 4850 50  0001 C CNN
+	1    2100 4850
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	2200 5350 2450 5350
 Connection ~ 2200 5350
 Wire Wire Line
 	2200 5250 2200 5350
 Wire Wire Line
-	1950 5350 2200 5350
+	2200 5350 2450 5350
 Wire Wire Line
-	1950 5250 1950 5350
-Wire Wire Line
-	2450 5350 2450 5250
+	2450 5250 2450 5350
 Wire Wire Line
 	2450 4950 2200 4950
-Connection ~ 2450 4950
 Wire Wire Line
 	2450 4950 2450 5050
 Wire Wire Line
-	2200 4950 1950 4950
-Connection ~ 2200 4950
-Wire Wire Line
 	2200 4950 2200 5050
 Wire Wire Line
-	1950 4950 1950 5050
-Wire Wire Line
-	1850 4950 1850 4850
+	2100 4950 2100 4850
 Wire Wire Line
 	2200 5450 2200 5350
 $Comp
@@ -1069,25 +1042,25 @@ F 6 "IC FPGA QFN-48" H 3200 5650 50  0001 C CNN "Description"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:C C20
+L Device:C_Small C19
 U 1 1 5E5FEBE6
-P 3950 5150
-F 0 "C20" H 3950 5250 50  0000 L CNN
-F 1 "10uF" H 3950 5050 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0402_1005Metric" H 3988 5000 50  0001 C CNN
-F 3 "https://www.murata.com/products/productdetail.aspx?partno=GRM155R60J106ME15D" H 3950 5150 50  0001 C CNN
-F 4 "Murata" H 3950 5150 50  0001 C CNN "Mfg"
-F 5 "GRM155R60J106ME15D" H 3950 5150 50  0001 C CNN "PN"
-F 6 "CAP CER 10uF 6.3V 20% X5R 0402" H 3950 5150 50  0001 C CNN "Description"
-F 7 "1.2V DC" H 3950 5150 50  0001 C CNN "Notes"
-	1    3950 5150
+P 3900 5150
+F 0 "C19" H 3900 5250 50  0000 L CNN
+F 1 "1uF" H 3900 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 3938 5000 50  0001 C CNN
+F 3 "https://www.murata.com/products/productdetail.aspx?partno=GRM033C80J105ME05D" H 3900 5150 50  0001 C CNN
+F 4 "Murata" H 3900 5150 50  0001 C CNN "Mfg"
+F 5 "GRM033C80J105ME05D" H 3900 5150 50  0001 C CNN "PN"
+F 6 "CAP CER 1uF 6.3V 20% X6S 0201" H 3900 5150 50  0001 C CNN "Description"
+F 7 "1.2V DC" H 3900 5150 50  0001 C CNN "Notes"
+	1    3900 5150
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:C_Small C19
+L Device:C_Small C18
 U 1 1 5E5FFD7F
 P 3600 5150
-F 0 "C19" H 3600 5250 50  0000 L CNN
+F 0 "C18" H 3600 5250 50  0000 L CNN
 F 1 "0.1uF" H 3600 5050 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 3600 5150 50  0001 C CNN
 F 3 "https://www.murata.com/products/productdetail.aspx?partno=GRM033R60J224KE15D" H 3600 5150 50  0001 C CNN
@@ -1101,67 +1074,52 @@ $EndComp
 $Comp
 L Device:C_Small C15
 U 1 1 5E93F678
-P 1950 5150
-F 0 "C15" H 1950 5250 50  0000 L CNN
-F 1 "1uF" H 1950 5050 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0201_0603Metric" H 1950 5150 50  0001 C CNN
-F 3 "https://www.murata.com/products/productdetail.aspx?partno=GRM033C80J105ME05D" H 1950 5150 50  0001 C CNN
-F 4 "Murata" H 1950 5150 50  0001 C CNN "Mfg"
-F 5 "GRM033C80J105ME05D" H 1950 5150 50  0001 C CNN "PN"
-F 6 "CAP CER 1uF 6.3V 20% X6S 0201" H 1950 5150 50  0001 C CNN "Description"
-F 7 "1.2V DC" H 1950 5150 50  0001 C CNN "Notes"
-	1    1950 5150
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C_Small C17
-U 1 1 5E8A1268
-P 2450 5150
-F 0 "C17" H 2450 5250 50  0000 L CNN
-F 1 "10n" H 2450 5050 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0201_0603Metric" H 2450 5150 50  0001 C CNN
-F 3 "https://www.murata.com/products/productdetail.aspx?partno=GRM033R60J103KA01D" H 2450 5150 50  0001 C CNN
-F 4 "Murata" H 2450 5150 50  0001 C CNN "Mfg"
-F 5 "GRM033R60J103KA01D" H 2450 5150 50  0001 C CNN "PN"
-F 6 "CAP CER 10nF 6.3V 10% X5R 0201" H 2450 5150 50  0001 C CNN "Description"
-F 7 "1.2V DC" H 2450 5150 50  0001 C CNN "Notes"
-	1    2450 5150
+P 2200 5150
+F 0 "C15" H 2200 5250 50  0000 L CNN
+F 1 "1uF" H 2200 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 2200 5150 50  0001 C CNN
+F 3 "https://www.murata.com/products/productdetail.aspx?partno=GRM033C80J105ME05D" H 2200 5150 50  0001 C CNN
+F 4 "Murata" H 2200 5150 50  0001 C CNN "Mfg"
+F 5 "GRM033C80J105ME05D" H 2200 5150 50  0001 C CNN "PN"
+F 6 "CAP CER 1uF 6.3V 20% X6S 0201" H 2200 5150 50  0001 C CNN "Description"
+F 7 "1.2V DC" H 2200 5150 50  0001 C CNN "Notes"
+	1    2200 5150
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:C_Small C16
 U 1 1 5E8A17F7
-P 2200 5150
-F 0 "C16" H 2200 5250 50  0000 L CNN
-F 1 "0.1uF" H 2200 5050 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0201_0603Metric" H 2200 5150 50  0001 C CNN
-F 3 "https://www.murata.com/products/productdetail.aspx?partno=GRM033R60J224KE15D" H 2200 5150 50  0001 C CNN
-F 4 "Murata" H 2200 5150 50  0001 C CNN "Mfg"
-F 5 "GRM033R60J224KE15D" H 2200 5150 50  0001 C CNN "PN"
-F 6 "CAP CER 0.22uF 6.3V 20% X5R 0201" H 2200 5150 50  0001 C CNN "Description"
-F 7 "1.2V DC DERATED TO 0.1uF" H 2200 5150 50  0001 C CNN "Notes"
-	1    2200 5150
+P 2450 5150
+F 0 "C16" H 2450 5250 50  0000 L CNN
+F 1 "0.1uF" H 2450 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 2450 5150 50  0001 C CNN
+F 3 "https://www.murata.com/products/productdetail.aspx?partno=GRM033R60J224KE15D" H 2450 5150 50  0001 C CNN
+F 4 "Murata" H 2450 5150 50  0001 C CNN "Mfg"
+F 5 "GRM033R60J224KE15D" H 2450 5150 50  0001 C CNN "PN"
+F 6 "CAP CER 0.22uF 6.3V 20% X5R 0201" H 2450 5150 50  0001 C CNN "Description"
+F 7 "1.2V DC DERATED TO 0.1uF" H 2450 5150 50  0001 C CNN "Notes"
+	1    2450 5150
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R_Small R6
 U 1 1 5E71845D
-P 4250 4950
-F 0 "R6" V 4054 4950 50  0000 C CNN
-F 1 "100" V 4145 4950 50  0000 C CNN
-F 2 "Resistor_SMD:R_0201_0603Metric" H 4250 4950 50  0001 C CNN
-F 3 "https://b2b-api.panasonic.eu/file_stream/pids/fileversion/1242" H 4250 4950 50  0001 C CNN
-F 4 "Panasonic" H 4250 4950 50  0001 C CNN "Mfg"
-F 5 "ERJ-1GNJ101C" H 4250 4950 50  0001 C CNN "PN"
-F 6 "RES 100Ω 50mW 5% 0201" H 4250 4950 50  0001 C CNN "Description"
-	1    4250 4950
+P 4200 4950
+F 0 "R6" V 4004 4950 50  0000 C CNN
+F 1 "100" V 4095 4950 50  0000 C CNN
+F 2 "Resistor_SMD:R_0201_0603Metric" H 4200 4950 50  0001 C CNN
+F 3 "https://b2b-api.panasonic.eu/file_stream/pids/fileversion/1242" H 4200 4950 50  0001 C CNN
+F 4 "Panasonic" H 4200 4950 50  0001 C CNN "Mfg"
+F 5 "ERJ-1GNJ101C" H 4200 4950 50  0001 C CNN "PN"
+F 6 "RES 100Ω 50mW 5% 0201" H 4200 4950 50  0001 C CNN "Description"
+	1    4200 4950
 	0    1    1    0   
 $EndComp
 $Comp
-L Device:C_Small C18
+L Device:C_Small C17
 U 1 1 612545C7
 P 2800 5150
-F 0 "C18" H 2892 5196 50  0000 L CNN
+F 0 "C17" H 2892 5196 50  0000 L CNN
 F 1 "0.1uF" H 2892 5105 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 2800 5150 50  0001 C CNN
 F 3 "https://www.murata.com/products/productdetail.aspx?partno=GRM033R60J224KE15D" H 2800 5150 50  0001 C CNN
@@ -1222,10 +1180,10 @@ Wire Wire Line
 Wire Wire Line
 	2450 7200 2700 7200
 $Comp
-L Device:C_Small C21
+L Device:C_Small C20
 U 1 1 5F3F233D
 P 2600 6250
-F 0 "C21" H 2400 6300 50  0000 L CNN
+F 0 "C20" H 2400 6300 50  0000 L CNN
 F 1 "0.1uF" H 2350 6200 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 2600 6250 50  0001 C CNN
 F 3 "https://www.murata.com/products/productdetail.aspx?partno=GRM033R60J224KE15D" H 2600 6250 50  0001 C CNN
@@ -2385,9 +2343,9 @@ Wire Notes Line
 	6950 5900 5500 5900
 Wire Notes Line
 	6950 6550 6950 4550
-Connection ~ 1950 4950
+Connection ~ 2200 4950
 Wire Wire Line
-	1850 4950 1950 4950
+	2100 4950 2200 4950
 Wire Notes Line
 	5500 4550 5500 7800
 Text Notes 6800 4800 2    100  ~ 0
@@ -2787,4 +2745,24 @@ Wire Wire Line
 Connection ~ 6150 6850
 Text Notes 500  5650 0    50   ~ 0
 Note: G0 and G1\nbecome output-only\nwhen the PLL is used
+Wire Wire Line
+	3200 4950 2450 4950
+Connection ~ 2450 4950
+Wire Wire Line
+	3300 4950 3600 4950
+Wire Wire Line
+	3600 4950 3900 4950
+Connection ~ 3600 4950
+Connection ~ 3900 4950
+Wire Wire Line
+	3750 5350 3900 5350
+Wire Wire Line
+	3600 5350 3750 5350
+Connection ~ 3750 5350
+Wire Wire Line
+	3900 5250 3900 5350
+Wire Wire Line
+	3900 4950 3900 5050
+Text Notes 8050 4350 0    50   ~ 0
+Note: As a side effect,\npressing and releasing\n~BTN~ will trigger an I2C\nstart and stop condition,\nrespectively.\nPressing ~BTN~ will also garble\nany ongoing I2C transmission
 $EndSCHEMATC
