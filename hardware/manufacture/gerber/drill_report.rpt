@@ -1,5 +1,5 @@
 Drill report for reDIP-SID.kicad_pcb
-Created on Tue Apr 27 13:35:09 2021
+Created on Wed Apr 28 13:16:13 2021
 
 Copper Layer Stackup:
     =============================================================
@@ -9,7 +9,7 @@ Copper Layer Stackup:
     L4 :  B.Cu                      back
 
 
-Drill file 'reDIP-SID-PTH.drl' contains
+Drill file 'reDIP-SID.drl' contains
     plated through holes:
     =============================================================
     T1  0.20mm  0.008"  (108 holes)
@@ -19,9 +19,9 @@ Drill file 'reDIP-SID-PTH.drl' contains
     Total plated holes count 150
 
 
-Drill file 'reDIP-SID-NPTH.drl' contains
+Not plated through holes are merged with plated holes
     unplated through holes:
     =============================================================
-    T1  0.65mm  0.026"  (2 holes)
+    T4  0.65mm  0.026"  (2 holes)
 
     Total unplated holes count 2
