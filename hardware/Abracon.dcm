@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP ASCO
+D Crystal Clock Oscillator, Abracon ASCO
+K Crystal Clock Oscillator
+F https://abracon.com/Oscillators/ASCO.pdf
+$ENDCMP
+#
+#End Doc Library

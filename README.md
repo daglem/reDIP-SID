@@ -26,18 +26,21 @@ The reDIP SID also aims to be a good no-frills generic choice for FPGA projects 
 
 #### Header pins:
 
+* 9V/12V input (for SID audio output DC bias)
 * 5V input
-* 3.3V output
 * 19 FPGA GPIO
 * 3 FPGA current drive / open-drain I/O
-* 3 audio pins (line input, stereo headphone output)
+* 5 audio pins (stereo line input, stereo line output, SID audio output)
 * GND
 
 All FPGA I/O is 5V tolerant, and can drive 5V TTL. JP1 can be shorted to make the 5V input pin bidirectional, e.g. to power 5V TTL devices.
+Note that the line inputs are not AC coupled - AC coupling must be externally added for audio applications.
+Without external AC coupling, the line inputs can be used as generic ADCs.
 
 #### FPGA SPI / Programming:
 
-A separate header footprint is provided for FPGA SPI / programming, with pinout borrowed from the [iCEBreaker Bitsy](https://github.com/icebreaker-fpga/icebreaker).
+A separate header footprint is provided for flash programming / (Q)SPI perhiperals, with pinout borrowed from the [iCEBreaker Bitsy](https://github.com/icebreaker-fpga/icebreaker).
+The header provides a 3.3V output, which may be used to power external devices.
 
 #### USB-C functions:
 
@@ -46,16 +49,12 @@ A separate header footprint is provided for FPGA SPI / programming, with pinout 
 
 ## MOS 6581/8580 SID compatibility
 
-The board is mostly pin compatible with the venerable MOS 6581/8580 SID sound chip.
+The board is fully pin compatible with the venerable MOS 6581/8580 SID sound chip.
 
 For anyone wanting to experiment with a SID setup, while avoiding damaged sockets and release of magic smoke:
 
 * Make sure that JP1 is open
-* Remove pins 1 - 4 and 28 from a 28 pin stamped DIP socket, and use this as an adapter. Do not attempt to mount the board directly in a SID socket!
-
-## Disclaimer
-
-Please note that this is only my second board - rookie mistakes are probably made, and [feedback](https://github.com/daglem/reDIP-SID/discussions/2) is welcome. The board has not been manufactured yet, and is thus completely untested.
+* Use a 28 pin stamped DIP socket as an adapter, to avoid damage to the C64 SID socket. Do not attempt to mount the board directly in a SID socket!
 
 ## Board Front
 ![Board Front](documentation/reDIP-SID-board-front.png)
