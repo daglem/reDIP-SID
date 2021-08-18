@@ -84,10 +84,10 @@ Connection ~ 7550 5500
 Wire Wire Line
 	7550 5500 7600 5500
 $Comp
-L Device:R R12
+L Device:R R13
 U 1 1 5F83658A
 P 7550 5100
-F 0 "R12" H 7480 5054 50  0000 R CNN
+F 0 "R13" H 7480 5054 50  0000 R CNN
 F 1 "10k" H 7480 5145 50  0000 R CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" V 7480 5100 50  0001 C CNN
 F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ103C" H 7550 5100 50  0001 C CNN
@@ -381,10 +381,10 @@ Connection ~ 9700 5500
 Wire Wire Line
 	9700 5500 9750 5500
 $Comp
-L Device:R R13
+L Device:R R14
 U 1 1 604FA973
 P 9700 5100
-F 0 "R13" H 9630 5054 50  0000 R CNN
+F 0 "R14" H 9630 5054 50  0000 R CNN
 F 1 "10k" H 9630 5145 50  0000 R CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" V 9630 5100 50  0001 C CNN
 F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ103C" H 9700 5100 50  0001 C CNN
@@ -977,10 +977,10 @@ F 7 "1.2V DC DERATED TO 0.1uF" H 2400 5150 50  0001 C CNN "Notes"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R_Small R8
+L Device:R_Small R9
 U 1 1 5E71845D
 P 4200 4950
-F 0 "R8" V 4004 4950 50  0000 C CNN
+F 0 "R9" V 4004 4950 50  0000 C CNN
 F 1 "100" V 4095 4950 50  0000 C CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" H 4200 4950 50  0001 C CNN
 F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ101C" H 4200 4950 50  0001 C CNN
@@ -1336,10 +1336,10 @@ Connection ~ 5900 5250
 Wire Wire Line
 	5900 5200 5900 5250
 $Comp
-L Device:R R10
+L Device:R R11
 U 1 1 5FE8D4E7
 P 5900 5050
-F 0 "R10" H 5970 5096 50  0000 L CNN
+F 0 "R11" H 5970 5096 50  0000 L CNN
 F 1 "1.5k" H 5970 5005 50  0000 L CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" V 5830 5050 50  0001 C CNN
 F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ152C" H 5900 5050 50  0001 C CNN
@@ -1421,10 +1421,10 @@ Wire Wire Line
 Wire Wire Line
 	1700 3350 1700 3250
 $Comp
-L Device:R R6
+L Device:R R7
 U 1 1 5EFEF82B
 P 2000 4000
-F 0 "R6" H 1950 3950 50  0000 R CNN
+F 0 "R7" H 1950 3950 50  0000 R CNN
 F 1 "5.1k" H 1950 4050 50  0000 R CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" V 1930 4000 50  0001 C CNN
 F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ512C" H 2000 4000 50  0001 C CNN
@@ -1462,10 +1462,10 @@ F 3 "" H 2300 4250 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L Device:R R7
+L Device:R R8
 U 1 1 5EFEFD1C
 P 2300 4000
-F 0 "R7" H 2250 3950 50  0000 R CNN
+F 0 "R8" H 2250 3950 50  0000 R CNN
 F 1 "5.1k" H 2250 4050 50  0000 R CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" V 2230 4000 50  0001 C CNN
 F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ512C" H 2300 4000 50  0001 C CNN
@@ -1485,20 +1485,6 @@ F 2 "" H 2600 3750 50  0001 C CNN
 F 3 "" H 2600 3750 50  0001 C CNN
 	1    2600 3750
 	-1   0    0    -1  
-$EndComp
-$Comp
-L Device:R R4
-U 1 1 609EBD8B
-P 3050 2850
-F 0 "R4" H 2950 2800 50  0000 R CNN
-F 1 "1.5k" H 2950 2900 50  0000 R CNN
-F 2 "Resistor_SMD:R_0201_0603Metric" V 2980 2850 50  0001 C CNN
-F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ152C" H 3050 2850 50  0001 C CNN
-F 4 "Panasonic" H 3050 2850 50  0001 C CNN "Mfg"
-F 5 "ERJ-1GNJ152C" H 3050 2850 50  0001 C CNN "PN"
-F 6 "RES 1.5kΩ 50mW 5% 0201" H 3050 2850 50  0001 C CNN "Description"
-	1    3050 2850
-	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	2600 3650 2600 3750
@@ -2228,10 +2214,10 @@ $EndComp
 Wire Wire Line
 	6950 900  6950 800 
 $Comp
-L Device:R_Small R16
+L Device:R_Small R17
 U 1 1 601AD4FD
 P 4250 7300
-F 0 "R16" V 4200 7200 50  0000 C CNN
+F 0 "R17" V 4200 7200 50  0000 C CNN
 F 1 "22" V 4200 7400 50  0000 C CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" H 4250 7300 50  0001 C CNN
 F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ220C" H 4250 7300 50  0001 C CNN
@@ -2260,10 +2246,10 @@ $EndComp
 Wire Wire Line
 	5600 5250 5900 5250
 $Comp
-L Device:R R11
+L Device:R R12
 U 1 1 6005DB26
 P 6300 5050
-F 0 "R11" H 6370 5096 50  0000 L CNN
+F 0 "R12" H 6370 5096 50  0000 L CNN
 F 1 "2.2k" H 6370 5005 50  0000 L CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" V 6230 5050 50  0001 C CNN
 F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ222C" H 6300 5050 50  0001 C CNN
@@ -2334,10 +2320,10 @@ F 3 "" H 4700 4850 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R R9
+L Device:R R10
 U 1 1 637D16D1
 P 4700 5050
-F 0 "R9" H 4850 5000 50  0000 R CNN
+F 0 "R10" H 4900 5000 50  0000 R CNN
 F 1 "10k" H 4900 5100 50  0000 R CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" V 4630 5050 50  0001 C CNN
 F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ103C" H 4700 5050 50  0001 C CNN
@@ -2376,10 +2362,10 @@ F 3 "" H 5750 2450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R_Small R14
+L Device:R_Small R15
 U 1 1 608C7719
 P 1100 5800
-F 0 "R14" V 1050 5700 50  0000 C CNN
+F 0 "R15" V 1050 5700 50  0000 C CNN
 F 1 "0" V 1050 5900 50  0000 C CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" H 1100 5800 50  0001 C CNN
 F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GN0R00C" H 1100 5800 50  0001 C CNN
@@ -2390,10 +2376,10 @@ F 6 "RES 0Ω 50mW 1% 0201" H 1100 5800 50  0001 C CNN "Description"
 	0    1    1    0   
 $EndComp
 $Comp
-L Device:R_Small R15
+L Device:R_Small R16
 U 1 1 608F3749
 P 1100 5900
-F 0 "R15" V 1050 5800 50  0000 C CNN
+F 0 "R16" V 1050 5800 50  0000 C CNN
 F 1 "0" V 1050 6000 50  0000 C CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" H 1100 5900 50  0001 C CNN
 F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GN0R00C" H 1100 5900 50  0001 C CNN
@@ -2425,10 +2411,8 @@ Text Label 3150 3350 0    50   ~ 0
 USB_D-
 Text Label 3150 3150 0    50   ~ 0
 USB_D+
-Text Label 3050 2550 0    50   ~ 0
-USB_CONN
 Wire Wire Line
-	3050 3000 3050 3150
+	3050 2800 3050 3150
 Connection ~ 3050 3150
 Wire Wire Line
 	3050 3150 3150 3150
@@ -2466,8 +2450,6 @@ F 3 "~" H 2050 2200 50  0001 C CNN
 	1    2050 2200
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3050 2700 3050 2550
 Text Label 1000 6700 2    50   ~ 0
 USB_CONN
 Text Label 2450 7000 2    50   ~ 0
@@ -2569,10 +2551,10 @@ Wire Wire Line
 Wire Wire Line
 	10750 3500 10750 3850
 $Comp
-L Device:R R5
+L Device:R R6
 U 1 1 61896C00
 P 10550 3500
-F 0 "R5" V 10450 3550 50  0000 R CNN
+F 0 "R6" V 10450 3550 50  0000 R CNN
 F 1 "10k" V 10650 3600 50  0000 R CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" V 10480 3500 50  0001 C CNN
 F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNF1002C" H 10550 3500 50  0001 C CNN
@@ -2627,7 +2609,6 @@ F 6 "PRPC014SAAN-RC" H 5000 2750 50  0001 C CNN "PN"
 	1    5000 2750
 	-1   0    0    -1  
 $EndComp
-NoConn ~ 10000 2300
 Wire Wire Line
 	8100 2100 8400 2100
 Wire Wire Line
@@ -2648,50 +2629,48 @@ F 7 "1.65V DC VAG DERATED TO 0.1uF" H 8500 2100 50  0001 C CNN "Notes"
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	10100 2850 10100 3500
+	10100 2800 10100 2900
 Wire Wire Line
 	10000 2400 10100 2400
 Wire Wire Line
-	10100 2400 10100 2550
+	10750 2300 10750 2200
 Wire Wire Line
-	10650 2300 10650 2200
-Wire Wire Line
-	10650 2550 10650 2500
+	10750 2550 10750 2500
 $Comp
 L power:GND #PWR031
 U 1 1 61311990
-P 10650 2550
-F 0 "#PWR031" H 10650 2300 50  0001 C CNN
-F 1 "GND" H 10655 2377 50  0000 C CNN
-F 2 "" H 10650 2550 50  0001 C CNN
-F 3 "" H 10650 2550 50  0001 C CNN
-	1    10650 2550
+P 10750 2550
+F 0 "#PWR031" H 10750 2300 50  0001 C CNN
+F 1 "GND" H 10755 2377 50  0000 C CNN
+F 2 "" H 10750 2550 50  0001 C CNN
+F 3 "" H 10750 2550 50  0001 C CNN
+	1    10750 2550
 	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:C_Small C11
 U 1 1 6131199A
-P 10650 2400
-F 0 "C11" H 10742 2446 50  0000 L CNN
-F 1 "1uF" H 10742 2355 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 10650 2400 50  0001 C CNN
-F 3 "https://www.murata.com/products/productdetail.aspx?partno=GRM188R61C475ME11D" H 10650 2400 50  0001 C CNN
-F 4 "Murata" H 10650 2400 50  0001 C CNN "Mfg"
-F 5 "GRM188R61C475ME11D" H 10650 2400 50  0001 C CNN "PN"
-F 6 "CAP CER 4.7uF 16V 20% X5R 0603" H 10650 2400 50  0001 C CNN "Description"
-F 7 "9V/12V DC DERATED TO 1uF" H 10650 2400 50  0001 C CNN "Notes"
-	1    10650 2400
+P 10750 2400
+F 0 "C11" H 10842 2446 50  0000 L CNN
+F 1 "1uF" H 10842 2355 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 10750 2400 50  0001 C CNN
+F 3 "https://www.murata.com/products/productdetail.aspx?partno=GRM188R61C475ME11D" H 10750 2400 50  0001 C CNN
+F 4 "Murata" H 10750 2400 50  0001 C CNN "Mfg"
+F 5 "GRM188R61C475ME11D" H 10750 2400 50  0001 C CNN "PN"
+F 6 "CAP CER 4.7uF 16V 20% X5R 0603" H 10750 2400 50  0001 C CNN "Description"
+F 7 "9V/12V DC DERATED TO 1uF" H 10750 2400 50  0001 C CNN "Notes"
+	1    10750 2400
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:VDD #PWR027
 U 1 1 6133E977
-P 10850 2100
-F 0 "#PWR027" H 10850 1950 50  0001 C CNN
-F 1 "VDD" H 10865 2273 50  0000 C CNN
-F 2 "" H 10850 2100 50  0001 C CNN
-F 3 "" H 10850 2100 50  0001 C CNN
-	1    10850 2100
+P 10950 2100
+F 0 "#PWR027" H 10950 1950 50  0001 C CNN
+F 1 "VDD" H 10965 2273 50  0000 C CNN
+F 2 "" H 10950 2100 50  0001 C CNN
+F 3 "" H 10950 2100 50  0001 C CNN
+	1    10950 2100
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -3057,37 +3036,82 @@ Wire Notes Line
 Wire Notes Line
 	4250 3500 4950 3500
 Wire Wire Line
-	10650 2200 10450 2200
+	10750 2200 10550 2200
 Wire Wire Line
-	10850 2200 10850 2100
+	10950 2200 10950 2100
 $Comp
 L power:PWR_FLAG #FLG03
 U 1 1 617C63A1
-P 10450 2100
-F 0 "#FLG03" H 10450 2175 50  0001 C CNN
-F 1 "PWR_FLAG" H 10450 2273 50  0000 C CNN
-F 2 "" H 10450 2100 50  0001 C CNN
-F 3 "~" H 10450 2100 50  0001 C CNN
-	1    10450 2100
+P 10550 2100
+F 0 "#FLG03" H 10550 2175 50  0001 C CNN
+F 1 "PWR_FLAG" H 10550 2273 50  0000 C CNN
+F 2 "" H 10550 2100 50  0001 C CNN
+F 3 "~" H 10550 2100 50  0001 C CNN
+	1    10550 2100
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	10850 2200 10650 2200
-Connection ~ 10650 2200
+	10950 2200 10750 2200
+Connection ~ 10750 2200
 Wire Wire Line
-	10450 2200 10450 2100
+	10550 2200 10550 2100
 $Comp
-L Device:R R3
-U 1 1 615D34A5
-P 10100 2700
-F 0 "R3" H 10030 2654 50  0000 R CNN
-F 1 "10k" H 10030 2745 50  0000 R CNN
-F 2 "Resistor_SMD:R_0201_0603Metric" V 10030 2700 50  0001 C CNN
-F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNF1002C" H 10100 2700 50  0001 C CNN
-F 4 "Panasonic" H 10100 2700 50  0001 C CNN "Mfg"
-F 5 "ERJ-1GNF1002C" H 10100 2700 50  0001 C CNN "PN"
-F 6 "RES 10kΩ 50mW 1% 0201" H 10100 2700 50  0001 C CNN "Description"
-	1    10100 2700
+L Device:R R5
+U 1 1 61239312
+P 10350 2650
+F 0 "R5" H 10280 2604 50  0000 R CNN
+F 1 "20k" H 10280 2695 50  0000 R CNN
+F 2 "Resistor_SMD:R_0201_0603Metric" V 10280 2650 50  0001 C CNN
+F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNF2002C" H 10350 2650 50  0001 C CNN
+F 4 "Panasonic" H 10350 2650 50  0001 C CNN "Mfg"
+F 5 "ERJ-1GNF2002C" H 10350 2650 50  0001 C CNN "PN"
+F 6 "RES 20kΩ 50mW 1% 0201" H 10350 2650 50  0001 C CNN "Description"
+	1    10350 2650
 	-1   0    0    1   
 $EndComp
+Wire Wire Line
+	10100 2400 10100 2500
+$Comp
+L Device:R R4
+U 1 1 615D34A5
+P 10100 2650
+F 0 "R4" H 10030 2604 50  0000 R CNN
+F 1 "20k" H 10030 2695 50  0000 R CNN
+F 2 "Resistor_SMD:R_0201_0603Metric" V 10030 2650 50  0001 C CNN
+F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNF2002C" H 10100 2650 50  0001 C CNN
+F 4 "Panasonic" H 10100 2650 50  0001 C CNN "Mfg"
+F 5 "ERJ-1GNF2002C" H 10100 2650 50  0001 C CNN "PN"
+F 6 "RES 20kΩ 50mW 1% 0201" H 10100 2650 50  0001 C CNN "Description"
+	1    10100 2650
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	10350 2800 10350 2900
+Wire Wire Line
+	10350 2900 10100 2900
+Connection ~ 10100 2900
+Wire Wire Line
+	10100 2900 10100 3500
+Wire Wire Line
+	10350 2500 10350 2300
+Wire Wire Line
+	10350 2300 10000 2300
+$Comp
+L Device:R R3
+U 1 1 609EBD8B
+P 3050 2650
+F 0 "R3" H 2950 2600 50  0000 R CNN
+F 1 "1.5k" H 2950 2700 50  0000 R CNN
+F 2 "Resistor_SMD:R_0201_0603Metric" V 2980 2650 50  0001 C CNN
+F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ152C" H 3050 2650 50  0001 C CNN
+F 4 "Panasonic" H 3050 2650 50  0001 C CNN "Mfg"
+F 5 "ERJ-1GNJ152C" H 3050 2650 50  0001 C CNN "PN"
+F 6 "RES 1.5kΩ 50mW 5% 0201" H 3050 2650 50  0001 C CNN "Description"
+	1    3050 2650
+	-1   0    0    1   
+$EndComp
+Text Label 3050 2350 0    50   ~ 0
+USB_CONN
+Wire Wire Line
+	3050 2500 3050 2350
 $EndSCHEMATC

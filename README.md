@@ -34,12 +34,14 @@ The reDIP SID also aims to be a good no-frills generic choice for FPGA projects 
 * GND
 
 All FPGA I/O is 5V tolerant, and can drive 5V TTL. JP1 can be shorted to make the 5V input pin bidirectional, e.g. to power 5V TTL devices.
+
 Note that the line inputs are not AC coupled - AC coupling must be externally added for audio applications.
 Without external AC coupling, the line inputs can be used as generic ADCs.
 
-#### FPGA SPI / Programming:
+#### SPI / Programming header:
 
-A separate header footprint is provided for flash programming / (Q)SPI perhiperals, with pinout borrowed from the [iCEBreaker Bitsy](https://github.com/icebreaker-fpga/icebreaker).
+A separate header footprint is provided for (Q)SPI peripherals / flash programming, with pinout borrowed from the [iCEBreaker Bitsy](https://github.com/icebreaker-fpga/icebreaker).
+
 The header provides a 3.3V output, which may be used to power external devices.
 
 #### USB-C functions:
