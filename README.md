@@ -26,7 +26,7 @@ The reDIP SID also aims to be a good no-frills generic choice for FPGA projects 
 
 #### Header pins:
 
-* 9V/12V input (for SID audio output DC bias)
+* 12V / 9V input (for MOS6581 / MOS8580 audio output DC bias)
 * 5V input
 * 19 FPGA GPIO
 * 3 FPGA current drive / open-drain I/O
@@ -36,7 +36,7 @@ The reDIP SID also aims to be a good no-frills generic choice for FPGA projects 
 All FPGA I/O is 5V tolerant, and can drive 5V TTL. JP1 can be shorted to make the 5V input pin bidirectional, e.g. to power 5V TTL devices.
 
 Note that the line inputs are not AC coupled - AC coupling must be externally added for audio applications.
-Without external AC coupling, the line inputs can be used as generic ADCs.
+Without external AC coupling, the line inputs can conceivably be used as generic ADCs.
 
 #### SPI / Programming header:
 
@@ -53,10 +53,9 @@ The header provides a 3.3V output, which may be used to power external devices.
 
 The board is fully pin compatible with the venerable MOS 6581/8580 SID sound chip.
 
-For anyone wanting to experiment with a SID setup, while avoiding damaged sockets and release of magic smoke:
+The board features additional address pins which may be connected to the C64, in order to make a second SID chip appear e.g. at address D420, D500, or DE00.
 
-* Make sure that JP1 is open
-* Use a 28 pin stamped DIP socket as an adapter, to avoid damage to the C64 SID socket. Do not attempt to mount the board directly in a SID socket!
+There is also an additional EXT IN audio input pin for a second SID chip, and separate stereo line output pins which may be connected directly to audio equipment.
 
 ## Board Front
 ![Board Front](documentation/reDIP-SID-board-front.png)
