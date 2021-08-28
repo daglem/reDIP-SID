@@ -1690,9 +1690,9 @@ F 0 "J6" H 4600 3650 50  0000 C CNN
 F 1 "Conn_02x05_Odd_Even" H 4600 4326 50  0001 C CNN
 F 2 "reDIP:PinHeader_2x05_P2.54mm_Vertical" H 4550 4000 50  0001 C CNN
 F 3 "https://drawings-pdf.s3.amazonaws.com/11636.pdf" H 4550 4000 50  0001 C CNN
-F 4 "CONN HEADER 2x5 POS .100\" DBL GOLD MATING 5.84mm TAIL 3.05mm" H 4550 4000 50  0001 C CNN "Description"
-F 5 "Sullins" H 4550 4000 50  0001 C CNN "Mfg"
-F 6 "PRPC005DAAN-RC" H 4550 4000 50  0001 C CNN "PN"
+F 4 "CONN HDR SQ PIN 2x5 POS .100\" GOLD MATING 6mm TAIL 3mm" H 4550 4000 50  0001 C CNN "Description"
+F 5 "" H 4550 4000 50  0001 C CNN "Mfg"
+F 6 "" H 4550 4000 50  0001 C CNN "PN"
 F 7 "DNP" H 4550 4000 50  0001 C CNN "DNP"
 	1    4550 4000
 	1    0    0    -1  
@@ -2935,12 +2935,12 @@ Wire Wire Line
 $Comp
 L power:VBUS #PWR02
 U 1 1 612EE4E0
-P 1400 800
-F 0 "#PWR02" H 1400 650 50  0001 C CNN
-F 1 "VBUS" H 1415 973 50  0000 C CNN
-F 2 "" H 1400 800 50  0001 C CNN
-F 3 "" H 1400 800 50  0001 C CNN
-	1    1400 800 
+P 1500 800
+F 0 "#PWR02" H 1500 650 50  0001 C CNN
+F 1 "VBUS" H 1515 973 50  0000 C CNN
+F 2 "" H 1500 800 50  0001 C CNN
+F 3 "" H 1500 800 50  0001 C CNN
+	1    1500 800 
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -3078,31 +3078,9 @@ Wire Wire Line
 Wire Wire Line
 	1100 1500 1100 1400
 Wire Wire Line
-	1400 800  1400 850 
-Wire Wire Line
 	1200 1100 1400 1100
-Connection ~ 1400 850 
-Wire Wire Line
-	1300 850  600  850 
-Wire Wire Line
-	1400 850  1300 850 
-Connection ~ 1300 850 
-Wire Wire Line
-	1300 1200 1300 850 
 Wire Wire Line
 	1450 1300 1450 1450
-Wire Wire Line
-	1200 1100 1200 950 
-Wire Wire Line
-	1200 950  1100 950 
-Connection ~ 1200 950 
-Wire Wire Line
-	1200 950  1200 800 
-Connection ~ 1100 950 
-Wire Wire Line
-	1100 950  950  950 
-Wire Wire Line
-	1400 850  1400 1000
 Wire Wire Line
 	2200 800  2200 1000
 $Comp
@@ -3215,7 +3193,7 @@ L Nexperia:BAV70W D1
 U 1 1 61A0D6AE
 P 700 1300
 F 0 "D1" V 650 1250 50  0000 R CNN
-F 1 "BAV70W" V 1000 1450 50  0000 R CNN
+F 1 "BAV70W" V 1050 1450 50  0000 R CNN
 F 2 "reDIP:SOT-323_SC-70" H 700 1300 50  0001 C CNN
 F 3 "https://assets.nexperia.com/documents/data-sheet/BAV70_SER.pdf" V 700 1300 50  0001 C CNN
 F 4 "DIODE DUAL COMMON CATHODE VR=100V SOT-323-3" H 700 1300 50  0001 C CNN "Description"
@@ -3240,7 +3218,7 @@ F 6 "RES 20kΩ 50mW 1% 0201" H 950 1150 50  0001 C CNN "Description"
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	1100 950  1100 1200
+	1100 1000 1100 1200
 $Comp
 L Device:C_Small C1
 U 1 1 61DA132F
@@ -3256,13 +3234,6 @@ F 7 "5V DC DERATED TO 1uF" H 1100 1300 50  0001 C CNN "Notes"
 	1    1100 1300
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	600  850  600  950 
-Wire Wire Line
-	950  950  950  1000
-Connection ~ 950  950 
-Wire Wire Line
-	950  950  800  950 
 $Comp
 L power:GND #PWR014
 U 1 1 61C43989
@@ -3276,4 +3247,50 @@ F 3 "" H 950 1500 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	950  1300 950  1500
+$Comp
+L Jumper:SolderJumper_2_Open JP1
+U 1 1 61EEFC0E
+P 1350 800
+F 0 "JP1" H 1350 913 50  0000 C CNN
+F 1 "SolderJumper_2_Open" H 1350 914 50  0001 C CNN
+F 2 "reDIP:DNP_0402_1005Metric" H 1350 800 50  0001 C CNN
+F 3 "~" H 1350 800 50  0001 C CNN
+F 4 "DNP" H 1350 800 50  0001 C CNN "DNP"
+F 5 "JUMPER" H 1350 800 50  0001 C CNN "Description"
+	1    1350 800 
+	1    0    0    -1  
+$EndComp
+Connection ~ 1200 800 
+Connection ~ 1500 800 
+Wire Wire Line
+	1400 900  1300 900 
+Wire Wire Line
+	1400 900  1400 1000
+Wire Wire Line
+	600  900  600  1000
+Wire Wire Line
+	1300 1200 1300 900 
+Connection ~ 1300 900 
+Wire Wire Line
+	1300 900  600  900 
+Wire Wire Line
+	1500 900  1400 900 
+Wire Wire Line
+	1500 800  1500 900 
+Connection ~ 1400 900 
+Wire Wire Line
+	1200 800  1200 1000
+Wire Wire Line
+	1200 1000 1100 1000
+Connection ~ 1200 1000
+Wire Wire Line
+	1200 1000 1200 1100
+Connection ~ 950  1000
+Wire Wire Line
+	950  1000 800  1000
+Connection ~ 1100 1000
+Wire Wire Line
+	1100 1000 950  1000
+Wire Wire Line
+	700  1450 700  1400
 $EndSCHEMATC
