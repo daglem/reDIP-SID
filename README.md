@@ -15,10 +15,12 @@ The reDIP SID is an open source hardware development board which combines the fo
 * USB-C receptacle for power and FPGA Full Speed USB
 * 5V tolerant I/O
 
-The reDIP SID is a leaner relative of the [reDIP SX](https://github.com/daglem/reDIP-SX),
-more squarely focused on providing an open source hardware platform for MOS 6581/8580 SID emulation.
+The reDIP SID provides a fully functional open source hardware platform for MOS 6581/8580 SID emulation.
 
-The reDIP SID also aims to be a good no-frills generic choice for FPGA projects which may find use for audio and/or 5V tolerant I/O.
+The reDIP SID also aims to be a good no-frills generic choice for FPGA projects which may find use for audio and/or 5V tolerant I/O -
+it should be ideal for for e.g. retro computer and synthesizer projects.
+
+The board is supported by the [Nitro Bootloader](https://github.com/no2fpga/no2bootloader/).
 
 ## General use
 
@@ -26,23 +28,25 @@ The reDIP SID also aims to be a good no-frills generic choice for FPGA projects 
 
 #### Header pins:
 
-* 12V / 9V input (for MOS6581 / MOS8580 audio output DC bias)
+* 12V / 9V input (for SID audio output DC bias / C64 model detection)
 * 5V input
 * 19 FPGA GPIO
 * 3 FPGA current drive / open-drain I/O
 * 5 audio pins (stereo line input, stereo line output, SID audio output)
 * GND
 
-All FPGA I/O is 5V tolerant, and can drive 5V TTL. JP1 can be shorted to make the 5V input pin bidirectional, e.g. to power 5V TTL devices.
+All FPGA I/O is 5V tolerant, and can drive 5V TTL. JP1 can be shorted to make the 5V input pin bidirectional, e.g. to power 5V TTL devices from USB VBUS.
 
 Note that the line inputs are not AC coupled - AC coupling must be externally added for audio applications.
 Without external AC coupling, the line inputs can conceivably be used as generic ADCs.
 
-#### SPI / Programming header:
+The 12V / 9V input is connected to the SGTL5000 mic input via a voltage divider, and can conceivably be used as a high range generic ADC.
+
+#### SPI / programming header:
 
 A separate header footprint is provided for (Q)SPI peripherals / flash programming, with pinout borrowed from the [iCEBreaker Bitsy](https://github.com/icebreaker-fpga/icebreaker).
 
-The header provides a 3.3V output, which may be used to power external devices.
+The header provides a 3.3V output, which may be used to power external devices. The 3.3V rail is supplied by a 700mA LDO.
 
 #### USB-C functions:
 
@@ -53,7 +57,7 @@ The header provides a 3.3V output, which may be used to power external devices.
 
 The board is fully pin compatible with the venerable MOS 6581/8580 SID sound chip.
 
-The board features additional address pins which may be connected to the C64, in order to make a second SID chip appear e.g. at address D420, D500, or DE00.
+The board features three additional address pins which may be connected to the Commodore 64, in order to make a second SID chip appear e.g. at address D420, D500, or DE00.
 
 There is also an additional EXT IN audio input pin for a second SID chip, and separate stereo line output pins which may be connected directly to audio equipment.
 
