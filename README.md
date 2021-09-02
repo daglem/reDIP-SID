@@ -20,7 +20,9 @@ The reDIP SID provides a fully functional open source hardware platform for MOS 
 The reDIP SID also aims to be a good no-frills generic choice for FPGA projects which may find use for audio and/or 5V tolerant I/O -
 it should be ideal for for e.g. retro computer and synthesizer projects.
 
-The board is supported by the [Nitro Bootloader](https://github.com/no2fpga/no2bootloader/).
+Designs for the iCE40UP5K FPGA can be processed by [yosys](https://github.com/YosysHQ/yosys/) and [nextpnr](https://github.com/YosysHQ/nextpnr/).
+
+The board is supported by the DFU [Nitro Bootloader](https://github.com/no2fpga/no2bootloader/), facilitating simple updates over USB.
 
 ## General use
 

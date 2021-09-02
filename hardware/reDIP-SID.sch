@@ -543,7 +543,7 @@ P 10200 5600
 F 0 "U10" H 10450 5100 50  0000 C CNN
 F 1 "W25Q128JVPIM" H 10200 5000 50  0000 C CNN
 F 2 "Package_SON:WSON-8-1EP_6x5mm_P1.27mm_EP3.4x4.3mm" H 10200 5600 50  0001 C CNN
-F 3 "https://www.winbond.com/resource-files/w25q128jv%20revf%2003272018%20plus.pdf" H 10200 5600 50  0001 C CNN
+F 3 "https://www.winbond.com/resource-files/W25Q128JV%20RevH%2003102021%20Plus.pdf" H 10200 5600 50  0001 C CNN
 F 4 "IC FLASH 128Mbit WSON-8" H 10200 5600 50  0001 C CNN "Description"
 F 5 "Winbond" H 10200 5600 50  0001 C CNN "Mfg"
 F 6 "W25Q128JVPIM" H 10200 5600 50  0001 C CNN "PN"
@@ -1339,12 +1339,12 @@ L Device:R R14
 U 1 1 5FE8D4E7
 P 5900 5050
 F 0 "R14" H 5970 5096 50  0000 L CNN
-F 1 "1.5k" H 5970 5005 50  0000 L CNN
+F 1 "2.2k" H 5970 5005 50  0000 L CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" V 5830 5050 50  0001 C CNN
-F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ152C" H 5900 5050 50  0001 C CNN
-F 4 "RES 1.5kΩ 50mW 5% 0201" H 5900 5050 50  0001 C CNN "Description"
+F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ222C" H 5900 5050 50  0001 C CNN
+F 4 "RES 2.2kΩ 50mW 5% 0201" H 5900 5050 50  0001 C CNN "Description"
 F 5 "Panasonic" H 5900 5050 50  0001 C CNN "Mfg"
-F 6 "ERJ-1GNJ152C" H 5900 5050 50  0001 C CNN "PN"
+F 6 "ERJ-1GNJ222C" H 5900 5050 50  0001 C CNN "PN"
 	1    5900 5050
 	1    0    0    -1  
 $EndComp
@@ -1689,7 +1689,7 @@ P 4550 4000
 F 0 "J6" H 4600 3650 50  0000 C CNN
 F 1 "Conn_02x05_Odd_Even" H 4600 4326 50  0001 C CNN
 F 2 "reDIP:PinHeader_2x05_P2.54mm_Vertical" H 4550 4000 50  0001 C CNN
-F 3 "https://drawings-pdf.s3.amazonaws.com/11636.pdf" H 4550 4000 50  0001 C CNN
+F 3 "" H 4550 4000 50  0001 C CNN
 F 4 "CONN HDR SQ PIN 2x5 POS .100\" GOLD MATING 6mm TAIL 3mm" H 4550 4000 50  0001 C CNN "Description"
 F 5 "" H 4550 4000 50  0001 C CNN "Mfg"
 F 6 "" H 4550 4000 50  0001 C CNN "PN"
@@ -1874,7 +1874,7 @@ P 4050 1100
 F 0 "U2" H 4050 1465 50  0000 C CNN
 F 1 "NCP167AMX330TBG" H 4050 1374 50  0000 C CNN
 F 2 "ONSemi:CASE_711AJ_1.0x1.0mm_P0.65mm" H 4050 1100 50  0001 C CNN
-F 3 "https://www.onsemi.com/pub/Collateral/NCP167-D.PDF" H 4050 1100 50  0001 C CNN
+F 3 "https://www.onsemi.com/pdf/datasheet/ncp167-d.pdf" H 4050 1100 50  0001 C CNN
 F 4 "onsemi" H 4050 1100 50  0001 C CNN "Mfg"
 F 5 "NCP167AMX330TBG" H 4050 1100 50  0001 C CNN "PN"
 F 6 "IC REG LDO 3.3V 700mA XDFN4" H 4050 1100 50  0001 C CNN "Description"
@@ -1998,7 +1998,7 @@ F 0 "SW1" H 6350 6350 50  0000 C CNN
 F 1 "KXT311LHS" H 6350 6100 50  0000 C CNN
 F 2 "CK:SW_SPST_CK_KXT3" H 6350 6400 50  0001 C CNN
 F 3 "https://www.ckswitches.com/media/1465/kxt3.pdf" H 6350 6400 50  0001 C CNN
-F 4 "SW TACT 3.0 x 2.0 mm" H 6350 6200 50  0001 C CNN "Description"
+F 4 "SW TACT 100gf 3.0x2.0 mm" H 6350 6200 50  0001 C CNN "Description"
 F 5 "C&K" H 6350 6200 50  0001 C CNN "Mfg"
 F 6 "KXT311LHS" H 6350 6200 50  0001 C CNN "PN"
 	1    6350 6200
@@ -2112,10 +2112,10 @@ P 4250 7300
 F 0 "R20" V 4200 7200 50  0000 C CNN
 F 1 "22" V 4200 7400 50  0000 C CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" H 4250 7300 50  0001 C CNN
-F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNJ220C" H 4250 7300 50  0001 C CNN
+F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNF22R0C" H 4250 7300 50  0001 C CNN
 F 4 "Panasonic" H 4250 7300 50  0001 C CNN "Mfg"
-F 5 "ERJ-1GNJ220C" H 4250 7300 50  0001 C CNN "PN"
-F 6 "RES 22Ω 50mW 5% 0201" H 4250 7300 50  0001 C CNN "Description"
+F 5 "ERJ-1GNF22R0C" H 4250 7300 50  0001 C CNN "PN"
+F 6 "RES 22Ω 50mW 1% 0201" H 4250 7300 50  0001 C CNN "Description"
 	1    4250 7300
 	0    1    1    0   
 $EndComp
@@ -2281,7 +2281,7 @@ P 2600 3250
 F 0 "U7" H 2850 3650 50  0000 C CNN
 F 1 "NUF2042XV6" H 2600 2800 50  0000 C CNN
 F 2 "ONSemi:CASE_463A_1.6x1.2mm_P0.5mm" H 2600 2750 50  0001 C CNN
-F 3 "https://www.onsemi.com/pub/Collateral/NUF2030XV6-D.PDF" H 2800 3600 50  0001 C CNN
+F 3 "https://www.onsemi.com/pdf/datasheet/nuf2030xv6-d.pdf" H 2800 3600 50  0001 C CNN
 F 4 "IC USB TERMINATOR ESD PROTECTION SOT-563" H 2600 3250 50  0001 C CNN "Description"
 F 5 "onsemi" H 2600 3250 50  0001 C CNN "Mfg"
 F 6 "NUF2042XV6T1G" H 2600 3250 50  0001 C CNN "PN"
