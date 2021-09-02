@@ -22,7 +22,7 @@ it should be ideal for for e.g. retro computer and synthesizer projects.
 
 Designs for the iCE40UP5K FPGA can be processed by [yosys](https://github.com/YosysHQ/yosys/) and [nextpnr](https://github.com/YosysHQ/nextpnr/).
 
-The board is supported by the DFU [Nitro Bootloader](https://github.com/no2fpga/no2bootloader/), facilitating simple updates over USB.
+The board is supported by the DFU [Nitro Bootloader](https://github.com/no2fpga/no2bootloader/), facilitating simple updates over USB using e.g. [dfu-util](http://dfu-util.sourceforge.net/).
 
 ## General use
 
@@ -62,6 +62,15 @@ The board is fully pin compatible with the venerable MOS 6581/8580 SID sound chi
 The board features three additional address pins which may be connected to the Commodore 64, in order to make a second SID chip appear e.g. at address D420, D500, or DE00.
 
 There is also an additional EXT IN audio input pin for a second SID chip, and separate stereo line output pins which may be connected directly to audio equipment.
+Either the SID GND pin or GND on the programming header may be used as audio ground.
+
+## Thanks
+
+Big thanks go to Sylvain "tnt" Munaut (@smunaut), who has not only implemented support for the reDIP SID in his Nitro Bootloader,
+but has also identified shortcomings, suggested feature improvements, and provided invaluable help to ensure that the board actually works.
+
+Thanks must also go to Aidan Dodds (@bit-hack) and Paul Sajna (@sajattack) for putting the first prototype through its paces with Dodds' [icesid](https://github.com/bit-hack/icesid),
+with guidance from Munaut.
 
 ## Board Front
 ![Board Front](documentation/reDIP-SID-board-front.png)
