@@ -66,11 +66,11 @@ Either the SID GND pin or GND on the programming header may be used as audio gro
 
 ## Thanks
 
-Big thanks go to Sylvain "tnt" Munaut ([@smunaut](https://github.com/smunaut/)), who has not only implemented support for the reDIP SID in his [Nitro Bootloader](https://github.com/no2fpga/no2bootloader/),
+Big thanks go to [Sylvain "tnt" Munaut](https://github.com/smunaut/), who has not only implemented support for the reDIP SID in his [Nitro Bootloader](https://github.com/no2fpga/no2bootloader/),
 but has also identified shortcomings, suggested feature improvements, and provided invaluable help to ensure that the board actually works.
 
-Thanks must also go to Aidan Dodds ([@bit-hack](https://github.com/bit-hack)) and Paul Sajna ([@sajattack](https://github.com/sajattack)) for putting the first prototype through its paces with Dodds' [icesid](https://github.com/bit-hack/icesid),
-with guidance from Munaut.
+Thanks must also go to [Aidan Dodds](https://github.com/bit-hack) and [Paul Sajna](https://github.com/sajattack)
+for putting the first prototype through its paces working on Dodds' [icesid](https://github.com/bit-hack/icesid), with guidance from Munaut.
 
 ## Board Front
 ![Board Front](documentation/reDIP-SID-board-front.png)
