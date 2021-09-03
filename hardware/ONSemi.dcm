@@ -1,5 +1,11 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP FPF1321UCX
+D Dual-Input Single-Output Advanced Power Switch with True Reverse-Current Blocking
+K power switch
+F https://www.onsemi.com/pdf/datasheet/fpf1321-d.pdf
+$ENDCMP
+#
 $CMP NCP115AMX120TCG
 D LDO Regulator - High PSRR
 K LDO, Regulator

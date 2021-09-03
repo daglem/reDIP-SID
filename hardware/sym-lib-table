@@ -5,4 +5,6 @@
   (lib (name Winbond)(type Legacy)(uri ${KIPRJMOD}/Winbond.lib)(options "")(descr ""))
   (lib (name reDIP)(type Legacy)(uri ${KIPRJMOD}/reDIP.lib)(options "")(descr ""))
   (lib (name ECS)(type Legacy)(uri ${KIPRJMOD}/ECS.lib)(options "")(descr ""))
+  (lib (name Abracon)(type Legacy)(uri ${KIPRJMOD}/Abracon.lib)(options "")(descr ""))
+  (lib (name Nexperia)(type Legacy)(uri ${KIPRJMOD}/Nexperia.lib)(options "")(descr ""))
 )

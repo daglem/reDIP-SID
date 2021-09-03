@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP BAV70W
+D Dual 100V 175mA high-speed switching diodes, common cathode, SOT-323
+K diode
+F https://assets.nexperia.com/documents/data-sheet/BAV70_SER.pdf
+$ENDCMP
+#
+#End Doc Library

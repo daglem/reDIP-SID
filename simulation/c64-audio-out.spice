@@ -1,0 +1,59 @@
+Simulation of reDIP SID audio output + C64 audio output + audio equipment input
+
+* Add the following to ~/.spiceinit for ngspice: set ngbehavior=ps
+
+* 1 = MOS6581, 0 = MOS8580
+.param mos6581 = 1
+
+* reDIP SID DC bias output stage, DC level = -1.65V + 2*3.3V = 4.95V
+Rl vcodec vgnd 20K
+Rr vcodec vgnd 20K
+Rf vgnd vin 10K
+Xopamp vdda vgnd vdd 0 vin MCP6H01
+Vdda vdda 0 3.3
+Vcodec vcodec 0 dc 1.65 ac 1.5 sin(1.65 1.5 1K)  ; Assuming SGTL 1.65V VAG, 3.0V Vpp
+
+* C64 audio output stage - component designators from schematic #251469
+.if (mos6581)
+R8 vin 0 1K                       ; Only in MOS6581 output stage
+.endif
+R9 vin base 10K
+C74 base 0 1000p
+Q1 vdd base emitter 2SC1815
+R12 emitter 0 1K
+.if (mos6581)
+C76 emitter 0 220p                ; Only in MOS6581 output stage
+.else
+C76 emitter base 470p             ; Only in MOS8580 output stage
+.endif
+C77 emitter vout 10u
+.if (mos6581)
+Vdd vdd 0 12                      ; 12V Vdd for MOS6581
+.else
+Vdd vdd 0 9                       ;  9V Vdd for MOS8580
+.endif
+
+* Audio equipment input
+Rload vout 0 10K                  ; Assuming 10K input impedance
+Cload vout 0 50p                  ; Assuming 50pF load capacitance
+
+* BJT model from https://www.diyaudio.com/forums/solid-state/2374-finding-spice-models-4-print.html
+.model 2SC1815 NPN (IS=9.99315F BF=192.019 NF=1.01109 VAF=311.281 IKF=214.789M
++ ISE=124.464F NE=1.51791 BR=4.99998 IKR=980.183 ISC=33.4247F RE=2.96389 CJE=2P
++ MJE=500M CJC=7.82341P VJC=700M MJC=500.188M TF=512.206P XTF=183.171M
++ VTF=9.97698 ITF=9.76409M TR=10N)
+
+* Op-amp model from https://www.microchip.com/en-us/product/MCP6H01#document-table
+.include 'MCP6H01.txt'
+
+* Simulations
+.control
+dc vcodec 0 3.3 0.1
+plot vcodec vin
+tran 10us 5ms
+plot vcodec vin vout
+ac dec 10 1 20K
+plot db(vin/vcodec) db(vout/vcodec)
+.endc
+
+.end
