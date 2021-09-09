@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "reDIP SID"
-Date "2021-08-28"
+Date "2021-09-07"
 Rev "1.0"
 Comp "Nimrod"
 Comment1 "© 2021 Dag Lem"
@@ -161,10 +161,10 @@ F 7 "3.3V DC DERATED TO 0.1uF" H 8600 1350 50  0001 C CNN "Notes"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:TestPoint_Flag TP4
+L Connector:TestPoint_Flag TP5
 U 1 1 5EBD10F6
 P 10700 1650
-F 0 "TP4" H 10960 1698 50  0000 L CNN
+F 0 "TP5" H 10960 1698 50  0000 L CNN
 F 1 "TestPoint_Flag" H 10960 1653 50  0001 L CNN
 F 2 "reDIP:TestPoint_Pad_D0.75mm" H 10900 1650 50  0001 C CNN
 F 3 "~" H 10900 1650 50  0001 C CNN
@@ -173,10 +173,10 @@ F 4 "PAD" H 10700 1650 50  0001 C CNN "DNP"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:TestPoint_Flag TP3
+L Connector:TestPoint_Flag TP4
 U 1 1 5EA8BEE8
 P 10700 1500
-F 0 "TP3" H 10960 1548 50  0000 L CNN
+F 0 "TP4" H 10960 1548 50  0000 L CNN
 F 1 "TestPoint_Flag" H 10960 1503 50  0001 L CNN
 F 2 "reDIP:TestPoint_Pad_D0.75mm" H 10900 1500 50  0001 C CNN
 F 3 "~" H 10900 1500 50  0001 C CNN
@@ -1710,7 +1710,7 @@ MOS 6581 /\n6582 / 8580\nSID pinout\n\nX = Do NOT\nconnect to\nSID socket!
 Text Notes 600  700  0    100  ~ 0
 Power
 Wire Wire Line
-	3250 1000 3250 800 
+	3250 1000 3250 850 
 Wire Wire Line
 	4550 1000 4550 800 
 $Comp
@@ -2071,8 +2071,6 @@ Wire Wire Line
 	4000 3450 3950 3450
 Wire Wire Line
 	3950 3450 3950 3500
-Wire Wire Line
-	3150 1200 3250 1200
 $Comp
 L Device:C_Small C4
 U 1 1 6112CD93
@@ -2669,7 +2667,7 @@ Wire Wire Line
 	5650 6850 5750 6850
 Connection ~ 5750 6850
 Wire Wire Line
-	5600 1000 5600 800 
+	5600 1000 5600 850 
 Wire Wire Line
 	5500 1000 5600 1000
 Connection ~ 5500 1000
@@ -2743,18 +2741,6 @@ Wire Wire Line
 Connection ~ 4650 1000
 Connection ~ 4750 1000
 $Comp
-L Connector:TestPoint_Flag TP2
-U 1 1 615B5C23
-P 5600 1200
-F 0 "TP2" H 5850 1200 50  0000 R CNN
-F 1 "TestPoint_Flag" H 5860 1203 50  0001 L CNN
-F 2 "reDIP:TestPoint_Pad_D0.75mm" H 5800 1200 50  0001 C CNN
-F 3 "~" H 5800 1200 50  0001 C CNN
-F 4 "PAD" H 5600 1200 50  0001 C CNN "DNP"
-	1    5600 1200
-	1    0    0    1   
-$EndComp
-$Comp
 L Device:C_Small C8
 U 1 1 615B5C31
 P 5500 1300
@@ -2769,18 +2755,6 @@ F 7 "1.2V DC" H 5500 1300 50  0001 C CNN "Notes"
 	1    5500 1300
 	1    0    0    -1  
 $EndComp
-$Comp
-L Connector:TestPoint_Flag TP1
-U 1 1 5F4F3F1B
-P 3250 1200
-F 0 "TP1" H 3500 1200 50  0000 R CNN
-F 1 "TestPoint_Flag" H 3510 1203 50  0001 L CNN
-F 2 "reDIP:TestPoint_Pad_D0.75mm" H 3450 1200 50  0001 C CNN
-F 3 "~" H 3450 1200 50  0001 C CNN
-F 4 "PAD" H 3250 1200 50  0001 C CNN "DNP"
-	1    3250 1200
-	1    0    0    1   
-$EndComp
 Wire Wire Line
 	3150 1000 3150 1100
 Wire Wire Line
@@ -2789,7 +2763,6 @@ Connection ~ 3150 1100
 Wire Wire Line
 	3150 1100 3150 1200
 Connection ~ 4550 1000
-Connection ~ 3150 1200
 Wire Wire Line
 	8250 1450 8250 1500
 Wire Wire Line
@@ -2845,9 +2818,6 @@ Wire Wire Line
 	2750 5050 3100 5050
 Wire Wire Line
 	5500 1000 5500 1200
-Wire Wire Line
-	5600 1200 5500 1200
-Connection ~ 5500 1200
 Wire Wire Line
 	10100 3500 10100 3750
 Wire Wire Line
@@ -3080,18 +3050,18 @@ Wire Wire Line
 Wire Wire Line
 	1450 1300 1450 1450
 Wire Wire Line
-	2200 800  2200 1000
+	2200 800  2200 850 
 $Comp
 L Device:R R5
 U 1 1 612BCDC5
 P 8450 2600
 F 0 "R5" V 8400 2500 50  0000 R CNN
-F 1 "402k" V 8400 2900 50  0000 R CNN
+F 1 "100k" V 8400 2900 50  0000 R CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" V 8380 2600 50  0001 C CNN
-F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNF4023C" H 8450 2600 50  0001 C CNN
+F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNF1003C" H 8450 2600 50  0001 C CNN
 F 4 "Panasonic" H 8450 2600 50  0001 C CNN "Mfg"
-F 5 "ERJ-1GNF4023C" H 8450 2600 50  0001 C CNN "PN"
-F 6 "RES 402kΩ 50mW 1% 0201" H 8450 2600 50  0001 C CNN "Description"
+F 5 "ERJ-1GNF1003C" H 8450 2600 50  0001 C CNN "PN"
+F 6 "RES 100kΩ 50mW 1% 0201" H 8450 2600 50  0001 C CNN "Description"
 	1    8450 2600
 	0    1    1    0   
 $EndComp
@@ -3100,12 +3070,12 @@ L Device:R R8
 U 1 1 612F1086
 P 8450 2750
 F 0 "R8" V 8400 2650 50  0000 R CNN
-F 1 "100k" V 8400 3050 50  0000 R CNN
+F 1 "20k" V 8400 3050 50  0000 R CNN
 F 2 "Resistor_SMD:R_0201_0603Metric" V 8380 2750 50  0001 C CNN
-F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNF1003C" H 8450 2750 50  0001 C CNN
+F 3 "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ1GNF2002C" H 8450 2750 50  0001 C CNN
 F 4 "Panasonic" H 8450 2750 50  0001 C CNN "Mfg"
-F 5 "ERJ-1GNF1003C" H 8450 2750 50  0001 C CNN "PN"
-F 6 "RES 100kΩ 50mW 1% 0201" H 8450 2750 50  0001 C CNN "Description"
+F 5 "ERJ-1GNF2002C" H 8450 2750 50  0001 C CNN "PN"
+F 6 "RES 20kΩ 50mW 1% 0201" H 8450 2750 50  0001 C CNN "Description"
 	1    8450 2750
 	0    1    1    0   
 $EndComp
@@ -3293,4 +3263,46 @@ Wire Wire Line
 	700  1450 700  1400
 Wire Wire Line
 	2200 4950 2400 4950
+Connection ~ 2200 850 
+Wire Wire Line
+	2200 850  2200 1000
+Connection ~ 3250 850 
+Wire Wire Line
+	3250 850  3250 800 
+Connection ~ 5600 850 
+Wire Wire Line
+	5600 850  5600 800 
+$Comp
+L Connector:TestPoint TP1
+U 1 1 61417994
+P 2200 850
+F 0 "TP1" V 2100 900 50  0000 L CNN
+F 1 "TestPoint" V 2245 1038 50  0001 L CNN
+F 2 "reDIP:TestPoint_Pad_D0.75mm" H 2400 850 50  0001 C CNN
+F 3 "~" H 2400 850 50  0001 C CNN
+	1    2200 850 
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP2
+U 1 1 614195BB
+P 3250 850
+F 0 "TP2" V 3150 900 50  0000 L CNN
+F 1 "TestPoint" V 3295 1038 50  0001 L CNN
+F 2 "reDIP:TestPoint_Pad_D0.75mm" H 3450 850 50  0001 C CNN
+F 3 "~" H 3450 850 50  0001 C CNN
+	1    3250 850 
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP3
+U 1 1 6141A62A
+P 5600 850
+F 0 "TP3" V 5500 900 50  0000 L CNN
+F 1 "TestPoint" V 5645 1038 50  0001 L CNN
+F 2 "reDIP:TestPoint_Pad_D0.75mm" H 5800 850 50  0001 C CNN
+F 3 "~" H 5800 850 50  0001 C CNN
+	1    5600 850 
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC
