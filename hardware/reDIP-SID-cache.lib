@@ -249,24 +249,6 @@ X 1 1 0 0 100 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# Connector_TestPoint_Flag
-#
-DEF Connector_TestPoint_Flag TP 0 30 N N 1 F N
-F0 "TP" 135 70 50 H V C CNN
-F1 "Connector_TestPoint_Flag" 130 165 50 H V C CNN
-F2 "" 200 0 50 H I C CNN
-F3 "" 200 0 50 H I C CNN
-$FPLIST
- Pin*
- Test*
-$ENDFPLIST
-DRAW
-S 35 110 230 35 0 1 10 f
-P 2 0 1 10 0 0 35 35 N
-X 1 1 0 0 0 U 50 50 1 1 P
-ENDDRAW
-ENDDEF
-#
 # Connector_USB_C_Receptacle_USB2.0
 #
 DEF Connector_USB_C_Receptacle_USB2.0 J 0 40 Y Y 1 F N

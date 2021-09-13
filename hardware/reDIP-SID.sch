@@ -161,30 +161,6 @@ F 7 "3.3V DC DERATED TO 0.1uF" H 8600 1350 50  0001 C CNN "Notes"
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:TestPoint_Flag TP5
-U 1 1 5EBD10F6
-P 10700 1650
-F 0 "TP5" H 10960 1698 50  0000 L CNN
-F 1 "TestPoint_Flag" H 10960 1653 50  0001 L CNN
-F 2 "reDIP:TestPoint_Pad_D0.75mm" H 10900 1650 50  0001 C CNN
-F 3 "~" H 10900 1650 50  0001 C CNN
-F 4 "PAD" H 10700 1650 50  0001 C CNN "DNP"
-	1    10700 1650
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:TestPoint_Flag TP4
-U 1 1 5EA8BEE8
-P 10700 1500
-F 0 "TP4" H 10960 1548 50  0000 L CNN
-F 1 "TestPoint_Flag" H 10960 1503 50  0001 L CNN
-F 2 "reDIP:TestPoint_Pad_D0.75mm" H 10900 1500 50  0001 C CNN
-F 3 "~" H 10900 1500 50  0001 C CNN
-F 4 "PAD" H 10700 1500 50  0001 C CNN "DNP"
-	1    10700 1500
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:C_Small C11
 U 1 1 5EC6D44C
 P 8950 1350
@@ -328,12 +304,8 @@ Wire Wire Line
 	10300 1350 10300 1650
 Connection ~ 10300 1650
 Wire Wire Line
-	10300 1650 10700 1650
-Wire Wire Line
 	10550 1350 10550 1500
 Connection ~ 10550 1500
-Wire Wire Line
-	10550 1500 10700 1500
 Text Notes 10300 850  0    50   ~ 0
 I2C Pullup
 Wire Wire Line
@@ -3303,6 +3275,34 @@ F 1 "TestPoint" V 5645 1038 50  0001 L CNN
 F 2 "reDIP:TestPoint_Pad_D0.75mm" H 5800 850 50  0001 C CNN
 F 3 "~" H 5800 850 50  0001 C CNN
 	1    5600 850 
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	10300 1650 10700 1650
+$Comp
+L Connector:TestPoint TP5
+U 1 1 5EBD10F6
+P 10700 1650
+F 0 "TP5" V 10700 1850 50  0000 L CNN
+F 1 "TestPoint_Flag" H 10960 1653 50  0001 L CNN
+F 2 "reDIP:TestPoint_Pad_D0.75mm" H 10900 1650 50  0001 C CNN
+F 3 "~" H 10900 1650 50  0001 C CNN
+F 4 "PAD" H 10700 1650 50  0001 C CNN "DNP"
+	1    10700 1650
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	10550 1500 10700 1500
+$Comp
+L Connector:TestPoint TP4
+U 1 1 5EA8BEE8
+P 10700 1500
+F 0 "TP4" V 10700 1700 50  0000 L CNN
+F 1 "TestPoint_Flag" H 10960 1503 50  0001 L CNN
+F 2 "reDIP:TestPoint_Pad_D0.75mm" H 10900 1500 50  0001 C CNN
+F 3 "~" H 10900 1500 50  0001 C CNN
+F 4 "PAD" H 10700 1500 50  0001 C CNN "DNP"
+	1    10700 1500
 	0    1    1    0   
 $EndComp
 $EndSCHEMATC
