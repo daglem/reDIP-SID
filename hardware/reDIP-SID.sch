@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "reDIP SID"
-Date "2021-09-07"
+Date "2021-09-14"
 Rev "1.0"
 Comp "Nimrod"
 Comment1 "© 2021 Dag Lem"
@@ -2250,7 +2250,7 @@ U 1 1 6161A4D7
 P 2600 3250
 F 0 "U7" H 2850 3650 50  0000 C CNN
 F 1 "NUF2042XV6" H 2600 2800 50  0000 C CNN
-F 2 "ONSemi:CASE_463A_1.6x1.2mm_P0.5mm" H 2600 2750 50  0001 C CNN
+F 2 "reDIP:SOT-563" H 2600 2750 50  0001 C CNN
 F 3 "https://www.onsemi.com/pdf/datasheet/nuf2030xv6-d.pdf" H 2800 3600 50  0001 C CNN
 F 4 "IC USB TERMINATOR ESD PROTECTION SOT-563" H 2600 3250 50  0001 C CNN "Description"
 F 5 "onsemi" H 2600 3250 50  0001 C CNN "Mfg"

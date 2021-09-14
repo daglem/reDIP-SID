@@ -15,19 +15,19 @@ $ENDCMP
 $CMP NCP163AMX120TBG
 D LDO Regulator - Ultra-LowNoise, High PSRR, RF andAnalog Circuits
 K LDO, Regulator
-F https://www.onsemi.com/pub/Collateral/NCP163-D.PDF
+F https://www.onsemi.com/pdf/datasheet/ncp163-d.pdf
 $ENDCMP
 #
 $CMP NCP167AMX330TBG
 D LDO Regulator - Ultra-LowNoise, High PSRR, RF andAnalog Circuits
 K LDO, Regulator
-F https://www.onsemi.com/pub/Collateral/NCP167-D.PDF
+F https://www.onsemi.com/pdf/datasheet/ncp167-d.pdf
 $ENDCMP
 #
 $CMP NUF2042XV6
 D USB Upstream Terminator with ESD Protection, 2 data-line, SOT-563
 K usb esd
-F https://www.onsemi.com/pub/Collateral/NUF2030XV6-D.PDF
+F https://www.onsemi.com/pdf/datasheet/nuf2030xv6-d.pdf
 $ENDCMP
 #
 #End Doc Library
