@@ -1,9 +1,0 @@
-EESchema-DOCLIB  Version 2.0
-#
-$CMP W25Q128JVPIM
-D 64 Mbit QSPI PSRAM
-K QSPI PSRAM
-F https://www.winbond.com/resource-files/w25q128jv%20revf%2003272018%20plus.pdf
-$ENDCMP
-#
-#End Doc Library

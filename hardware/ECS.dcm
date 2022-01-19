@@ -1,9 +1,0 @@
-EESchema-DOCLIB  Version 2.0
-#
-$CMP ECS-1612MV-240-CN-TR
-D HCMOS Oscillator, ECS
-K HCMOS Oscillator
-F https://ecsxtal.com/store/pdf/ECS-1612MV.pdf
-$ENDCMP
-#
-#End Doc Library
