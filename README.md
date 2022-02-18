@@ -42,7 +42,7 @@ All FPGA I/O is 5V tolerant, and can drive 5V TTL. JP1 can be shorted to make th
 Note that the line inputs are not AC coupled - AC coupling must be externally added for audio applications.
 Without external AC coupling, the line inputs can conceivably be used as generic ADCs.
 
-The 12V / 9V input is connected to the SGTL5000 mic input via a voltage divider, and can conceivably be used as a high range generic ADC.
+The 12V / 9V input is connected to the SGTL5000 mic input via a 1/6 ratio voltage divider.
 
 #### SPI / programming header:
 

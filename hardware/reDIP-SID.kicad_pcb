@@ -17,7 +17,7 @@
   (layers
     (0 "F.Cu" signal)
     (1 "In1.Cu" power)
-    (2 "In2.Cu" signal)
+    (2 "In2.Cu" mixed)
     (31 "B.Cu" signal)
     (33 "F.Adhes" user "F.Adhesive")
     (34 "B.Paste" user)
@@ -3208,6 +3208,9 @@
     (at 105 106.2 90)
     (descr "SOT-5X3")
     (tags "SOT-5X3")
+    (property "Description" "IC DUAL IDEAL DIODE")
+    (property "Mfg" "TI")
+    (property "PN" "LM66200DRLR")
     (property "Sheetfile" "reDIP-SID.kicad_sch")
     (property "Sheetname" "")
     (path "/60658b2d-b231-404c-a249-97654a4961a1")
@@ -3264,9 +3267,9 @@
     (descr "SOP, 8 Pin (http://www.macronix.com/Lists/Datasheet/Attachments/7534/MX25R3235F,%20Wide%20Range,%2032Mb,%20v1.6.pdf#page=79), generated with kicad-footprint-generator ipc_gullwing_generator.py")
     (tags "SOP SO")
     (property "Description" "IC PSRAM 64Mbit SOP-8")
-    (property "Mfg" "Lyontek")
-    (property "Notes" "REPLACEMENT PARTS: AP Memory APS6404L-3SQR-SN, Espressif ESP-PSRAM64H, IPUS IPS6404L-SQ")
-    (property "PN" "LY68L6400SLIT")
+    (property "Mfg" "AP")
+    (property "Notes" "REPLACEMENT PART: Lyontek LY68L6400SLIT")
+    (property "PN" "APS6404L-3SQR-SN")
     (property "Sheetfile" "reDIP-SID.kicad_sch")
     (property "Sheetname" "")
     (path "/00000000-0000-0000-0000-00005f77563e")
@@ -3275,7 +3278,7 @@
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 7c6e532b-1afd-48d4-9389-2942dcbc7c3c)
     )
-    (fp_text value "LY68L6400SLIT" (at 0 -3.4) (layer "B.Fab") hide
+    (fp_text value "APS6404L-3SQR" (at 0 -3.4) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp d53baa32-ba88-4646-9db3-0e9b0f0da4f0)
     )
@@ -4510,7 +4513,7 @@
 
   (footprint "reDIP:SolderMask_D0.3mm" (layer "B.Cu")
     (tedit 5FE1ECB8) (tstamp 3fcf515a-b2e5-4769-a263-706606d34687)
-    (at 107.62 117.01)
+    (at 107.62 117.11)
     (attr exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.3mm" (at -0.01 1.18) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
@@ -5231,7 +5234,7 @@
   (segment (start 101.67 106.09) (end 102.26 106.09) (width 0.25) (layer "F.Cu") (net 1) (tstamp f1ae6423-335a-41e6-bca8-101a3475f4e9))
   (segment (start 106.025 109.795) (end 106.02 109.8) (width 0.25) (layer "F.Cu") (net 1) (tstamp fd693e1b-ee8d-4a26-aae0-561ba4b09a82))
   (via (at 111.43 110.62) (size 0.45) (drill 0.2) (layers "F.Cu" "B.Cu") (net 1) (tstamp 00000000-0000-0000-0000-00005fdaffea))
-  (via (at 107.62 117.01) (size 0.45) (drill 0.2) (layers "F.Cu" "B.Cu") (net 1) (tstamp 00000000-0000-0000-0000-00005fdc87ac))
+  (via (at 107.62 117.11) (size 0.45) (drill 0.2) (layers "F.Cu" "B.Cu") (net 1) (tstamp 00000000-0000-0000-0000-00005fdc87ac))
   (via (at 108.62 117.99) (size 0.45) (drill 0.2) (layers "F.Cu" "B.Cu") (net 1) (tstamp 00000000-0000-0000-0000-00005fdc88ba))
   (via (at 107.62 119) (size 0.45) (drill 0.2) (layers "F.Cu" "B.Cu") (net 1) (tstamp 00000000-0000-0000-0000-00005fdc8905))
   (via (at 109.63 117.11) (size 0.45) (drill 0.2) (layers "F.Cu" "B.Cu") (net 1) (tstamp 00000000-0000-0000-0000-00005fdc8965))
