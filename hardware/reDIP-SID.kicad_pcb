@@ -3038,79 +3038,79 @@
     )
   )
 
-  (footprint "reDIP:SolderMask_D0.3mm" (layer "F.Cu")
-    (tedit 5FE1ECB8) (tstamp 00000000-0000-0000-0000-00006124119a)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "F.Cu")
+    (tedit 62129A59) (tstamp 00000000-0000-0000-0000-00006124119a)
     (at 104.02 110.42)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.3mm" (at -0.01 -1.18) (layer "F.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 -1.18) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
-      (tstamp 0ceb97d6-1b0f-4b71-921e-b0955c30c998)
+      (tstamp ec9147f6-f46b-4d6a-b08a-586ad551a2eb)
     )
-    (fp_text value "SolderMask_D0.3mm" (at -0.01 1.09) (layer "F.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 1.09) (layer "F.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)))
-      (tstamp 1241b7f2-e266-4f5c-8a97-9f0f9d0eef37)
+      (tstamp bdce625b-2b79-4206-8e8c-da5b2e52a28c)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.3 0.3) (layers "F.Mask") (tstamp 7d0dab95-9e7a-486e-a1d7-fc48860fd57d))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "F.Mask") (tstamp ddf1004d-2f9f-48a7-a454-0a91ca15e121))
   )
 
-  (footprint "reDIP:SolderMask_D0.3mm" (layer "F.Cu")
-    (tedit 5FE1ECB8) (tstamp 00000000-0000-0000-0000-0000612411fa)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "F.Cu")
+    (tedit 62129A59) (tstamp 00000000-0000-0000-0000-0000612411fa)
     (at 103.42 110.42)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.3mm" (at -0.01 -1.18) (layer "F.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 -1.18) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
-      (tstamp 9f782c92-a5e8-49db-bfda-752b35522ce4)
+      (tstamp dc665a24-f20b-4a56-b9a3-c01e399bccf8)
     )
-    (fp_text value "SolderMask_D0.3mm" (at -0.01 1.09) (layer "F.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 1.09) (layer "F.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)))
-      (tstamp ccc4cc25-ac17-45ef-825c-e079951ffb21)
+      (tstamp 68195c79-17ee-4702-99a9-c058de9b4d9c)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.3 0.3) (layers "F.Mask") (tstamp 626679e8-6101-4722-ac57-5b8d9dab4c8b))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "F.Mask") (tstamp 86ed36a7-5848-40a1-a64d-243f2129fe3f))
   )
 
-  (footprint "reDIP:SolderMask_D0.3mm" (layer "F.Cu")
-    (tedit 5FE1ECB8) (tstamp 00000000-0000-0000-0000-00006124121e)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "F.Cu")
+    (tedit 62129A59) (tstamp 00000000-0000-0000-0000-00006124121e)
     (at 102.82 110.42)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.3mm" (at -0.01 -1.18) (layer "F.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 -1.18) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
-      (tstamp 88002554-c459-46e5-8b22-6ea6fe07fd4c)
+      (tstamp 69e990e7-a254-40c8-86f9-c4db4d5dda3d)
     )
-    (fp_text value "SolderMask_D0.3mm" (at -0.01 1.09) (layer "F.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 1.09) (layer "F.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)))
-      (tstamp 8cdc8ef9-532e-4bf5-9998-7213b9e692a2)
+      (tstamp 2a098102-8d56-4c86-8f18-d8712d00f15f)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.3 0.3) (layers "F.Mask") (tstamp 53e34696-241f-47e5-a477-f469335c8a61))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "F.Mask") (tstamp a43a0477-f764-469a-b85b-b909eb593859))
   )
 
-  (footprint "reDIP:SolderMask_D0.3mm" (layer "F.Cu")
-    (tedit 5FE1ECB8) (tstamp 00000000-0000-0000-0000-00006124122a)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "F.Cu")
+    (tedit 62129A59) (tstamp 00000000-0000-0000-0000-00006124122a)
     (at 103.12 110.94)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.3mm" (at -0.01 -1.18) (layer "F.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 -1.18) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
-      (tstamp cf815d51-c956-4c5a-adde-c373cb025b07)
+      (tstamp d674f162-372c-4c3c-9cf7-b358245c34e9)
     )
-    (fp_text value "SolderMask_D0.3mm" (at -0.01 1.09) (layer "F.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 1.09) (layer "F.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)))
-      (tstamp 3e0392c0-affc-4114-9de5-1f1cfe79418a)
+      (tstamp e29f0ddd-3bf3-424d-8a11-b18e27a7df72)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.3 0.3) (layers "F.Mask") (tstamp 6513181c-0a6a-4560-9a18-17450c36ae2a))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "F.Mask") (tstamp bf38b1f8-34c2-4395-b418-59e5bd13c4f3))
   )
 
-  (footprint "reDIP:SolderMask_D0.3mm" (layer "F.Cu")
-    (tedit 5FE1ECB8) (tstamp 00000000-0000-0000-0000-000061241236)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "F.Cu")
+    (tedit 62129A59) (tstamp 00000000-0000-0000-0000-000061241236)
     (at 103.72 110.94)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.3mm" (at -0.01 -1.18) (layer "F.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 -1.18) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
-      (tstamp 008da5b9-6f95-4113-b7d0-d93ac62efd33)
+      (tstamp 57c5b60c-c043-44de-a45a-247be1c4e054)
     )
-    (fp_text value "SolderMask_D0.3mm" (at -0.01 1.09) (layer "F.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 1.09) (layer "F.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)))
-      (tstamp 5d3d7893-1d11-4f1d-9052-85cf0e07d281)
+      (tstamp 62c2329f-a358-4aa5-8e3d-fa1a8a60b64b)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.3 0.3) (layers "F.Mask") (tstamp 79476267-290e-445f-995b-0afd0e11a4b5))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "F.Mask") (tstamp ae739def-4cd5-4f3f-81e1-138f0b652b89))
   )
 
   (footprint "Resistor_SMD:R_0201_0603Metric" (layer "F.Cu")
@@ -3322,19 +3322,19 @@
     )
   )
 
-  (footprint "reDIP:SolderMask_D0.5mm" (layer "B.Cu")
-    (tedit 5FDDBA43) (tstamp 00000000-0000-0000-0000-00005fdb2399)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp 00000000-0000-0000-0000-00005fdb2399)
     (at 110.58 111.46)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.5mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 6f580eb1-88cc-489d-a7ca-9efa5e590715)
+      (tstamp 5de752ba-a091-4c74-b936-55eb5502aac0)
     )
-    (fp_text value "SolderMask_D0.5mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp b13e8448-bf35-4ec0-9c70-3f2250718cc2)
+      (tstamp dade63ad-37a1-45bc-a904-3b6e1b983f23)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.5 0.5) (layers "B.Mask") (tstamp 5c7d6eaf-f256-4349-8203-d2e836872231))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp faf286b2-d2d8-43be-baa7-81cba0b24844))
   )
 
   (footprint "reDIP:PinHeader_1x10_P2.54mm_Vertical_Machined" (layer "B.Cu")
@@ -3678,49 +3678,49 @@
       ) (layer "B.SilkS") (width 0) (fill solid) (tstamp f6983918-fe05-46ea-b355-bc522ec53440))
   )
 
-  (footprint "reDIP:SolderMask_D0.5mm" (layer "B.Cu")
-    (tedit 5FDDBA43) (tstamp 00000000-0000-0000-0000-00005fdca5f8)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp 00000000-0000-0000-0000-00005fdca5f8)
     (at 111.43 111.46)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.5mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 337e8520-cbd2-42c0-8d17-743bab17cbbd)
+      (tstamp 64690b9b-141f-4d48-926c-a0841deae809)
     )
-    (fp_text value "SolderMask_D0.5mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp fdc60c06-30fa-4dfb-96b4-809b755999e1)
+      (tstamp ef42c8ba-f126-48b1-afb7-c2631eca24ea)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.5 0.5) (layers "B.Mask") (tstamp f0ff5d1c-5481-4958-b844-4f68a17d4166))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp cd6850bc-653d-491e-a344-f6cdc40068e8))
   )
 
-  (footprint "reDIP:SolderMask_D0.5mm" (layer "B.Cu")
-    (tedit 5FDDBA43) (tstamp 00000000-0000-0000-0000-00005fdca625)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp 00000000-0000-0000-0000-00005fdca625)
     (at 110.58 110.61)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.5mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp da481376-0e49-44d3-91b8-aaa39b869dd1)
+      (tstamp 9a019a66-5d1e-47f9-ad9b-185fd5bc6b67)
     )
-    (fp_text value "SolderMask_D0.5mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp f988d6ea-11c5-4837-b1d1-5c292ded50c6)
+      (tstamp dd7db1d7-9e34-4bfd-9eae-d120eb883101)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.5 0.5) (layers "B.Mask") (tstamp d3e133b7-2c84-4206-a2b1-e693cb57fe56))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp f3d0dd6c-1a21-4571-bc48-3de06c2d396e))
   )
 
-  (footprint "reDIP:SolderMask_D0.5mm" (layer "B.Cu")
-    (tedit 5FDDBA43) (tstamp 00000000-0000-0000-0000-00005fdca634)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp 00000000-0000-0000-0000-00005fdca634)
     (at 111.43 110.62)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.5mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp c1bac86f-cbf6-4c5b-b60d-c26fa73d9c09)
+      (tstamp c52de596-3129-444d-b505-1ea8f962cbae)
     )
-    (fp_text value "SolderMask_D0.5mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 283c990c-ae5a-4e41-a3ad-b40ca29fe90e)
+      (tstamp 375534d5-6dcb-442c-b07b-5ac8f0583f53)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.5 0.5) (layers "B.Mask") (tstamp 49575217-40b0-4890-8acf-12982cca52b5))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp 5948a1f0-fd54-4dc2-b60f-284a535a6680))
   )
 
   (footprint "reDIP:TestPoint_Pad_D0.75mm" (layer "B.Cu")
@@ -3750,49 +3750,49 @@
       (net 70 "/I2C_SCL_~{LED}") (pinfunction "1") (pintype "passive") (tstamp 9600911d-0df3-419b-8d4a-8d1432a7daf2))
   )
 
-  (footprint "reDIP:SolderMask_D0.5mm" (layer "B.Cu")
-    (tedit 5FDDBA43) (tstamp 00000000-0000-0000-0000-00005ff32b13)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp 00000000-0000-0000-0000-00005ff32b13)
     (at 107.62 124.93)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.5mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp d66d3c12-11ce-4566-9a45-962e329503d8)
+      (tstamp f38fd90b-dccc-4bb6-9a72-09e00f7cfca7)
     )
-    (fp_text value "SolderMask_D0.5mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 4b1fce17-dec7-457e-ba3b-a77604e77dc9)
+      (tstamp b6ea8dc6-4b8c-4b7d-bb01-3e9d758b7685)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.5 0.5) (layers "B.Mask") (tstamp 869d6302-ae22-478f-9723-3feacbb12eef))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp fdb2b41b-4084-4a47-beb8-cea971e2401f))
   )
 
-  (footprint "reDIP:SolderMask_D0.5mm" (layer "B.Cu")
-    (tedit 5FDDBA43) (tstamp 00000000-0000-0000-0000-00005ff32b7d)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp 00000000-0000-0000-0000-00005ff32b7d)
     (at 107.62 126.93)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.5mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp b287f145-851e-45cc-b200-e62677b551d5)
+      (tstamp d9715d29-9986-4409-acee-ecb8d53b37b0)
     )
-    (fp_text value "SolderMask_D0.5mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp d1eca865-05c5-48a4-96cf-ed5f8a640e25)
+      (tstamp 97d5f0f0-8f9a-4366-a534-fb3665895586)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.5 0.5) (layers "B.Mask") (tstamp cebb9021-66d3-4116-98d4-5e6f3c1552be))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp c8b4f79d-9507-4dec-8aad-d8a7fb865e6b))
   )
 
-  (footprint "reDIP:SolderMask_D0.5mm" (layer "B.Cu")
-    (tedit 5FDDBA43) (tstamp 00000000-0000-0000-0000-000060142237)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp 00000000-0000-0000-0000-000060142237)
     (at 111 111.04)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.5mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp a5be2cb8-c68d-4180-8412-69a6b4c5b1d4)
+      (tstamp 1beaefdb-3d2b-4eec-ac2d-c9fa831a8ebd)
     )
-    (fp_text value "SolderMask_D0.5mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 7e1217ba-8a3d-4079-8d7b-b45f90cfbf53)
+      (tstamp 4b3d33d8-5422-4ef0-8a2a-66bcfd0abfd9)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.5 0.5) (layers "B.Mask") (tstamp 2e90e294-82e1-45da-9bf1-b91dfe0dc8f6))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp 3308c27f-119a-4c3a-9678-cd36df1319e3))
   )
 
   (footprint "reDIP:SOT-23-5" (layer "B.Cu")
@@ -4199,19 +4199,19 @@
       ) (layer "B.SilkS") (width 0) (fill solid) (tstamp fc3d51c1-8b35-4da3-a742-0ebe104989d7))
   )
 
-  (footprint "reDIP:SolderMask_D0.3mm" (layer "B.Cu")
-    (tedit 5FE1ECB8) (tstamp 00000000-0000-0000-0000-0000611ced8b)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp 00000000-0000-0000-0000-0000611ced8b)
     (at 107.62 119)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.3mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 16121028-bdf5-49c0-aae7-e28fe5bfa771)
+      (tstamp d43d7cc8-193d-4be6-aa04-1c3e661d7154)
     )
-    (fp_text value "SolderMask_D0.3mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp d0a0deb1-4f0f-4ede-b730-2c6d67cb9618)
+      (tstamp 12f79f7d-fa18-48ee-b291-08d6799ab2c0)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.3 0.3) (layers "B.Mask") (tstamp 6bd115d6-07e0-45db-8f2e-3cbb0429104f))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp 9702791a-5a39-445a-ab2c-c05a3e4d985b))
   )
 
   (footprint "reDIP:SolderMask_D0.5mm" (layer "B.Cu")
@@ -4496,64 +4496,64 @@
       (net 51 "+5V") (pinfunction "1") (pintype "passive") (tstamp 2e642b3e-a476-4c54-9a52-dcea955640cd))
   )
 
-  (footprint "reDIP:SolderMask_D0.3mm" (layer "B.Cu")
-    (tedit 5FE1ECB8) (tstamp 0ece2b87-02c1-4250-9204-efdee0b5a9d0)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp 0ece2b87-02c1-4250-9204-efdee0b5a9d0)
     (at 109.63 117.11)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.3mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 54212c01-b363-47b8-a145-45c40df316f4)
+      (tstamp 78931869-1b9f-4c9c-87a4-0a3670971e19)
     )
-    (fp_text value "SolderMask_D0.3mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab")
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 180245d9-4a3f-4d1b-adcc-b4eafac722e0)
+      (tstamp dff29994-1894-4f0e-a260-c57c022eee51)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.3 0.3) (layers "B.Mask") (tstamp f8f3a9fc-1e34-4573-a767-508104e8d242))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp 3e02c719-3b7c-4641-9fc2-176845e309bc))
   )
 
-  (footprint "reDIP:SolderMask_D0.3mm" (layer "B.Cu")
-    (tedit 5FE1ECB8) (tstamp 3fcf515a-b2e5-4769-a263-706606d34687)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp 3fcf515a-b2e5-4769-a263-706606d34687)
     (at 107.62 117.11)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.3mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp dae72997-44fc-4275-b36f-cd70bf46cfba)
+      (tstamp a0960a0e-0166-4de4-99f0-18fa874abf1b)
     )
-    (fp_text value "SolderMask_D0.3mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 5d9921f1-08b3-4cc9-8cf7-e9a72ca2fdb7)
+      (tstamp 96463524-10cf-4d94-a429-12cfbc0a6370)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.3 0.3) (layers "B.Mask") (tstamp c8b6b273-3d20-4a46-8069-f6d608563604))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp 7576a57b-23f0-4573-9b94-6cb5cb4b91c9))
   )
 
-  (footprint "reDIP:SolderMask_D0.3mm" (layer "B.Cu")
-    (tedit 5FE1ECB8) (tstamp 70791199-43db-4ae1-bf3d-59e94aad8d59)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp 70791199-43db-4ae1-bf3d-59e94aad8d59)
     (at 105.73 117.11)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.3mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 8de2d84c-ff45-4d4f-bc49-c166f6ae6b91)
+      (tstamp 897d686d-f115-4949-bb2c-ec95cf37cdde)
     )
-    (fp_text value "SolderMask_D0.3mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 935057d5-6882-4c15-9a35-54677912ba12)
+      (tstamp 6c1f5ddf-c943-4d06-850e-f9d41a3c3cb7)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.3 0.3) (layers "B.Mask") (tstamp e091e263-c616-48ef-a460-465c70218987))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp 8a24e1d4-1ea0-4b5e-b17c-43f888d703b6))
   )
 
-  (footprint "reDIP:SolderMask_D0.3mm" (layer "B.Cu")
-    (tedit 5FE1ECB8) (tstamp 72635b6d-f5d1-44fe-86b5-9bebc2da5d46)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp 72635b6d-f5d1-44fe-86b5-9bebc2da5d46)
     (at 106.63 117.99)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.3mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 43707e99-bdd7-4b02-9974-540ed6c2b0aa)
+      (tstamp 1c6582e5-7a69-49af-846d-e6c44f98004a)
     )
-    (fp_text value "SolderMask_D0.3mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp e17e6c0e-7e5b-43f0-ad48-0a2760b45b04)
+      (tstamp 4e322967-c283-42bd-9d61-77b24fcc3ecf)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.3 0.3) (layers "B.Mask") (tstamp e4e20505-1208-4100-a4aa-676f50844c06))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp 8a6f1861-9c8e-4057-b0f4-da81342623a6))
   )
 
   (footprint "reDIP:Nimrod-logo" (layer "B.Cu")
@@ -4903,34 +4903,34 @@
       ) (layer "B.SilkS") (width 0) (fill solid) (tstamp f045b9ff-0fdc-40dd-8c6a-e09773f6e33e))
   )
 
-  (footprint "reDIP:SolderMask_D0.3mm" (layer "B.Cu")
-    (tedit 5FE1ECB8) (tstamp c435621a-1e7b-4aea-a701-d5d27a54bd0d)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp c435621a-1e7b-4aea-a701-d5d27a54bd0d)
     (at 108.62 117.99)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.3mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 2454fd1b-3484-4838-8b7e-d26357238fe1)
+      (tstamp 25ec437f-6c4f-4daa-89f4-34c5fe00bccf)
     )
-    (fp_text value "SolderMask_D0.3mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 45884597-7014-4461-83ee-9975c42b9a53)
+      (tstamp 3cde3df6-a994-4ac5-a548-1d0e75182554)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.3 0.3) (layers "B.Mask") (tstamp c514e30c-e48e-4ca5-ab44-8b3afedef1f2))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp 7a72a3c9-7d62-4d77-a9e1-f82a7f0592e2))
   )
 
-  (footprint "reDIP:SolderMask_D0.3mm" (layer "B.Cu")
-    (tedit 5FE1ECB8) (tstamp e26f0b22-8514-418f-977b-cb0a9761b0f5)
+  (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
+    (tedit 62129A59) (tstamp e26f0b22-8514-418f-977b-cb0a9761b0f5)
     (at 107.47 114.84)
     (attr exclude_from_pos_files exclude_from_bom)
-    (fp_text reference "SolderMask_D0.3mm" (at -0.01 1.18) (layer "B.SilkS") hide
+    (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp 0fd35a3e-b394-4aae-875a-fac843f9cbb7)
+      (tstamp 54cbdb24-5474-4918-bc5f-a7790378469e)
     )
-    (fp_text value "SolderMask_D0.3mm" (at -0.01 -1.09) (layer "B.Fab") hide
+    (fp_text value "SolderMask_D0.25mm" (at -0.01 -1.09 180) (layer "B.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      (tstamp c088f712-1abe-4cac-9a8b-d564931395aa)
+      (tstamp 99c95b2a-7657-4b94-9017-d6f79216d517)
     )
-    (pad "" smd circle locked (at 0 0) (size 0.3 0.3) (layers "B.Mask") (tstamp ea6fde00-59dc-4a79-a647-7e38199fae0e))
+    (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "B.Mask") (tstamp 851ea7d7-3083-4ee5-9347-72bd5445bac5))
   )
 
   (gr_circle (center 100 100) (end 101 100) (layer "B.SilkS") (width 0.12) (fill none) (tstamp 00000000-0000-0000-0000-00005fa073ce))
@@ -4975,10 +4975,10 @@
   (gr_text "1V2" (at 102.98 107.33 90) (layer "B.SilkS") (tstamp 00000000-0000-0000-0000-00005fd59c53)
     (effects (font (size 0.6 0.6) (thickness 0.12)) (justify mirror))
   )
-  (gr_text "SCL" (at 109.91 112.85 90) (layer "B.SilkS") (tstamp 00000000-0000-0000-0000-00005fdc89e0)
+  (gr_text "SCL" (at 110.01 112.91 90) (layer "B.SilkS") (tstamp 00000000-0000-0000-0000-00005fdc89e0)
     (effects (font (size 0.6 0.6) (thickness 0.12)) (justify mirror))
   )
-  (gr_text "SDA" (at 109.91 110.72 90) (layer "B.SilkS") (tstamp 00000000-0000-0000-0000-00005fdc8bf3)
+  (gr_text "SDA" (at 110.01 110.78 90) (layer "B.SilkS") (tstamp 00000000-0000-0000-0000-00005fdc8bf3)
     (effects (font (size 0.6 0.6) (thickness 0.12)) (justify mirror))
   )
   (gr_text "CERN-OHL-S\nv2" (at 106.13 111.94 90) (layer "B.SilkS") (tstamp 00000000-0000-0000-0000-00005ff2e514)
@@ -5159,7 +5159,7 @@
     (effects (font (size 1 1) (thickness 0.15)))
   )
   (gr_text "UL code" (at 107.57 97.31) (layer "B.Fab") (tstamp e1c71a89-4e45-4a56-a6ef-342af5f92d5c)
-    (effects (font (size 0.8 0.8) (thickness 0.1)))
+    (effects (font (size 0.8 0.8) (thickness 0.1)) (justify mirror))
   )
   (gr_text "Date code" (at 107.89 109.58 270) (layer "F.Fab") (tstamp bbc0c451-741b-4474-935f-f81d0c4207d8)
     (effects (font (size 0.5 0.5) (thickness 0.075)))
