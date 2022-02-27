@@ -1,6 +1,6 @@
 (footprint "SOT-5X3" (version 20211014) (generator pcbnew)
   (layer "F.Cu")
-  (tedit 620A8BD2)
+  (tedit 621BA784)
   (descr "SOT-5X3")
   (tags "SOT-5X3")
   (attr smd)
