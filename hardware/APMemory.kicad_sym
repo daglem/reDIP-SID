@@ -9,7 +9,7 @@
     (property "Footprint" "Package_SO:SOP-8_3.9x4.9mm_P1.27mm" (id 2) (at 0 0 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Datasheet" "https://www.apmemory.com/wp-content/uploads/APM_PSRAM_QSPI-APS6404L-3SQR-v2.3-PKG.pdf" (id 3) (at 0 0 0)
+    (property "Datasheet" "https://www.apmemory.com/wp-content/uploads/APM_PSRAM_E3_QSPI-APS6404L-3SQR-v2.4-KGD_PKG.pdf" (id 3) (at 0 0 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "ki_keywords" "QSPI PSRAM" (id 4) (at 0 0 0)

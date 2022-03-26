@@ -1,0 +1,14 @@
+(footprint "SolderMask_D0.25mm" (version 20211014) (generator pcbnew)
+  (layer "F.Cu")
+  (tedit 621BD4F5)
+  (attr board_only exclude_from_pos_files exclude_from_bom)
+  (fp_text reference "SolderMask_D0.25mm" (at -0.01 -1.18) (layer "F.SilkS") hide
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 047a2792-3899-4e7d-a045-c64ff9f8bf1d)
+  )
+  (fp_text value "SolderMask_D0.25mm" (at -0.01 1.09) (layer "F.Fab") hide
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp c0a18144-96e9-4fb9-a5f4-2486a0a0a6af)
+  )
+  (pad "" smd circle (at 0 0) (size 0.25 0.25) (layers "F.Mask") (tstamp 10d0bde9-ef4c-4450-bb70-5259474f7189))
+)
