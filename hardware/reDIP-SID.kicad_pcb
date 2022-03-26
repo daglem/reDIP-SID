@@ -385,7 +385,7 @@
     (pad "8" smd roundrect (at 2.7 -1.905) (size 0.75 0.5) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.25)
       (net 2 "+3V3") (pinfunction "VCC") (pintype "power_in") (tstamp 0acacbe9-c251-4c47-bb46-c1e2da64e69f))
     (pad "9" smd rect (at 0 0) (size 3.4 4.3) (layers "F.Cu" "F.Mask")
-      (net 1 "GND") (pinfunction "GND") (pintype "power_in") (tstamp 57cea1b4-7c83-4b23-8d4b-8fab9fe5fe14))
+      (net 1 "GND") (pinfunction "GND") (pintype "passive") (tstamp 57cea1b4-7c83-4b23-8d4b-8fab9fe5fe14))
     (model "${KIPRJMOD}/packages3d/Winbond.3dshapes/WSON-8-6x5mm.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
@@ -1733,7 +1733,7 @@
     (at 103.21 112.36 -90)
     (descr "Nimrod N")
     (tags "svg2mod")
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "svg2mod" (at 0 -4.150592 90) (layer "F.SilkS") hide
       (effects (font (size 1.524 1.524) (thickness 0.3048)))
       (tstamp 41ddece0-dc92-48eb-9932-b733285bebc8)
@@ -3040,7 +3040,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "F.Cu")
     (tedit 621BA775) (tstamp 00000000-0000-0000-0000-00006124119a)
     (at 104.02 110.42)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 -1.18) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp ac50a692-2d76-40e7-92f3-8e84c02b7199)
@@ -3055,7 +3055,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "F.Cu")
     (tedit 621BA775) (tstamp 00000000-0000-0000-0000-0000612411fa)
     (at 103.42 110.42)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 -1.18) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp a4f92e98-9948-4fe7-9593-97fe8797b7e6)
@@ -3070,7 +3070,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "F.Cu")
     (tedit 621BA775) (tstamp 00000000-0000-0000-0000-00006124121e)
     (at 102.82 110.42)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 -1.18) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 4af36d11-7fae-4f72-b9af-1c49ea36522f)
@@ -3085,7 +3085,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "F.Cu")
     (tedit 621BA775) (tstamp 00000000-0000-0000-0000-00006124122a)
     (at 103.12 110.94)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 -1.18) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp c994d980-7bd2-480d-9db9-daf1e1397ac2)
@@ -3100,7 +3100,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "F.Cu")
     (tedit 621BA775) (tstamp 00000000-0000-0000-0000-000061241236)
     (at 103.72 110.94)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 -1.18) (layer "F.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 0858418e-df33-4d2c-9f57-ae53a44e7847)
@@ -3324,7 +3324,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp 00000000-0000-0000-0000-00005fdb2399)
     (at 110.58 111.46)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 516d59b7-a49c-4ff5-a32a-60f59339df81)
@@ -3581,7 +3581,7 @@
     (at 103.38 112.71 -90)
     (descr "Imported from graphics/OSHW-logo.svg")
     (tags "svg2mod")
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "OSHW logo" (at 0 4.244538 90) (layer "B.SilkS") hide
       (effects (font (size 1.524 1.524) (thickness 0.3048)) (justify mirror))
       (tstamp f8a243e9-b2ef-408a-8f8c-130620c3fe5b)
@@ -3681,7 +3681,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp 00000000-0000-0000-0000-00005fdca5f8)
     (at 111.43 111.46)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 42ca61bc-4a99-4164-ae2c-026ec3baf448)
@@ -3696,7 +3696,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp 00000000-0000-0000-0000-00005fdca625)
     (at 110.58 110.61)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 29e5877a-f49c-405d-888f-4c616847caa6)
@@ -3711,7 +3711,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp 00000000-0000-0000-0000-00005fdca634)
     (at 111.43 110.62)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 98551ceb-39b2-415e-9857-0e4a684a6d99)
@@ -3754,7 +3754,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp 00000000-0000-0000-0000-00005ff32b13)
     (at 107.62 124.93)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp edd0fda9-fb18-4839-8dbe-d34fa50d309b)
@@ -3769,7 +3769,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp 00000000-0000-0000-0000-00005ff32b7d)
     (at 107.62 126.93)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 038e8309-c352-405b-a9c8-a95843ad0c4d)
@@ -3784,7 +3784,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp 00000000-0000-0000-0000-000060142237)
     (at 111 111.04)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 393e7503-7faa-425e-b614-b4a0a2c83eb5)
@@ -4063,7 +4063,7 @@
     (at 106.25 102.85 -90)
     (descr "Imported from graphics/MOS-logo.svg")
     (tags "svg2mod")
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "MOS logo" (at 0 4.995833 -90) (layer "B.SilkS") hide
       (effects (font (size 1.524 1.524) (thickness 0.3048)) (justify mirror))
       (tstamp 566f4c9e-f4a5-4ad4-804f-ffe6757a4a7e)
@@ -4203,7 +4203,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp 00000000-0000-0000-0000-0000611ced8b)
     (at 107.62 119)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 32030e55-c12c-40f3-96f2-7030a83fe3a4)
@@ -4218,7 +4218,7 @@
   (footprint "reDIP:SolderMask_D0.5mm" (layer "B.Cu")
     (tedit 621BA76D) (tstamp 00000000-0000-0000-0000-0000612411b2)
     (at 102.82 110.42)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.5mm" (at -0.01 1.18) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp a424e5ab-9cfc-4bb8-a430-30011c17f1e2)
@@ -4233,7 +4233,7 @@
   (footprint "reDIP:SolderMask_D0.5mm" (layer "B.Cu")
     (tedit 621BA76D) (tstamp 00000000-0000-0000-0000-0000612411ca)
     (at 103.12 110.94)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.5mm" (at -0.01 1.18) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 744f41a0-db66-4173-952e-4a1047b1d3bc)
@@ -4248,7 +4248,7 @@
   (footprint "reDIP:SolderMask_D0.5mm" (layer "B.Cu")
     (tedit 621BA76D) (tstamp 00000000-0000-0000-0000-0000612411e2)
     (at 104.02 110.42)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.5mm" (at -0.01 1.18) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 7406e6ad-51a2-4202-b862-7dbc029b8893)
@@ -4263,7 +4263,7 @@
   (footprint "reDIP:SolderMask_D0.5mm" (layer "B.Cu")
     (tedit 621BA76D) (tstamp 00000000-0000-0000-0000-0000612411ee)
     (at 103.72 110.94)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.5mm" (at -0.01 1.18) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp b2a536a3-41a9-41f4-8668-d0f797e2bc38)
@@ -4278,7 +4278,7 @@
   (footprint "reDIP:SolderMask_D0.5mm" (layer "B.Cu")
     (tedit 621BA76D) (tstamp 00000000-0000-0000-0000-000061241206)
     (at 103.42 110.42)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.5mm" (at -0.01 1.18) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 435dda51-ae76-416b-909d-368c3bc277ce)
@@ -4506,7 +4506,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp 0ece2b87-02c1-4250-9204-efdee0b5a9d0)
     (at 109.63 117.11)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp baddcd95-6854-4f5e-948f-2e1387d01660)
@@ -4521,7 +4521,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp 3fcf515a-b2e5-4769-a263-706606d34687)
     (at 107.62 117.11)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 43584dc8-381d-4460-877e-fd4af897f6ca)
@@ -4536,7 +4536,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp 70791199-43db-4ae1-bf3d-59e94aad8d59)
     (at 105.73 117.11)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 57a8e169-a805-44b2-805a-7fb4258a4d6b)
@@ -4551,7 +4551,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp 72635b6d-f5d1-44fe-86b5-9bebc2da5d46)
     (at 106.63 117.99)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 18084bd5-0e73-40e4-8a8a-fe02d6937cf7)
@@ -4568,7 +4568,7 @@
     (at 107.44 110.23 -90)
     (descr "Nimrod logo")
     (tags "svg2mod")
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "svg2mod" (at 0 4.162601 90) (layer "B.SilkS") hide
       (effects (font (size 1.524 1.524) (thickness 0.3048)) (justify mirror))
       (tstamp dd2ba434-5451-4b3b-b7eb-ddce6e548416)
@@ -4913,7 +4913,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp c435621a-1e7b-4aea-a701-d5d27a54bd0d)
     (at 108.62 117.99)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 6cb4a88e-d39b-4cb8-bf1c-d1fff6af9ce7)
@@ -4928,7 +4928,7 @@
   (footprint "reDIP:SolderMask_D0.25mm" (layer "B.Cu")
     (tedit 621BA775) (tstamp e26f0b22-8514-418f-977b-cb0a9761b0f5)
     (at 107.47 114.84)
-    (attr exclude_from_pos_files exclude_from_bom)
+    (attr board_only exclude_from_pos_files exclude_from_bom)
     (fp_text reference "SolderMask_D0.25mm" (at -0.01 1.18 180) (layer "B.SilkS") hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       (tstamp 058d4a42-fdc6-41af-99bf-5b5ba15a39ef)
