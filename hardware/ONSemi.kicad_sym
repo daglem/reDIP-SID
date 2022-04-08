@@ -6,7 +6,7 @@
     (property "Value" "FPF1321UCX" (id 1) (at 0 7.62 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "ONSemi:CASE567RM_1.46x0.96mm_P0.5mm" (id 2) (at 0 -7.62 0)
+    (property "Footprint" "ONSemi:CASE_567RM_1.46x0.96mm_P0.5mm" (id 2) (at 0 -7.62 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "https://www.onsemi.com/pdf/datasheet/fpf1321-d.pdf" (id 3) (at 0 0 0)
