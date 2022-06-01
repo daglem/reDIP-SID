@@ -56,15 +56,16 @@ module dac #(
     input logic  [BITS-1:0] vin,
     output logic [BITS-1:0] vout
 );
-    logic [BITS-1:0]           bits;
+    (* mem2reg *)
     logic [BITS-1+SCALEBITS:0] bitval[BITS];
     logic [BITS-1+SCALEBITS:0] bitsum;
+    logic [BITS-1:0]           bits;
     logic [COUNTBITS-1:0]      bitnum;
 
     always_ff @(posedge clk) begin
         if (rst) begin
             bits <= vin;
-            bitsum <= (1 << (SCALEBITS - 1));  // Add 0.5 to sum for truncation.
+            bitsum <= (1 << (SCALEBITS - 1));  // Add 0.5 for rounding.
             bitnum <= 0;
         end
         else begin
@@ -79,6 +80,17 @@ module dac #(
     end
 
     initial begin
+`ifdef YOSYS
+        // Precalculated tables for Yosys, which currently doesn't support
+        // variables of data type real.
+        if (_2R_DIV_R == 2.20 && TERM == 0) begin
+            case (BITS)
+               8: $readmemh("dac_6581_envelope.txt", bitval);
+              11: $readmemh("dac_6581_cutoff.txt", bitval);
+              12: $readmemh("dac_6581_waveform.txt", bitval);
+            endcase // case (BITS)
+        end
+`else
         real INFINITY = -1;  // This is only a flag, it just has to be different.
 
         // Calculate voltage contribution by each individual bit in the R-2R ladder.
@@ -127,5 +139,6 @@ module dac #(
             bitval_tmp = $rtoi(((1 << BITS) - 1)*Vn*(1 << SCALEBITS) + 0.5);
             bitval[set_bit] = bitval_tmp[BITS-1+SCALEBITS:0];
         end
+`endif // !`ifdef YOSYS
     end
 endmodule : dac
