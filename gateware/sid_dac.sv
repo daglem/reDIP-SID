@@ -44,36 +44,76 @@
 
 `default_nettype none
 
-module dac #(
-    parameter BITS       = 8,
+module sid_dac #(
+    parameter BITS       = 12,
     parameter _2R_DIV_R  = 2.20,
     parameter TERM       = 0,
-    localparam SCALEBITS = 4,
-    localparam COUNTBITS = $clog2(BITS)
+    localparam SCALEBITS = 4
 )(
-    input logic             clk,
-    input logic             rst,
-    input logic  [BITS-1:0] vin,
+    input  logic [BITS-1:0] vin,
     output logic [BITS-1:0] vout
 );
-    (* mem2reg *)
     logic [BITS-1+SCALEBITS:0] bitval[BITS];
+    /* verilator lint_off UNUSED */
     logic [BITS-1+SCALEBITS:0] bitsum;
-    logic [BITS-1:0]           bits;
-    logic [COUNTBITS-1:0]      bitnum;
+    /* verilator lint_on UNUSED */
 
-    always_ff @(posedge clk) begin
-        if (rst) begin
-            bits <= vin;
-            bitsum <= (1 << (SCALEBITS - 1));  // Add 0.5 for rounding.
-            bitnum <= 0;
+`ifdef SV_ARRAY_MANIP
+    // FIXME: Yosys, sv2v, Verilator, and Icarus Verilog all lack support for
+    // SystemVerilog array reduction methods.
+    always_comb begin
+        // Sum values for all set bits, and add 0.5 for rounding by truncation.
+        bitsum = bitval.sum with ( vin[item.index] ? item : 0 ) + (1 << (SCALEBITS - 1));
+    end
+`else
+    if (BITS == 12) begin : dac12
+        always_comb begin
+            bitsum =
+                (vin[11] ? bitval[11] : 0) +
+                (vin[10] ? bitval[10] : 0) +
+                (vin[ 9] ? bitval[ 9] : 0) +
+                (vin[ 8] ? bitval[ 8] : 0) +
+                (vin[ 7] ? bitval[ 7] : 0) +
+                (vin[ 6] ? bitval[ 6] : 0) +
+                (vin[ 5] ? bitval[ 5] : 0) +
+                (vin[ 4] ? bitval[ 4] : 0) +
+                (vin[ 3] ? bitval[ 3] : 0) +
+                (vin[ 2] ? bitval[ 2] : 0) +
+                (vin[ 1] ? bitval[ 1] : 0) +
+                (vin[ 0] ? bitval[ 0] : 0) +
+                (1 << (SCALEBITS - 1));
         end
-        else begin
-            bitsum <= bitsum + (bits[0] ? bitval[bitnum] : 0);
-            bits <= bits >> 1;
-            bitnum <= bitnum + 1;
+    end else if (BITS == 11) begin : dac11
+        always_comb begin
+            bitsum =
+                (vin[10] ? bitval[10] : 0) +
+                (vin[ 9] ? bitval[ 9] : 0) +
+                (vin[ 8] ? bitval[ 8] : 0) +
+                (vin[ 7] ? bitval[ 7] : 0) +
+                (vin[ 6] ? bitval[ 6] : 0) +
+                (vin[ 5] ? bitval[ 5] : 0) +
+                (vin[ 4] ? bitval[ 4] : 0) +
+                (vin[ 3] ? bitval[ 3] : 0) +
+                (vin[ 2] ? bitval[ 2] : 0) +
+                (vin[ 1] ? bitval[ 1] : 0) +
+                (vin[ 0] ? bitval[ 0] : 0) +
+                (1 << (SCALEBITS - 1));
+        end
+    end else if (BITS == 8) begin : dac8
+        always_comb begin
+            bitsum =
+                (vin[ 7] ? bitval[ 7] : 0) +
+                (vin[ 6] ? bitval[ 6] : 0) +
+                (vin[ 5] ? bitval[ 5] : 0) +
+                (vin[ 4] ? bitval[ 4] : 0) +
+                (vin[ 3] ? bitval[ 3] : 0) +
+                (vin[ 2] ? bitval[ 2] : 0) +
+                (vin[ 1] ? bitval[ 1] : 0) +
+                (vin[ 0] ? bitval[ 0] : 0) +
+                (1 << (SCALEBITS - 1));
         end
     end
+`endif
 
     always_comb begin
         vout = bitsum[BITS-1+SCALEBITS:SCALEBITS];
@@ -81,14 +121,14 @@ module dac #(
 
     initial begin
 `ifdef YOSYS
-        // Precalculated tables for Yosys, which currently doesn't support
-        // variables of data type real.
-        if (_2R_DIV_R == 2.20 && TERM == 0) begin
+        // FIXME: Currently the tables must be precalculated for Yosys,
+        // which doesn't support variables of data type real.
+        if (_2R_DIV_R == 2.20 && TERM == 0 && SCALEBITS == 4) begin
             case (BITS)
-               8: $readmemh("dac_6581_envelope.txt", bitval);
-              11: $readmemh("dac_6581_cutoff.txt", bitval);
               12: $readmemh("dac_6581_waveform.txt", bitval);
-            endcase // case (BITS)
+              11: $readmemh("dac_6581_cutoff.txt",   bitval);
+               8: $readmemh("dac_6581_envelope.txt", bitval);
+            endcase
         end
 `else
         real INFINITY = -1;  // This is only a flag, it just has to be different.
@@ -104,7 +144,7 @@ module dac #(
             real R = 1.0;           // Normalized R
             real _2R = _2R_DIV_R*R; // 2R
             real Rn = TERM ?        // Rn = 2R for correct termination,
-                 _2R : INFINITY;       // INFINITY for missing termination.
+                _2R : INFINITY;     // INFINITY for missing termination.
 
             // Calculate DAC "tail" resistance by repeated parallel substitution.
             for (n = 0; n < set_bit; n++) begin
@@ -139,6 +179,6 @@ module dac #(
             bitval_tmp = $rtoi(((1 << BITS) - 1)*Vn*(1 << SCALEBITS) + 0.5);
             bitval[set_bit] = bitval_tmp[BITS-1+SCALEBITS:0];
         end
-`endif // !`ifdef YOSYS
+`endif
     end
-endmodule : dac
+endmodule
