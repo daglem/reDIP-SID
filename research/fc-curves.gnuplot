@@ -40,8 +40,12 @@ set output "fc-curves.png"
 
 # Plot measurement data and corresponding approximation curves.
 set logscale y
-set yrange [170:24500]
 set xrange [0:2047]
+set yrange [170:24500]
+set title "MOS6581 filter cutoff characteristics"
+set key title "Measurement data:\nhttps://bel.fi/alankila/c64-sw/fc-curves\n\nApproximations:\nhttps://github.com/daglem/reDIP-SID\n" left
+set xlabel "FC register value"
+set ylabel "Cutoff frequency (Hz)"
 set label "Follin-style" at 160,2000
 set label "Galway-style" at 590,2000
 set label "Average 6581" at 1050,2000
