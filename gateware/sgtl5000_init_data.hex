@@ -1,0 +1,93 @@
+// Power supply config
+   // Make sure to switch back to not use the PLL or powering
+   // it down will lockup the chip
+   // CHIP_DIG_POWER 0x0002
+00 02 00 00
+
+   // Power down all digital blocks during setup
+   // CHIP_CLK_CTRL 0x0004
+00 04 00 0C
+
+   // Disable VDD startup regulator (provided externally)
+   // CHIP_ANA_POWER 0x0030
+00 30 40 60
+
+   // Set charge pump to use VDDIO rail
+   // CHIP_LINREG_CTRL 0x0026
+00 26 00 68
+
+// Bias
+   // VAG=1.5V, bias current -25%, slow ramp
+   // CHIP_REF_CTRL 0x0028
+00 28 01 CB
+
+   //Line Out bias current=0.36mA, voltage=1.65V
+   // CHIP_LINE_OUT_CTRL 0x002C
+00 2C 03 22
+
+// Other analog blocks
+   // Enable short detect mode for headphone L/R and center channel. Set short detect current trip level to 75mA.
+   // CHIP_SHORT_CTRL 0x003C
+00 3C 11 06
+
+   // Enable zero-cross detect for HP_OUT and ADC
+   // ADC input = LINEIN
+   // CHIP_ANA_CTRL 0x0024
+00 24 01 37
+
+// Power up in/out/digital
+	// Power up LINEOUT, HP, ADC, DAC (analog)
+	// CHIP_ANA_POWER 0x0030
+00 30 40 FF
+
+	// Power up I2S_IN, I2S_OUT, DAP, DAC, ADC (digital)
+	// CHIP_DIG_POWER 0x0002
+00 02 00 73
+
+// Line out config
+	// Set volume
+	// CHIP_LINE_OUT_VOL 0x002E
+00 2e 05 05
+
+// PLL Setup
+	// Power up PLL and its VCO
+	// CHIP_ANA_POWER 0x0030
+00 30 45 FF
+
+	// Divide the input frequency by 2 (SYS_MCLK > 17MHz)
+	// CHIP_CLK_TOP_CTRL 0x0034
+00 34 00 08
+
+	// int_div=16, frac_div=786
+	// CHIP_PLL_CTRL 0x0032
+00 32 83 12
+
+// Rate config
+	// Rate=96kHz, Use PLL
+	// CHIP_CLK_CTRL 0x0004
+00 04 00 0F
+
+	// I2S master, 24 bits, PCM Format A
+	// CHIP_I2S_CTRL 0x0006
+00 06 00 D8
+
+// Input / Output routing
+// CHIP_SSS_CTRL 0x000A
+00 0a 00 70 // Route I2S_IN to DAP, route DAP to DAC
+
+// DAP EQ
+// DAP_CONTROL 0x0100
+01 00 00 01 // Enable DAP
+//01 08 00 03 // Enable 5 band GEQ
+//01 16 00 4f // 9.5dB gain at 115Hz
+//01 18 00 3B // 3dB gain at 330Hz
+
+// CHIP_ANA_CTRL 0x0024
+00 24 00 27 // unmute
+// CHIP_DAC_VOL 0x0010
+00 10 3c 3c // 0dB DAC Volume
+// CHIP_ADCDAC_CTRL 0x000E
+00 0e 02 00 // Enable volume ramp
+
+// End sequence
+ff

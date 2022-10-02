@@ -1,6 +1,8 @@
 Simulation of reDIP SID audio output + C64 audio output + audio equipment input
 
 * Add the following to ~/.spiceinit for ngspice: set ngbehavior=ps
+* Run simulation from command line: ngspice c64-audio-out.spice
+* Run simulation from ngspice:      source c64-audio-out.spice
 
 * 1 = MOS6581, 0 = MOS8580
 .param mos6581 = 1
@@ -13,7 +15,7 @@ Xopamp vdda vgnd vdd 0 vin MCP6H01
 Vdda vdda 0 3.3
 Vcodec vcodec 0 dc 1.65 ac 1.5 sin(1.65 1.5 1K)  ; Assuming SGTL 1.65V VAG, 3.0V Vpp
 
-* C64 audio output stage - component designators from schematic #251469
+* C64 audio output stage - component designators from schematic #250469
 .if (mos6581)
 R8 vin 0 1K                       ; Only in MOS6581 output stage
 .endif

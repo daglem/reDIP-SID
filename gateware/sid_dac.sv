@@ -45,79 +45,48 @@
 `default_nettype none
 
 module sid_dac #(
-    parameter BITS       = 12,
-    parameter _2R_DIV_R  = 2.20,
-    parameter TERM       = 0,
-    localparam SCALEBITS = 4
+    parameter  BITS       = 12,
+    parameter  _2R_DIV_R  = 2.20,
+    parameter  TERM       = 0,
+    localparam SCALEBITS  = 4,
+    localparam MSB        = BITS+SCALEBITS-1
 )(
     input  logic [BITS-1:0] vin,
     output logic [BITS-1:0] vout
 );
-    logic [BITS-1+SCALEBITS:0] bitval[BITS];
-    /* verilator lint_off UNUSED */
-    logic [BITS-1+SCALEBITS:0] bitsum;
-    /* verilator lint_on UNUSED */
+    logic [MSB:0] bitval[BITS];
 
 `ifdef SV_ARRAY_MANIP
     // FIXME: Yosys, sv2v, Verilator, and Icarus Verilog all lack support for
     // SystemVerilog array reduction methods.
-    always_comb begin
-        // Sum values for all set bits, and add 0.5 for rounding by truncation.
-        bitsum = bitval.sum with ( vin[item.index] ? item : 0 ) + (1 << (SCALEBITS - 1));
-    end
-`else
-    if (BITS == 12) begin : dac12
-        always_comb begin
-            bitsum =
-                (vin[11] ? bitval[11] : 0) +
-                (vin[10] ? bitval[10] : 0) +
-                (vin[ 9] ? bitval[ 9] : 0) +
-                (vin[ 8] ? bitval[ 8] : 0) +
-                (vin[ 7] ? bitval[ 7] : 0) +
-                (vin[ 6] ? bitval[ 6] : 0) +
-                (vin[ 5] ? bitval[ 5] : 0) +
-                (vin[ 4] ? bitval[ 4] : 0) +
-                (vin[ 3] ? bitval[ 3] : 0) +
-                (vin[ 2] ? bitval[ 2] : 0) +
-                (vin[ 1] ? bitval[ 1] : 0) +
-                (vin[ 0] ? bitval[ 0] : 0) +
-                (1 << (SCALEBITS - 1));
-        end
-    end else if (BITS == 11) begin : dac11
-        always_comb begin
-            bitsum =
-                (vin[10] ? bitval[10] : 0) +
-                (vin[ 9] ? bitval[ 9] : 0) +
-                (vin[ 8] ? bitval[ 8] : 0) +
-                (vin[ 7] ? bitval[ 7] : 0) +
-                (vin[ 6] ? bitval[ 6] : 0) +
-                (vin[ 5] ? bitval[ 5] : 0) +
-                (vin[ 4] ? bitval[ 4] : 0) +
-                (vin[ 3] ? bitval[ 3] : 0) +
-                (vin[ 2] ? bitval[ 2] : 0) +
-                (vin[ 1] ? bitval[ 1] : 0) +
-                (vin[ 0] ? bitval[ 0] : 0) +
-                (1 << (SCALEBITS - 1));
-        end
-    end else if (BITS == 8) begin : dac8
-        always_comb begin
-            bitsum =
-                (vin[ 7] ? bitval[ 7] : 0) +
-                (vin[ 6] ? bitval[ 6] : 0) +
-                (vin[ 5] ? bitval[ 5] : 0) +
-                (vin[ 4] ? bitval[ 4] : 0) +
-                (vin[ 3] ? bitval[ 3] : 0) +
-                (vin[ 2] ? bitval[ 2] : 0) +
-                (vin[ 1] ? bitval[ 1] : 0) +
-                (vin[ 0] ? bitval[ 0] : 0) +
-                (1 << (SCALEBITS - 1));
-        end
-    end
-`endif
+    logic [MSB:0] bitsum;
 
     always_comb begin
-        vout = bitsum[BITS-1+SCALEBITS:SCALEBITS];
+        // Sum values for all set bits, adding 0.5 for rounding by truncation.
+        bitsum = bitval.sum with ( vin[item.index] ? item : 0 ) + (1 << (SCALEBITS - 1));
+        vout   = bitsum[MSB-:BITS];
     end
+`else
+    /* verilator lint_off UNOPTFLAT */
+    (* mem2reg *)
+    logic [MSB:0] bitsum[BITS];
+    /* verilator lint_on UNOPTFLAT */
+
+    // Sum values for all set bits, adding 0.5 for rounding by truncation.
+    /* verilator lint_off ALWCOMBORDER */
+    for (genvar i = 0; i < BITS; i++) begin
+        always_comb begin
+            bitsum[i] =
+                (i == 0 ? 1 << (SCALEBITS - 1) : bitsum[i-1]) +
+                (vin[i] ? bitval[i] : 0);
+        end
+    end
+    /* verilator lint_on ALWCOMBORDER */
+
+    always_comb begin
+        vout = bitsum[BITS-1][MSB-:BITS];
+    end
+`endif
 
     initial begin
 `ifdef YOSYS
@@ -125,33 +94,32 @@ module sid_dac #(
         // which doesn't support variables of data type real.
         if (_2R_DIV_R == 2.20 && TERM == 0 && SCALEBITS == 4) begin
             case (BITS)
-              12: $readmemh("dac_6581_waveform.txt", bitval);
-              11: $readmemh("dac_6581_cutoff.txt",   bitval);
-               8: $readmemh("dac_6581_envelope.txt", bitval);
+              12: $readmemh("dac_6581_waveform.hex", bitval);
+              11: $readmemh("dac_6581_cutoff.hex",   bitval);
+               8: $readmemh("dac_6581_envelope.hex", bitval);
             endcase
         end
 `else
-        real INFINITY = -1;  // This is only a flag, it just has to be different.
+        static real INFINITY = -1;  // This is only a flag, it just has to be different.
 
         // Calculate voltage contribution by each individual bit in the R-2R ladder.
         for (int set_bit = 0; set_bit < BITS; set_bit++) begin
-            int n;  // Bit number.
+            automatic int n;  // Bit number.
             /* verilator lint_off UNUSED */
-            int bitval_tmp;
+            automatic int bitval_tmp;
             /* verilator lint_on UNUSED */
 
-            real Vn = 1.0;          // Normalized bit voltage.
-            real R = 1.0;           // Normalized R
-            real _2R = _2R_DIV_R*R; // 2R
-            real Rn = TERM ?        // Rn = 2R for correct termination,
-                _2R : INFINITY;     // INFINITY for missing termination.
+            automatic real Vn  = 1.0;          // Normalized bit voltage.
+            automatic real R   = 1.0;          // Normalized R
+            automatic real _2R = _2R_DIV_R*R;  // 2R
+            automatic real Rn  = TERM ?        // Rn = 2R for correct termination,
+                _2R : INFINITY;                // INFINITY for missing termination.
 
             // Calculate DAC "tail" resistance by repeated parallel substitution.
             for (n = 0; n < set_bit; n++) begin
                 if (Rn == INFINITY) begin
                     Rn = R + _2R;
-                end
-                else begin
+                end else begin
                     Rn = R + _2R*Rn/(_2R + Rn); // R + 2R || Rn
                 end
             end
@@ -159,8 +127,7 @@ module sid_dac #(
             // Source transformation for bit voltage.
             if (Rn == INFINITY) begin
                 Rn = _2R;
-            end
-            else begin
+            end else begin
                 Rn = _2R*Rn/(_2R + Rn);  // 2R || Rn
                 Vn = Vn*Rn/_2R;
             end
@@ -168,16 +135,16 @@ module sid_dac #(
             // Calculate DAC output voltage by repeated source transformation from
             // the "tail".
             for (n = n + 1; n < BITS; n++) begin
-                real I;
-                Rn += R;
-                I = Vn/Rn;
+                automatic real I;
+                Rn = Rn + R;
+                I  = Vn/Rn;
                 Rn = _2R*Rn/(_2R + Rn);  // 2R || Rn
                 Vn = Rn*I;
             end
 
             // Single bit values for superpositioning, scaled by 2^SCALEBITS.
             bitval_tmp = $rtoi(((1 << BITS) - 1)*Vn*(1 << SCALEBITS) + 0.5);
-            bitval[set_bit] = bitval_tmp[BITS-1+SCALEBITS:0];
+            bitval[set_bit] = bitval_tmp[MSB:0];
         end
 `endif
     end

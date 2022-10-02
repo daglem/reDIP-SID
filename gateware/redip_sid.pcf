@@ -1,0 +1,73 @@
+# Pin Constraints File for reDIP SID - iCE40UP5K-SG48I
+
+# Clock frequencies (nextpnr only)
+set_frequency sys_clk 24.0
+set_frequency i2s_sclk 6.144  # 64 * 96kHz
+# set_frequency usb_clk 48.0
+
+# System clock
+set_io -nowarn sys_clk 20
+
+# I2C + button / LED (shared)
+set_io -nowarn i2c_scl_led_n 6
+set_io -nowarn i2c_sda_btn_n 9
+
+# I2S
+set_io -nowarn i2s_din   10
+set_io -nowarn i2s_dout  11
+set_io -nowarn i2s_sclk  12
+set_io -nowarn i2s_lrclk 13
+
+# SPI
+set_io -nowarn spi_sio0       14  # MOSI
+set_io -nowarn spi_sio1       17  # MISO
+set_io -nowarn spi_sio2       18
+set_io -nowarn spi_sio3       19
+set_io -nowarn spi_clk        15
+set_io -nowarn spi_flash_cs_n 16
+set_io -nowarn spi_ram_cs_n   37
+
+# USB
+set_io -nowarn usb_d_p  25
+set_io -nowarn usb_d_n  23
+set_io -nowarn usb_conn 35
+
+# SID I/O
+
+# SID address bus (A0-A4)
+set_io -nowarn a0 27
+set_io -nowarn a1 26
+set_io -nowarn a2 34
+set_io -nowarn a3 31
+set_io -nowarn a4 32
+
+# SID data bus (D0-D7)
+set_io -nowarn d0 45
+set_io -nowarn d1 46
+set_io -nowarn d2 47
+set_io -nowarn d3  3
+set_io -nowarn d4  2
+set_io -nowarn d5  4
+set_io -nowarn d6 43
+set_io -nowarn d7 48
+
+# SID R/W
+set_io -nowarn r_w_n 36
+
+# SID CS
+set_io -nowarn cs_n     28
+# Extra chip select
+set_io -nowarn cs_io1_n 41
+# Extra address pins
+set_io -nowarn a5       42
+set_io -nowarn a8       38
+
+# SID Ø2 (master clock)
+set_io -nowarn phi2 44
+
+# SID RES
+set_io -nowarn res_n 21
+
+# SID A/D converter inputs
+set_io -nowarn pot_x 39
+set_io -nowarn pot_y 40
