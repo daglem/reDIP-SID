@@ -30,8 +30,8 @@ function sid::reg10_t tanh_x_mirror(sid::s11_t x);
     tanh_x_mirror = 10'(x < 0 ? -x : x);
 endfunction
 
-function sid::s16_t tanh_y_mirror(logic x_neg, sid::s16_t y0, sid::s16_t y);
-    tanh_y_mirror = x_neg ? y0 - y : y;
+function sid::s16_t tanh_y_mirror(logic x_neg, sid::s16_t y);
+    tanh_y_mirror = x_neg ? -y : y;
 endfunction
 
 
@@ -49,8 +49,8 @@ module sid_filter #(
 
     sid::reg11_t fc;
     sid::reg11_t fc_6581;
-    sid::s16_t   w0_T_ls17_6581;
-    sid::s16_t   w0_T_ls17_8580;
+    sid::s16_t   w0_T_lsl17_6581;
+    sid::s16_t   w0_T_lsl17_8580;
 
     // MOS6581 filter cutoff: 200Hz - 24.2kHz (from cutoff curves below)
     // For reference, the datasheet specifies 30Hz - 12kHz.
@@ -82,20 +82,20 @@ module sid_filter #(
     // Extreme     : fc_curve(x, 200, -1255)
     //
 
-    sid::s16_t w0_T_ls17_base = 0;
+    sid::s16_t w0_T_lsl17_base = 0;
 
     // y = tanh(x) is mirrored about y = x.
     // We store only the right half of the function, and use the functions
     // tanh_x and tanh_y for mirroring.
-    sid::s16_t w0_T_ls17_6581_tanh[1024];
-    sid::s16_t w0_T_ls17_6581_y0 = 0;
+    sid::s16_t w0_T_lsl17_6581_tanh[1024];
+    sid::s16_t w0_T_lsl17_6581_y0;
     initial begin
         for (int i = 0; i < 1024; i++) begin
-            w0_T_ls17_6581_tanh[i] = 16'($rtoi(1.048576/8*12000*(1 + $tanh(i/350.0)) + 0.5));
+            w0_T_lsl17_6581_tanh[i] = 16'($rtoi(1.048576/8*12000*$tanh(i/350.0) + 0.5));
         end
         // NB! Can't lookup from table here, as this precludes the use of BRAM.
-        // w0_T_ls17_6581_y0 = w0_T_ls17_6581_tanh[0];
-        w0_T_ls17_6581_y0 = 16'($rtoi(1.048576/8*12000 + 0.5));
+        // w0_T_lsl17_6581_y0 = w0_T_lsl17_6581_tanh[0];
+        w0_T_lsl17_6581_y0 = 16'($rtoi(1.048576/8*12000*1 + 0.5));
     end
 
     // MOS8580 filter cutoff: 0 - 12.5kHz.
@@ -120,12 +120,12 @@ module sid_filter #(
     //
     // The values are multiplied by 256 (1 << 8).
     // The coefficient 256 is dispensed of later by right-shifting 8 times.
-    sid::reg9_t _1_Q_ls8;
+    sid::reg9_t _1_Q_lsl8;
 
-    sid::reg9_t _1_Q_8580_ls8[16];
+    sid::reg9_t _1_Q_8580_lsl8[16];
     initial begin
         for (int res = 0; res < 16; res++) begin
-            _1_Q_8580_ls8[res] = 9'($rtoi(256*$pow(2, (4 - res)/8.0) + 0.5));
+            _1_Q_8580_lsl8[res] = 9'($rtoi(256*$pow(2, (4 - res)/8.0) + 0.5));
         end
     end
 
@@ -156,7 +156,7 @@ module sid_filter #(
     sid::s24_t dv;
     sid::s24_t vlp_next;
 
-    sid::reg11_t tanh_x;
+    sid::reg11_t fc_x;
 
     always_comb begin
         // Filter cutoff register value.
@@ -184,18 +184,18 @@ module sid_filter #(
           1: begin
               // MOS6581: w0 = filter curve
               // 1.048576/8*fc_base is approximated by fc_base >> 3.
-              w0_T_ls17_base <= { 10'b0, filter_i.fc_base[8:3] };
-              // We have to register tanh_x in order to meet timing.
-              tanh_x <= tanh_x_clamp(signed'(13'(fc_6581)) + filter_i.fc_offset);
+              w0_T_lsl17_base <= { 10'b0, filter_i.fc_base[8:3] };
+              // We have to register fc_x in order to meet timing.
+              fc_x <= tanh_x_clamp(signed'(13'(fc_6581)) + filter_i.fc_offset);
 
               // MOS8580: w0 = 5*fc = 4*fc + fc
-              w0_T_ls17_8580 <= { 3'b0, fc, 2'b0 } + { 5'b0, fc };
+              w0_T_lsl17_8580 <= { 3'b0, fc, 2'b0 } + { 5'b0, fc };
 
               // MOS6581: 1/Q =~ ~res/8
               // MOS8580: 1/Q =~ 2^((4 - res)/8)
-              _1_Q_ls8 <= (filter_i.model == sid::MOS6581) ?
+              _1_Q_lsl8 <= (filter_i.model == sid::MOS6581) ?
                           { ~filter_i.regs.res, 5'b0 } :
-                          _1_Q_8580_ls8[filter_i.regs.res];
+                          _1_Q_8580_lsl8[filter_i.regs.res];
 
               // Mux for filter input.
               vi <= ((filter_i.regs.filt[0]) ? filter_i.voice1 : 0) +
@@ -218,7 +218,7 @@ module sid_filter #(
           end
           2: begin
               // Read from BRAM.
-              w0_T_ls17_6581 <= w0_T_ls17_6581_tanh[tanh_x_mirror(tanh_x)];
+              w0_T_lsl17_6581 <= w0_T_lsl17_6581_tanh[tanh_x_mirror(fc_x)];
           end
           3: begin
               // vbp = vbp - w0*vhp
@@ -226,8 +226,8 @@ module sid_filter #(
               c <= 0;
               s <= 1'b1;
               a <= (filter_i.model == sid::MOS6581) ?
-                   w0_T_ls17_base + tanh_y_mirror(tanh_x[10], w0_T_ls17_6581_y0, w0_T_ls17_6581) :
-                   w0_T_ls17_8580;               // w0*T << 17
+                   w0_T_lsl17_base + w0_T_lsl17_6581_y0 + tanh_y_mirror(fc_x[10], w0_T_lsl17_6581) :
+                   w0_T_lsl17_8580;              // w0*T << 17
               b <= filter_i.state.vhp[8 +: 16];  // vhp  >>  8
           end
           4: begin
@@ -249,7 +249,7 @@ module sid_filter #(
               // We use a concatenation on -(vlp + vi) to make Verilator happy.
               c <= 32'(signed'({ -(vlp_next + vi) }));
               s <= 1'b0;
-              a <= 16'(_1_Q_ls8);         // 1/Q << 8
+              a <= 16'(_1_Q_lsl8);        // 1/Q << 8
               b <= state_o.vbp[8 +: 16];  // vbp >> 8
           end
           6: begin

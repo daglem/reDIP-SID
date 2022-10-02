@@ -18,9 +18,9 @@
 #
 # The simple approximation function which is used has the advantage that a
 # software or hardware implementation only requires a single lookup table for
-# the function y = 12000*(1 + tanh(x/350)) to simulate any filter cutoff curve.
-# Since the lookup table function is symmetric about y = x, it is only necessary
-# to store table data for x >= 0.
+# the function y = 12000*tanh(x/350) to simulate any filter cutoff curve.
+# Since y = tanh(x) is symmetric about y = x, it is only necessary to store
+# table data for x >= 0.
 #
 # For comparison, the plot includes measurement data from
 # https://bel.fi/alankila/c64-sw/fc-curves/
