@@ -1,7 +1,7 @@
 TOP = redip_sid
 PKG = sid_pkg.sv
-FUN = sid_waveform_PST.sv \
-	sid_waveform__ST.sv
+FUN = sid_waveform_PST.svh \
+	sid_waveform__ST.svh
 MOD = $(TOP).sv \
 	ice40_init.sv \
 	i2c_master.v \

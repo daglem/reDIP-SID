@@ -16,8 +16,8 @@
 
 `default_nettype none
 
-`include "sid_waveform_PST.sv"
-`include "sid_waveform__ST.sv"
+`include "sid_waveform_PST.svh"
+`include "sid_waveform__ST.svh"
 
 module sid_waveform #(
     // Default to init, since the oscillator will stay at 'h555555 after reset.
