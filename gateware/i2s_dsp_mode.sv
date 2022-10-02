@@ -17,8 +17,11 @@
 `default_nettype none
 
 // I2S SGTL5000 PCM Format A input / output.
+// Note that this implementation requires that I2S_LRCLK is driven high for
+// exactly one cycle.
 module i2s_dsp_mode #(
-    parameter BITS
+    parameter  BITS = 64,
+    localparam COUNTBITS = $clog2(BITS)
 )(
     input  logic clk,
     input  logic i2s_sclk,
@@ -36,8 +39,7 @@ module i2s_dsp_mode #(
     logic sclk_prev = 0;
     logic sclk_rise = 0;
     logic sclk_fall = 0;
-    // FIXME: Dynamic - check Verilator
-    logic [5:0] bits = 0;
+    logic [COUNTBITS-1:0] bitnum = 0;
     
     always @(posedge clk) begin
         sclk_x    <= i2s_sclk;
@@ -46,22 +48,27 @@ module i2s_dsp_mode #(
         sclk_fall <=  sclk_prev & ~sclk_x;
 
         if (sclk_fall) begin
-            // i2s_lrclk is stable on sclk_fall.
+            // I2S_LRCLK is stable on the falling edge of I2S_SCLK.
             if (i2s_lrclk) begin
-                dout <= audio_o;
-                bits <= 0;
+                // I2S_LRCLK pulse; prepare for data exchange.
+                dout   <= audio_o;
+                bitnum <= 0;
+            end else begin
+                bitnum <= bitnum + 1;
             end
 
-            // Ensure that any last bit is processed even if i2s_lrclk is high
+            // Ensure that any last bit is processed even if I2S_LRCLK is high
             // (i.e. no padding, e.g. for 64 bits).
-            if (bits < BITS) begin
-                din  <= { din[BITS-2:0], i2s_dout };
-                bits <= bits + 1;
+            if (bitnum == BITS - 1) begin
+                // Shift in final input data bit, and store input data.
+                audio_i <= { din[BITS-2:0], i2s_dout };
             end else begin
-                audio_i <= din;
+                // Shift in input data bit.
+                din     <= { din[BITS-2:0], i2s_dout };
             end
         end else if (sclk_rise) begin
-            { i2s_din, dout } <= { dout[BITS-1:0], 1'b0 };
+            // Shift out output data bit.
+            { i2s_din, dout } <= { dout, 1'b0 };
         end
     end
 endmodule
