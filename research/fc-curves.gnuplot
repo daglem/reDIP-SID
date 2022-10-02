@@ -19,8 +19,7 @@
 # The simple approximation function which is used has the advantage that a
 # software or hardware implementation only requires a single lookup table for
 # the function y = 12000*tanh(x/350) to simulate any filter cutoff curve.
-# Since y = tanh(x) is symmetric about y = x, it is only necessary to store
-# table data for x >= 0.
+# Since tanh(-x) = -tanh(x), we only need to store table data for x >= 0.
 #
 # For comparison, the plot includes measurement data from
 # https://bel.fi/alankila/c64-sw/fc-curves/
@@ -43,7 +42,7 @@ set logscale y
 set xrange [0:2047]
 set yrange [170:24500]
 set title "MOS6581 filter cutoff characteristics"
-set key title "Measurement data:\nhttps://bel.fi/alankila/c64-sw/fc-curves\n\nApproximations:\nhttps://github.com/daglem/reDIP-SID\n" left
+set key outside title "Measurement data:\nhttps://bel.fi/alankila/c64-sw/fc-curves\n\nApproximations:\nhttps://github.com/daglem/reDIP-SID\n" left
 set xlabel "FC register value"
 set ylabel "Cutoff frequency (Hz)"
 set label "Follin-style" at 160,2000
@@ -51,7 +50,6 @@ set label "Galway-style" at 590,2000
 set label "Average 6581" at 1050,2000
 set label "Strong filter" at 1500,2000
 set label "Extreme filter" at 1800,2000
-set key outside
 set samples 2048
 set style data lines
 plot \

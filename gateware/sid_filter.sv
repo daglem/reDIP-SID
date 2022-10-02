@@ -24,8 +24,8 @@ function sid::s11_t tanh_x_clamp(sid::s13_t x);
                    11'(x);
 endfunction
 
-// y = tanh(x) is mirrored about y = x.
-// We take advantage of this to halve the memory used for the lookup table.
+// We take advantage of the fact that tanh(-x) = -tanh(x) to access table data
+// for x >= 0 only.
 function sid::reg10_t tanh_x_mirror(sid::s11_t x);
     tanh_x_mirror = 10'(x < 0 ? -x : x);
 endfunction
@@ -67,10 +67,10 @@ module sid_filter #(
     //
     // The curves can be approximated quite well by the following formula:
     //
-    // fc_curve(x,b,d) = b + 12000*(1 + tanh((fc_dac[x] + d - 1024)/350.0)),
+    // fc_curve(x,b,d) = b + 12000*(1 + tanh((fc_dac(x) + d - 1024)/350.0)),
     //
     // - b is the base cutoff frequency, shifting the curve in the y direction
-    // - fc_dac[x] is the output from the filter cutoff DAC, adding discontinuities
+    // - fc_dac(x) is the output from the filter cutoff DAC, adding discontinuities
     // - d is used to offset fc_dac[x], shifting the curve in the x direction
     //
     // Example filter curves:
@@ -84,9 +84,8 @@ module sid_filter #(
 
     sid::s16_t w0_T_lsl17_base = 0;
 
-    // y = tanh(x) is mirrored about y = x.
-    // We store only the right half of the function, and use the functions
-    // tanh_x and tanh_y for mirroring.
+    // Since tanh(-x) = -tanh(x), we store table data for x >= 0 only, and use
+    // the functions tanh_x_mirror and tanh_y_mirror for mirroring.
     sid::s16_t w0_T_lsl17_6581_tanh[1024];
     sid::s16_t w0_T_lsl17_6581_y0;
     initial begin
@@ -108,7 +107,7 @@ module sid_filter #(
     // MOS6581 filter cutoff DAC output.
     sid_dac #(
         .BITS(11)
-    ) filter_dac (
+    ) fc_dac (
         .vin  (fc),
         .vout (fc_6581)
     );
