@@ -1,5 +1,4 @@
-*.sv linguist-language=SystemVerilog
-*.svh linguist-language=SystemVerilog
+muacm.v linguist-generated
 *.kicad_pcb linguist-detectable
 *.kicad_mod linguist-detectable
 *.kicad_sym linguist-detectable
