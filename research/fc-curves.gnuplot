@@ -31,7 +31,10 @@ stats "fc-curves-dac.dat" using (fc_dac[int($0) + 1] = int($1)) nooutput
 # Define novel approximation function.
 # b = base cutoff frequency
 # d = FC register offset
-fc_curve(x,b,d) = b + 12000*(1 + tanh((fc_dac[x + 1] - 1024 + d)/350.0))
+# The center of the FC range is 1024, and the center of the average 6581 curve
+# is additionaly offset by approximately 512. A further FC offset in the range
+# [-1024, 1023] (11 bits) is more than sufficient to model any SID chip.
+fc_curve(fc,b,d) = b + 12000*(1 + tanh((fc_dac[fc + 1] - (1024 + 512 + d))/350.0))
 
 # Plot to PNG.
 set terminal png truecolor linewidth 2 font "arial,14" size 1280,1024
@@ -54,16 +57,16 @@ set samples 2048
 set style data lines
 plot \
     "fc-curves/Trurl_Ext/6581R3_4885.txt" title "r3 4885 trurl", \
-    fc_curve(x, 240, +275), \
+    fc_curve(x, 240, -785), \
     "fc-curves/Trurl_Ext/6581_3384.txt" title "r2 3384 trurl", \
-    fc_curve(x, 280, -105), \
-    "fc-curves/Trurl_Ext/6581R4AR_3789.txt" title "r4ar 3789 trurl", \
-    fc_curve(x, 300, -550), \
+    fc_curve(x, 280, -405), \
     "fc-curves/ZrX-oMs/6581R4AR_2286.txt" title "r4ar 2286 zrx", \
-    fc_curve(x, 250, -500), \
+    fc_curve(x, 240, -20), \
+    "fc-curves/Trurl_Ext/6581R4AR_3789.txt" title "r4ar 3789 trurl", \
+    fc_curve(x, 300, +40), \
     "fc-curves/lord_nightmare/r3-6581r3-4485-redone.txt" title "r3 4485 lordn", \
-    fc_curve(x, 260, -910), \
+    fc_curve(x, 260, +400), \
     "fc-curves/ZrX-oMs/6581R2_1984.txt" title "r3 4485 lordn", \
-    fc_curve(x, 180, -945), \
+    fc_curve(x, 180, +430), \
     "fc-curves/ZrX-oMs/6581R2_3684.txt" title "r2 3684 zrx", \
-    fc_curve(x, 200, -1270)
+    fc_curve(x, 200, +760)

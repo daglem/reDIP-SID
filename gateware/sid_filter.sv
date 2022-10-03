@@ -67,19 +67,21 @@ module sid_filter #(
     //
     // The curves can be approximated quite well by the following formula:
     //
-    // fc_curve(x,b,d) = b + 12000*(1 + tanh((fc_dac(x) + d - 1024)/350.0)),
+    // fc_curve(fc,b,d) = b + 12000*(1 + tanh((fc_dac(fc) - (1024 + 512 + d))/350.0))
     //
+    // - fc is the value of the FC register (x direction)
     // - b is the base cutoff frequency, shifting the curve in the y direction
-    // - fc_dac(x) is the output from the filter cutoff DAC, adding discontinuities
-    // - d is used to offset fc_dac[x], shifting the curve in the x direction
+    // - fc_dac(fc) is the output from the discontinuous filter cutoff DAC
+    // - 1024 + 512 shifts the curve to match the average 6581 filter curve
+    // - d further shifts the curve in the x direction, to model any chip
     //
     // Example filter curves:
     //
-    // Follin-style: fc_curve(x, 240,  +275)
-    // Galway-style: fc_curve(x, 280,  -105)
-    // Average     : fc_curve(x, 250,  -500)
-    // Strong      : fc_curve(x, 260,  -910)
-    // Extreme     : fc_curve(x, 200, -1255)
+    // Follin-style: fc_curve(x, 240, -785)
+    // Galway-style: fc_curve(x, 280, -405)
+    // Average     : fc_curve(x, 250,    0)
+    // Strong      : fc_curve(x, 260, +400)
+    // Extreme     : fc_curve(x, 200, +760)
     //
 
     sid::s16_t w0_T_lsl17_base = 0;
@@ -185,7 +187,7 @@ module sid_filter #(
               // 1.048576/8*fc_base is approximated by fc_base >> 3.
               w0_T_lsl17_base <= { 10'b0, filter_i.fc_base[8:3] };
               // We have to register fc_x in order to meet timing.
-              fc_x <= tanh_x_clamp(signed'(13'(fc_6581)) + filter_i.fc_offset);
+              fc_x <= tanh_x_clamp(signed'(13'(fc_6581)) - filter_i.fc_offset);
 
               // MOS8580: w0 = 5*fc = 4*fc + fc
               w0_T_lsl17_8580 <= { 3'b0, fc, 2'b0 } + { 5'b0, fc };

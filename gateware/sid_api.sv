@@ -16,7 +16,10 @@
 
 `default_nettype none
 
-module sid_api (
+module sid_api #(
+    // FC offset for average 6581 filter curve.
+    localparam FC_OFFSET_6581 = 12'sh600
+)(
     input  logic        clk,
     input  logic        phi2,
     input  sid::bus_i_t bus_i,
@@ -39,8 +42,8 @@ module sid_api (
 
     // FIXME: This would be safer if Yosys were to understand structure literals.
     // sid::cfg_t sid_cfg = '{ sid1_model: ... };
-    sid::cfg_t  sid1_cfg = { sid::MOS6581, sid::D400, 9'd250, -12'sd500 };
-    sid::cfg_t  sid2_cfg = { sid::MOS8580, sid::DE00, 9'd250, -12'sd500 };
+    sid::cfg_t  sid1_cfg = { sid::MOS6581, sid::D400, 9'd250, 11'sd0 };
+    sid::cfg_t  sid2_cfg = { sid::MOS8580, sid::DE00, 9'd250, 11'sd0 };
     // NB! Don't put multi-bit variables in arrays, as Yosys handles that incorrectly.
     sid::reg8_t sid1_data_o, sid2_data_o;
     logic [1:0] sid_cs;
@@ -165,7 +168,7 @@ module sid_api (
               // Setup for SID #1 filter pipeline.
               filter_i.model     <= sid1_cfg.model;
               filter_i.fc_base   <= sid1_cfg.fc_base;
-              filter_i.fc_offset <= sid1_cfg.fc_offset - 1024;  // Reference fc
+              filter_i.fc_offset <= sid1_cfg.fc_offset + FC_OFFSET_6581;
               filter_i.regs      <= core1_o.filter_regs;
               filter_i.ext_in    <= audio_i.left;
               filter_i.state     <= filter1_v;
@@ -191,7 +194,7 @@ module sid_api (
               // in sid_filter, so it's safe to change it just now.
               filter_i.model     <= sid2_cfg.model;
               filter_i.fc_base   <= sid2_cfg.fc_base;
-              filter_i.fc_offset <= sid2_cfg.fc_offset - 1024;  // Reference fc
+              filter_i.fc_offset <= sid2_cfg.fc_offset + FC_OFFSET_6581;
               filter_i.regs      <= core2_o.filter_regs;
               filter_i.ext_in    <= audio_i_right;
               filter_i.state     <= filter2_v;

@@ -76,7 +76,7 @@ package sid;
         model_e model;
         addr_e  addr;  // Only used for SID #2.
         reg9_t  fc_base;
-        s12_t   fc_offset;
+        s11_t   fc_offset;
     } cfg_t;
 
     typedef struct packed {
@@ -224,7 +224,7 @@ package sid;
         filter_reg_t regs;
         // Filter cutoff curve parameters.
         reg9_t       fc_base;    // Base cutoff frequency in Hz
-        s12_t        fc_offset;  // FC register offset for curve shifting
+        s12_t        fc_offset;  // Final FC register offset for curve shifting
         // Input signals.
         s24_t        voice1;
         s24_t        voice2;
