@@ -16,6 +16,9 @@
 
 `default_nettype none
 
+`include "sid_waveform_PST.svh"
+`include "sid_waveform__ST.svh"
+
 // FIXME: The 8580 combined waveforms are sampled / calculated using a non-
 // delayed OSC index. Since saw_tri is delayed by one cycle on the 8580, this
 // will presently yield a further one cycle delay for combined waveforms.
@@ -41,18 +44,18 @@ module sid_voice #(
     sid::reg4_t  selector_prev = 0;
 
     // Pre-calculated waveforms for waveform selection.
-    sid::reg12_t npst;          // Any regular waveform
-    sid::reg12_t npst_6581;     // Output from 6581 DAC
-    sid::reg12_t npst_dac = 0;  // 6581 / 8580 result
+    logic        npst     = 0;  // Flag for regular waveform
+    sid::reg12_t norm;          // Selected regular waveform
+    sid::reg12_t norm_6581;     // Output from 6581 waveform DAC
+    sid::reg12_t norm_dac = 0;  // 6581 / 8580 result
+    sid::reg8_t  norm_osc = 0;  // For OSC3
+    sid::reg12_t comb;          // Selected combined waveform
     sid::reg8_t  pst      = 0;  // Combined waveforms
     sid::reg8_t  ps__6581 = 0;
     sid::reg8_t  ps__8580 = 0;
     sid::reg8_t  p_t_6581 = 0;
     sid::reg8_t  p_t_8580 = 0;
     sid::reg8_t  _st      = 0;
-
-    // Resulting digital waveform.
-    sid::reg12_t waveform;
 
     // Non-linear 6581 envelope DAC.
     sid::reg8_t env_6581;
@@ -68,8 +71,8 @@ module sid_voice #(
     sid_dac #(
         .BITS (12)
     ) waveform_dac (
-        .vin  (npst),
-        .vout (npst_6581)
+        .vin  (norm),
+        .vout (norm_6581)
     );
 
     // MOS6581 envelope DAC output.
@@ -103,34 +106,34 @@ module sid_voice #(
         // All combined waveforms which include noise output zero after a few
         // cycles.
         unique case (voice_i.waveform.selector)
-          'b1000:  npst = { voice_i.waveform.noise, 4'b0 };
-          'b0100:  npst = { 12{voice_i.waveform.pulse} };
-          'b0010:  npst = voice_i.waveform.saw_tri;
-          'b0001:  npst = { voice_i.waveform.saw_tri[10:0], 1'b0 };
-          default: npst = 0;
+          'b1000:  norm = { voice_i.waveform.noise, 4'b0 };
+          'b0100:  norm = { 12{voice_i.waveform.pulse} };
+          'b0010:  norm = voice_i.waveform.saw_tri;
+          'b0001:  norm = { voice_i.waveform.saw_tri[10:0], 1'b0 };
+          default: norm = 0;
         endcase
 
         // Final waveform selection on cycle 2.
         // All inputs to the combinational logic are from cycle 1.
         unique case (selector_prev)
-          'b0111:  waveform = { pst, 4'b0 };
-          'b0110:  waveform = { ((model_prev == sid::MOS6581) ? ps__6581 : ps__8580), 4'b0 };
-          'b0101:  waveform = { ((model_prev == sid::MOS6581) ? p_t_6581 : p_t_8580), 4'b0 };
-          'b0011:  waveform = { _st, 4'b0 };
-          default: waveform = npst_dac;
+          'b0111:  comb = { pst, 4'b0 };
+          'b0110:  comb = { ((model_prev == sid::MOS6581) ? ps__6581 : ps__8580), 4'b0 };
+          'b0101:  comb = { ((model_prev == sid::MOS6581) ? p_t_6581 : p_t_8580), 4'b0 };
+          'b0011:  comb = { _st, 4'b0 };
+          default: comb = 0;
         endcase
 
         // Setup for voice DCA multiply-add, ready on cycle 2.
         voice_DC = (model_prev == sid::MOS6581) ?
                    VOICE_DC_6581 :
                    VOICE_DC_8580;
-        wave_dac = signed'(16'(waveform)) +
+        wave_dac = npst ? 16'(norm_dac) : 16'(comb) +
                    ((model_prev == sid::MOS6581) ?
                     WAVEFORM_DC_6581 :
                     WAVEFORM_DC_8580);
 
         // The outputs are delayed by 1 cycle.
-        osc_o   = waveform[11-:8];
+        osc_o   = npst ? norm_osc : comb[11-:8];
         voice_o = voice_res[23-:24];
     end
 
@@ -146,9 +149,18 @@ module sid_voice #(
 
         // Regular waveforms, passed through the non-linear MOS6581
         // waveform DAC.
-        npst_dac <= (model == sid::MOS6581) ?
-                    npst_6581 :
-                    npst;
+        norm_dac <= (model == sid::MOS6581) ?
+                    norm_6581 :
+                    norm;
+        // For OSC3.
+        norm_osc <= norm[11-:8];
+        // Flag for regular waveform.
+        // FIXME: Yosys lacks support for the inside operator.
+        // npst     <= voice_i.waveform.selector inside {'b1000, 'b0100, 'b0010, 'b0001};
+        npst     <= |{ voice_i.waveform.selector == 'b1000,
+                       voice_i.waveform.selector == 'b0100,
+                       voice_i.waveform.selector == 'b0010,
+                       voice_i.waveform.selector == 'b0001 };
 
         // Combined waveforms.
         // These aren't accurately modeled in the analog domain, so passing
