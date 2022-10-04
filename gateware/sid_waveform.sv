@@ -17,8 +17,11 @@
 `default_nettype none
 
 module sid_waveform #(
-    // Default to init, since the oscillator will stay at 'h555555 after reset.
-    localparam INIT_OSC = 1
+    // Default to init, since the oscillator stays at 'h555555 after reset.
+    localparam INIT_OSC   = 1,
+    // Default to init, since the noise LFSR stays at 'h7ffffe after reset.
+    // FIXME: Is the initial value 'h7fffff possibly caused by a long reset?
+    localparam INIT_NOISE = 1
 )(
     input  logic               clk,
     input  logic               res,
@@ -39,11 +42,13 @@ module sid_waveform #(
     logic        sync_res;
 
     // Waveforms.
-    logic        osc19_tm2 = 0;
-    sid::reg23_t noise     = 0;
-    logic        pulse     = 0;
+    logic        osc19_prev = 0;
+    sid::reg23_t noise      = INIT_NOISE ? '1 : '0;
+    logic        nclk       = 0;
+    logic        nclk_prev  = 0;
+    logic        pulse      = 0;
     logic        tri_xor;
-    sid::reg12_t saw_tri   = INIT_OSC ? { 6{2'b01} } : 0;
+    sid::reg12_t saw_tri    = INIT_OSC ? { 6{2'b01} } : 0;
 
     always_comb begin
         // A sync source will normally sync its destination when the MSB of the
@@ -100,11 +105,22 @@ module sid_waveform #(
 
         // Noise and pulse.
         if (phase[sid::PHI2_PHI1]) begin
-            if (~osc19_tm2 & osc[19]) begin
-                // Shift noise LFSR. Completion of the shift is delayed 2 cycles.
+            // OSC bit 19 is read before the update of OSC at PHI2_PHI1, i.e.
+            // it's delayed by one cycle.
+            nclk       <= ~(res | reg_i.test | (~osc19_prev & osc[19]));
+            nclk_prev  <= nclk;
+            osc19_prev <= osc[19];
+
+            // The noise LFSR is clocked after OSC bit 19 goes high, or when
+            // reset or test is released.
+            if (~nclk_prev & nclk) begin
+                // Completion of the shift is delayed by 2 cycles after OSC
+                // bit 19 goes high.
                 noise <= { noise[21:0], (res | reg_i.test | noise[22]) ^ noise[17] };
             end
-            osc19_tm2 <= osc[19];
+
+            // FIXME: If nclk stays low (i.e. reset or test), the LFSR will be
+            // fully reset after several thousand cycles.
 
             // The pulse width comparison is done at phi2, before the oscillator
             // is updated at phi1. Thus the pulse waveform is delayed by one cycle

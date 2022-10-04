@@ -23,6 +23,8 @@
 // delayed OSC index. Since saw_tri is delayed by one cycle on the 8580, this
 // will presently yield a further one cycle delay for combined waveforms.
 
+// FIXME: Waveform 0 should fade out from the last selected waveform.
+
 // Waveform selector, voice DCA (digitally controlled amplifier).
 // Modeling of non-linearities in MOS6581 waveform and envelope DACs.
 module sid_voice #(
@@ -156,7 +158,7 @@ module sid_voice #(
         norm_osc <= norm[11-:8];
         // Flag for regular waveform.
         // FIXME: Yosys lacks support for the inside operator.
-        // npst     <= voice_i.waveform.selector inside {'b1000, 'b0100, 'b0010, 'b0001};
+        // npst     <= voice_i.waveform.selector inside { 'b1000, 'b0100, 'b0010, 'b0001 };
         npst     <= |{ voice_i.waveform.selector == 'b1000,
                        voice_i.waveform.selector == 'b0100,
                        voice_i.waveform.selector == 'b0010,
