@@ -31,6 +31,11 @@ module sid_api #(
     output sid::audio_t audio_o
 );
 
+    initial begin
+        $dumpfile("sid_api.fst");
+        $dumpvars;
+    end
+
     // SID core clock phase.
     logic        phi2_prev = 0;
     sid::phase_t phase     = 0;

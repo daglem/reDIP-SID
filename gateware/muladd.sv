@@ -33,6 +33,7 @@ module muladd (
     input  logic signed [15:0] b,
     output logic signed [31:0] o
 );
+    /* verilator lint_off PINMISSING */
     SB_MAC16 #(
         .TOPADDSUB_LOWERINPUT  (2'b10),  // Upper 16 bits from 16x16 multiplier
         .TOPADDSUB_UPPERINPUT  (1'b1),   // 16-bit C input
@@ -53,4 +54,5 @@ module muladd (
         .ADDSUBBOT (s),
         .O         (o)
     );
+    /* verilator lint_on PINMISSING */
 endmodule
