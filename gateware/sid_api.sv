@@ -193,9 +193,10 @@ module sid_api #(
           8: begin
               filter_i.voice3 <= voice_o;
               sid2_osc3       <= osc_o;
-
+          end
+          9: begin
               // Setup for SID #2 filter pipeline.
-              // The filter input state is only used during the first 3 cycles
+              // The filter input state is only used during the first 4 cycles
               // in sid_filter, so it's safe to change it just now.
               filter_i.model     <= sid2_cfg.model;
               filter_i.fc_base   <= sid2_cfg.fc_base;

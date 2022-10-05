@@ -48,8 +48,6 @@ module muladd (
         .A         (a),
         .B         (b),
         .D         (c[15-:16]),
-        .OLOADTOP  (1'b1),
-        .OLOADBOT  (1'b1),
         .ADDSUBTOP (s),
         .ADDSUBBOT (s),
         .O         (o)

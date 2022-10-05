@@ -19,10 +19,6 @@
 `include "sid_waveform_PST.svh"
 `include "sid_waveform__ST.svh"
 
-// FIXME: The 8580 combined waveforms are sampled / calculated using a non-
-// delayed OSC index. Since saw_tri is delayed by one cycle on the 8580, this
-// will presently yield a further one cycle delay for combined waveforms.
-
 // FIXME: Waveform 0 should fade out from the last selected waveform.
 
 // Waveform selector, voice DCA (digitally controlled amplifier).
@@ -136,6 +132,7 @@ module sid_voice #(
 
         // The outputs are delayed by 1 cycle.
         osc_o   = npst ? norm_osc : comb[11-:8];
+        // 8 bits x 16.5 bits = 20.5 bits
         voice_o = voice_res[23-:24];
     end
 
@@ -177,8 +174,8 @@ module sid_voice #(
 
         // Setup for voice DCA multiply-add, ready on cycle 2.
         env_dac  <= (model == sid::MOS6581) ?
-                    signed'(16'(env_6581)) :
-                    signed'(16'(voice_i.envelope));
+                    16'(env_6581) :
+                    16'(voice_i.envelope);
     end
 
     // Combined waveform lookup tables.
