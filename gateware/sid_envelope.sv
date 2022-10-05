@@ -17,28 +17,31 @@
 `default_nettype none
 
 module sid_envelope #(
-    // Default is no init, since the counter will reach zero in 86 cycles on reset.
+    // Default to no init, since the counter will reach 0 after a maximum of
+    // one exponential decay cycle (at decay = 0) after reset release.
     localparam INIT_ENV = 0
 )(
     input  logic               clk,
     input  logic               res,
     input  sid::phase_t        phase,
     input  sid::envelope_reg_t reg_i,
-    output sid::reg8_t         out = 0
+    output sid::reg8_t         out
 );
 
     // 8-bit envelope counter.
     // Odd bits are high on powerup. There is no immediate reset, however
     // env_cnt_inc, rate_cnt_res, and exp_cnt_res are all set by reset.
-    // This implies that, on the face of it, the counter will start out at 'hAA,
-    // and will then count up in the decay(!) state while in reset, until it
-    // reaches zero in 'h100 - 'hAA = 86 cycles.
-    // Since initial values != 0 require LUTs, we make this configurable.
-    sid::reg8_t  env_cnt = INIT_ENV ? { 4{2'b10} } : 0;
+    // This implies that, on the face of it, the counter will start out at
+    // ~AA = 55, and will then count down in the decay state while in reset,
+    // wrapping around to FF each time 00 is reached. After reset release, the
+    // counter will continue counting down until it finally reaches zero.
+    // Note that the counter itself is FF at env=00, due to inversion in decay.
+    sid::reg8_t  env_cnt = INIT_ENV ? { 4{2'b10} } : 'hFF;
+    sid::reg8_t  env         = 0;
     logic        env_cnt_inc = 0;
-    logic        env_cnt_inv;
+    logic        env_cnt_inv = 0;
     logic        prev_gate   = 0;
-    logic        rise_gate   = 0;
+    logic        rise_gate;
     logic        attack      = 0;
     logic        prev_attack = 0;
     logic        sustain_cmp = 0;
@@ -61,8 +64,9 @@ module sid_envelope #(
     always_comb begin
         rise_gate   = ~prev_gate & reg_i.gate;
         sustain     = sustain_cmp & reg_i.gate & ~attack;
-        // Invert counter bits on change of counter direction.
-        env_cnt_inv = prev_attack ^ attack;
+
+        // Envelope output, to envelope DAC.
+        out = env;
     end
 
     // Exponential decay curve segment steps.
@@ -76,13 +80,13 @@ module sid_envelope #(
             prev_00 <= exp_step[6];
 
             exp_step <= {
-                env_cnt == 8'h00,
-                env_cnt == 8'h06,
-                env_cnt == 8'h0E,
-                env_cnt == 8'h1A,
-                env_cnt == 8'h36,
-                env_cnt == 8'h5D,
-                env_cnt == 8'hFF
+                env == 8'h00,
+                env == 8'h06,
+                env == 8'h0E,
+                env == 8'h1A,
+                env == 8'h36,
+                env == 8'h5D,
+                env == 8'hFF
             };
         end
     end
@@ -106,7 +110,7 @@ module sid_envelope #(
         if (phase[sid::PHI2_PHI1]) begin
             // Both the high and low 4 bits of the envelope counter are compared
             // with the 4-bit sustain value.
-            sustain_cmp <= (env_cnt == { reg_i.sustain, reg_i.sustain });
+            sustain_cmp <= (env == { reg_i.sustain, reg_i.sustain });
             // Store gate value after any register write on PHI2.
             prev_gate   <= reg_i.gate;
             prev_attack <= attack;
@@ -127,24 +131,23 @@ module sid_envelope #(
             end else if (rise_gate) begin
                 attack <= 1;
             end
+
+            // The counter counts up every time exp_cnt_res is set, as long as
+            // the counter is not frozen at zero, and we're not in the sustain state.
+            // In the real SID, the inversion and counter latch is done on different
+            // clock phases.
+            env_cnt <= (env_cnt ^ { 8{env_cnt_inv} }) + { 7'b0, env_cnt_inc & ~sustain & exp_cnt_res};
         end
 
         // Count up or down.
-        if (phase[sid::PHI1]) begin
-            // The counter counts up every time exp_cnt_res is set, as long as
-            // the counter is not frozen at zero, and we're not in the sustain state.
+        if (phase[sid::PHI2]) begin
             // The counter bits are inverted when the counter direction changes.
-            // In the real SID, the inversion is done on the following phi2.
-            // The counter can be implemented using a single PLB ripple carry adder,
-            // with an additional input per LUT4 for inversion.
-            env_cnt <= (env_cnt + { 7'b0, env_cnt_inc & ~sustain & exp_cnt_res}) ^ { 8{env_cnt_inv} };
+            env <= env_cnt ^ { 8{~prev_attack} };
+
+            // Invert counter bits on change of counter direction.
+            env_cnt_inv <= prev_attack ^ attack;
         end
         
-        // Output envelope value before any read of ENV3 at phi2.
-        if (phase[sid::PHI1_PHI2]) begin
-            out <= env_cnt ^ { 8{~attack} };
-        end
-
         // Multiplexer for rate period index (attack / decay / release).
         if (phase[sid::PHI2_PHI1]) begin
             // The reset flag for the rate counter below is latched by the next phi2.

@@ -105,7 +105,7 @@ module sid_core #(
         .clk   (clk),
         .res   (bus_i.res),
         .phase (phase),
-        .reg_i (reg_i.regs.voice2.envelope),
+        .reg_i (reg_i.regs.voice3.envelope),
         .out   (out.voice3.envelope)
     );
 
