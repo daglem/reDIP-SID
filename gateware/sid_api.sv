@@ -38,6 +38,7 @@ module sid_api #(
 
     // SID core clock phase.
     logic        phi2_prev = 0;
+    (* onehot *)
     sid::phase_t phase     = 0;
 
     always_ff @(posedge clk) begin
@@ -104,7 +105,6 @@ module sid_api #(
     );
     
     // Pipeline for filter outputs.
-    logic [1:0]     filter_no = 0;
     sid::filter_i_t filter_i;
     sid::s24_t      filter_o;
     sid::s24_t      filter_o_left;
@@ -114,31 +114,45 @@ module sid_api #(
     sid::filter_v_t filter1_v = 0;
     sid::filter_v_t filter2_v = 0;
 
-    logic [2:0] filter_stage = 0, next_filter_stage;
+    logic [3:0] filter_stage = 0, next_filter_stage;
+    logic [1:0] filter_done  = 0, next_filter_done;
 
     sid_filter filter_pipeline (
         .clk      (clk),
-        .stage    (filter_stage),
+        .stage    (filter_stage[2:0]),
         .filter_i (filter_i),
         .state_o  (filter_v),
         .audio_o  (filter_o) // 8 cycle delay
     );
     
     always_comb begin
-        if (voice_stage == 0) begin
-            // Start voice pipeline when the SIDs are done.
-            next_voice_stage = { 3'b0, phase[sid::PHI1_PHI2] };
-        end else begin
-            next_voice_stage = voice_stage + 1;
-            // Since it's more than 16 cycles between each run,
-            // we just let the counter wrap around to zero.
-        end
+        case (voice_stage)
+          // Start voice pipeline when the SIDs are done.
+          0: next_voice_stage = { 3'b0, phase[sid::PHI1_PHI2] };
+          // Finished after stage 9.
+          9: next_voice_stage = 0;
+          default:
+             next_voice_stage = voice_stage + 1;
+        endcase
 
-        if (filter_no == 0) begin
-            next_filter_stage = 0;
-        end else begin
-            next_filter_stage = filter_stage + 1;
-        end
+        case (filter_stage)
+          // Start filter pipeline when all voices from SID #1 are done.
+          0: next_filter_stage = { 3'b0, voice_stage == 5 };
+          // Start filter #2 after filter #1 is done.
+          // filter_stage will wrap around to zero after filter #2 is done.
+          7: next_filter_stage = { 1'b1, 3'd1 };
+          default:
+             next_filter_stage = filter_stage + 1;
+        endcase
+
+        case (filter_stage)
+          { 1'b0, 3'd7 }:
+            next_filter_done = 1;
+          { 1'b1, 3'd7 }:
+            next_filter_done = 2;
+          default:
+            next_filter_done = 0;
+        endcase
     end
     
     always_ff @(posedge clk) begin
@@ -209,29 +223,21 @@ module sid_api #(
               
         voice_stage <= next_voice_stage;
 
-        // Calculate 2 audio stage outputs.
-        if (voice_stage == 4 || voice_stage == 5) begin
-            // Start SID #1 filter pipeline.
-            // Wait one cycle for filter_stage to be increased to 1.
-            filter_no <= 1;
-        end else if (filter_stage == 0) begin
-            // The filter pipeline is finished (stage wrapped around to zero).
-            case (filter_no)
-              1: begin
-                  filter1_v     <= filter_v;
-                  filter_o_left <= filter_o;
-                  filter_no     <= 2;
-              end
-              2: begin
-                  filter2_v     <= filter_v;
-                  audio_o.left  <= filter_o_left;
-                  audio_o.right <= filter_o;
-                  filter_no     <= 0;
-              end
-            endcase
-        end
+        // Combine 2 audio stage outputs.
+        case (filter_done)
+          1: begin
+              filter1_v     <= filter_v;
+              filter_o_left <= filter_o;
+          end
+          2: begin
+              filter2_v     <= filter_v;
+              audio_o.left  <= filter_o_left;
+              audio_o.right <= filter_o;
+          end
+        endcase
         
         filter_stage <= next_filter_stage;
+        filter_done  <= next_filter_done;
     end
     
     // Chip select decode.

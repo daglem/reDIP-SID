@@ -30,7 +30,7 @@ module sid_envelope #(
 
     // 8-bit envelope counter.
     // Odd bits are high on powerup. There is no immediate reset, however
-    // env_cnt_inc, rate_cnt_res, and exp_cnt_res are all set by reset.
+    // env_cnt_en, rate_cnt_res, and exp_cnt_res are all set by reset.
     // This implies that, on the face of it, the counter will start out at
     // ~AA = 55, and will then count down in the decay state while in reset,
     // wrapping around to FF each time 00 is reached. After reset release, the
@@ -38,12 +38,12 @@ module sid_envelope #(
     // Note that the counter itself is FF at env=00, due to inversion in decay.
     sid::reg8_t  env_cnt = INIT_ENV ? { 4{2'b10} } : 'hFF;
     sid::reg8_t  env         = 0;
-    logic        env_cnt_inc = 0;
+    logic        env_cnt_en  = 0;
     logic        env_cnt_inv = 0;
     logic        prev_gate   = 0;
     logic        rise_gate;
     logic        attack      = 0;
-    logic        prev_attack = 0;
+    logic        env_cnt_up  = 0;
     logic        sustain_cmp = 0;
     logic        sustain;
     // 15-bit rate counter.
@@ -112,15 +112,15 @@ module sid_envelope #(
             // with the 4-bit sustain value.
             sustain_cmp <= (env == { reg_i.sustain, reg_i.sustain });
             // Store gate value after any register write on PHI2.
-            prev_gate   <= reg_i.gate;
-            prev_attack <= attack;
+            prev_gate  <= reg_i.gate;
+            env_cnt_up <= attack;
 
             // The counter stops counting once it has reached zero,
             // and restarts once the gate goes high.
             if (rise_00) begin
-                env_cnt_inc <= 0;
+                env_cnt_en <= 0;
             end else if (rise_gate | res) begin
-                env_cnt_inc <= 1;
+                env_cnt_en <= 1;
             end
 
             // The counter starts counting down after it has reached FF,
@@ -136,16 +136,16 @@ module sid_envelope #(
             // the counter is not frozen at zero, and we're not in the sustain state.
             // In the real SID, the inversion and counter latch is done on different
             // clock phases.
-            env_cnt <= (env_cnt ^ { 8{env_cnt_inv} }) + { 7'b0, env_cnt_inc & ~sustain & exp_cnt_res};
+            env_cnt <= (env_cnt ^ { 8{env_cnt_inv} }) + { 7'b0, env_cnt_en & ~sustain & exp_cnt_res};
         end
 
         // Count up or down.
         if (phase[sid::PHI2]) begin
             // The counter bits are inverted when the counter direction changes.
-            env <= env_cnt ^ { 8{~prev_attack} };
+            env <= env_cnt ^ { 8{~env_cnt_up} };
 
             // Invert counter bits on change of counter direction.
-            env_cnt_inv <= prev_attack ^ attack;
+            env_cnt_inv <= env_cnt_up ^ attack;
         end
         
         // Multiplexer for rate period index (attack / decay / release).

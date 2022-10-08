@@ -44,7 +44,12 @@ module sid_io (
     logic phi1_io;   // Inverted phi2
     logic res_n_x;
 
+    // Delayed phi2 for write enable.
     logic phi2_prev = 0;
+
+    // Output enable to be registered in the SB_IO OE register, separate from
+    // bus_i.oe used in sid_core.sv
+    logic oe_io = 0;
 
     // POT signals.
     logic [1:0] charged_x;
@@ -85,7 +90,7 @@ module sid_io (
         .D_IN_0      (res_n_x)
     );
     
-    // Hold other (registered) signals at phi1, i.e. D-latch enable = phi2.
+    // Hold other (registered) inputs at phi1, i.e. D-latch enable = phi2.
     // This allows us to read out the signals after the falling edge of phi2,
     // where the signals were stable.
 
@@ -119,15 +124,15 @@ module sid_io (
         .D_IN_0            (bus_i.addr)
     );
 
-    // Bidirectional data pins.
+    // Bidirectional data pins. Registered output and output enable.
     SB_IO #(
-        .PIN_TYPE          (6'b1010_10)
+        .PIN_TYPE          (6'b1110_10)
     ) io_data[7:0] (
         .PACKAGE_PIN       (pad_data),
         .LATCH_INPUT_VALUE (phi1_io),
         .INPUT_CLK         (clk),
         .OUTPUT_CLK        (clk),
-        .OUTPUT_ENABLE     (bus_i.oe),
+        .OUTPUT_ENABLE     (oe_io),
         .D_IN_0            (bus_i.data),
         .D_OUT_0           (data_o)
     );
@@ -143,21 +148,23 @@ module sid_io (
         // for detection of the falling edge of phi2.
         phi2      <= phi2_io;
         phi2_prev <= phi2;
- 
+
         // The reset signal is already registered on the I/O input,
         // so we only add one extra register stage wrt. metastability.
         // Also OR in the system reset for PLL sync / BRAM powerup.
         bus_i.res <= ~res_n_x | rst;
 
-        // Output enable / write enable are valid on the cycle after phi2 falls.
-        // NB! Output enable only for /CS, not for /IO1, in case of address
-        // conflict with expansion port cartridges.
         // The data output must be held by the output enable for at least 10ns
         // after the falling edge of phi2 (ref. SID datasheet). This is ensured
-        // since bus_i.oe is delayed by one FPGA clock.
-        // TODO: Compare with a real SID chip and check signals in a C64 to
-        // determine whether we're holding the data for too long.
-        bus_i.oe <= phi2_prev & r_w_n & ~cs.cs_n;
+        // since the SB_IO OE register is delayed by one FPGA clock.
+        // NB! The pin output is enabled only for /CS, not for /IO1, in case of
+        // address conflict with expansion port cartridges.
+        // Delay the start of the pin OE by ANDing with phi2, in order to avoid
+        // any output glitches.
+        oe_io    <= phi2_io & phi2 & r_w_n & ~cs.cs_n;
+        bus_i.oe <= phi2 & r_w_n;
+
+        // Write enable must be held at the detected falling edge of phi2.
         bus_i.we <= phi2_prev & ~r_w_n;
     end
 

@@ -134,6 +134,9 @@ module sid_filter #(
     sid::s24_t vd = 0;
     sid::s24_t amix;
 
+    sid::reg4_t mode = 0;
+    sid::reg4_t vol  = 0;
+
     // Hardware 16x16->32 multiply-add:
     // o = c +- (a * b)
     sid::s32_t o;
@@ -170,9 +173,9 @@ module sid_filter #(
         // array slices on expressions.
         amix =
             vd +
-            (filter_i.regs.mode[0] ? state_o.vlp : 0) +
-            (filter_i.regs.mode[1] ? state_o.vbp : 0) +
-            (filter_i.regs.mode[2] ? o[23:0] : 0);  // vhp, one cycle early
+            (mode[0] ? state_o.vlp : 0) +
+            (mode[1] ? state_o.vbp : 0) +
+            (mode[2] ? o[23:0] : 0);  // vhp, one cycle early
 
         // Intermediate results for filter.
         // Shifts -w0*vbp and -w0*vlp right by 17 - 8 = 9.
@@ -198,13 +201,13 @@ module sid_filter #(
                           { ~filter_i.regs.res, 5'b0 } :
                           _1_Q_8580_lsl8[filter_i.regs.res];
 
-              // Mux for filter input.
+              // Mux for filter path.
               vi <= ((filter_i.regs.filt[0]) ? filter_i.voice1 : 0) +
                     ((filter_i.regs.filt[1]) ? filter_i.voice2 : 0) +
                     ((filter_i.regs.filt[2]) ? filter_i.voice3 : 0) +
                     ((filter_i.regs.filt[3]) ? filter_i.ext_in : 0);
 
-              // Mux for direct audio.
+              // Mux for direct audio path.
               // 3 OFF (mode[3]) disconnects voice 3 from the direct audio path.
               // We add in the mixer DC here, to save time in calculation of
               // amix.
@@ -216,6 +219,12 @@ module sid_filter #(
                     (filter_i.regs.filt[2] |
                      filter_i.regs.mode[3] ? 0 : filter_i.voice3) +
                     (filter_i.regs.filt[3] ? 0 : filter_i.ext_in);
+
+              // Save settings to facilitate expedited filter pipeline setup.
+              // FIXME: The filter doesn't work yet.
+              mode <= 0;
+              // mode <= filter_i.regs.mode;
+              vol  <= filter_i.regs.vol;
           end
           2: begin
               // Read from BRAM.
@@ -262,8 +271,8 @@ module sid_filter #(
               // op-amp, and then again in the volume control op-amp.
               c <= 0;
               s <= 1'b0;
-              a <= { 8'b0, filter_i.regs.vol, 4'b0 };  // vol  << 8
-              b <= amix[8 +: 16];                      // amix >> 8
+              a <= { 8'b0, vol, 4'b0 };  // vol  << 8
+              b <= amix[8 +: 16];        // amix >> 8
           end
           7: begin
               // Final result for audio output ready.

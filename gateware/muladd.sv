@@ -44,6 +44,8 @@ module muladd (
         .A_SIGNED              (1'b1),
         .B_SIGNED              (1'b1)
     ) muladd_16x16_32 (
+        .CLK       (1'b0),
+        .CE        (1'b0),
         .C         (c[31-:16]),
         .A         (a),
         .B         (b),

@@ -43,9 +43,9 @@ module sid_waveform #(
 
     // Waveforms.
     logic        osc19_prev = 0;
-    sid::reg23_t noise      = INIT_NOISE ? '1 : '0;
     logic        nclk       = 0;
     logic        nclk_prev  = 0;
+    sid::reg23_t noise      = INIT_NOISE ? '1 : '0;
     logic        pulse      = 0;
     logic        tri_xor;
     sid::reg12_t saw_tri    = INIT_OSC ? { 6{2'b01} } : 0;
