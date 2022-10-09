@@ -35,7 +35,11 @@ $(TOP).json: $(SRC) Makefile
 prog: $(TOP).bin
 	dfu-util -a 0 -D $< -R
 
-clean:
-	rm -f $(TOP).json $(TOP).asc $(TOP).bin
+sim:
+	verilator --Mdir sim_trace --timescale "1ns / 1ns" --trace-fst --trace-structs --clk clk --cc -O3 --x-assign fast --x-initial fast --noassert --exe --build sid_pkg.sv sid_api.sv --top sid_api sid_api_sim.cpp
+	verilator --Mdir sim_audio --clk clk --cc -O3 --x-assign fast --x-initial fast --noassert --exe --build sid_pkg.sv sid_api.sv --top sid_api sid_api_sim.cpp
 
-.PHONY: all clean prog
+clean:
+	rm -rf $(TOP).json $(TOP).asc $(TOP).bin sim_trace sim_audio
+
+.PHONY: all prog sim clean
