@@ -26,9 +26,9 @@ package sid;
     typedef logic [22:0] reg23_t;  // Noise waveform LFSR
     typedef logic [14:0] reg15_t;  // Envelope rate counter LFSR
     typedef logic [11:0] reg12_t;  // Waveform output, pulse width
-    typedef logic [10:0] reg11_t;  // Filter cutoff
+    typedef logic [10:0] reg11_t;  // Filter cutoff, filter 1/Q
     typedef logic  [9:0] reg10_t;  // Filter table lookup index
-    typedef logic  [8:0] reg9_t;   // POT position counter, filter 1/Q, fc offset
+    typedef logic  [8:0] reg9_t;   // POT position counter, fc offset
     typedef logic  [7:0] reg8_t;   // Data bus, register bytes, envelope counter
     typedef logic  [6:0] reg7_t;   // Envelope exponential segment steps
     typedef logic  [4:0] reg5_t;   // Address bus, envelope exponential counter LFSR
@@ -37,6 +37,7 @@ package sid;
     // Audio signals.
     typedef logic signed [31:0] s32_t;
     typedef logic signed [23:0] s24_t;
+    typedef logic signed [16:0] s17_t;  // Before clamping to 16 bits
     typedef logic signed [15:0] s16_t;
     typedef logic signed [12:0] s13_t;  // tanh_x unclamped
     typedef logic signed [11:0] s12_t;  // tanh_x offset
@@ -213,9 +214,9 @@ package sid;
 
     // Filter state variables.
     typedef struct packed {
-        s24_t vhp;
-        s24_t vbp;
-        s24_t vlp;
+        s16_t vhp;
+        s16_t vbp;
+        s16_t vlp;
     } filter_v_t;
 
     // Input to audio filter / audio output stage.

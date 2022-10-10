@@ -114,12 +114,16 @@ module sid_api #(
     sid::filter_v_t filter1_v = 0;
     sid::filter_v_t filter2_v = 0;
 
-    logic [3:0] filter_stage = 0, next_filter_stage;
+    logic [3:0] filter_state = 0, next_filter_state;
+    /* verilator lint_off UNUSED */
+    logic       filter_no;
+    /* verilator lint_on UNUSED */
+    logic [2:0] filter_stage;
     logic [1:0] filter_done  = 0, next_filter_done;
 
     sid_filter filter_pipeline (
         .clk      (clk),
-        .stage    (filter_stage[2:0]),
+        .stage    (filter_stage),
         .filter_i (filter_i),
         .state_o  (filter_v),
         .audio_o  (filter_o) // 8 cycle delay
@@ -135,17 +139,20 @@ module sid_api #(
              next_voice_stage = voice_stage + 1;
         endcase
 
-        case (filter_stage)
+        case (filter_state)
           // Start filter pipeline when all voices from SID #1 are done.
-          0: next_filter_stage = { 3'b0, voice_stage == 5 };
+          0: next_filter_state = { 3'b0, voice_stage == 5 };
           // Start filter #2 after filter #1 is done.
           // filter_stage will wrap around to zero after filter #2 is done.
-          7: next_filter_stage = { 1'b1, 3'd1 };
+          7: next_filter_state = { 1'b1, 3'd1 };
           default:
-             next_filter_stage = filter_stage + 1;
+             next_filter_state = filter_state + 1;
         endcase
 
-        case (filter_stage)
+        filter_no    = filter_state[3];
+        filter_stage = filter_state[2:0];
+
+        case (filter_state)
           { 1'b0, 3'd7 }:
             next_filter_done = 1;
           { 1'b1, 3'd7 }:
@@ -236,7 +243,7 @@ module sid_api #(
           end
         endcase
         
-        filter_stage <= next_filter_stage;
+        filter_state <= next_filter_state;
         filter_done  <= next_filter_done;
     end
     
