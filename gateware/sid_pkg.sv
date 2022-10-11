@@ -149,17 +149,23 @@ package sid;
         reg4_t vol;
     } filter_reg_t;
 
+    // Write-only registers for the full 5 bit address space.
+    /* verilator lint_off LITENDIAN */
     typedef struct packed {
         // voice_reg_t [0:2] voice;
         voice_reg_t  voice1;
         voice_reg_t  voice2;
         voice_reg_t  voice3;
         filter_reg_t filter;
-    } main_reg_t;
+
+        // Extra write-only registers, not present in the real SID.
+        // These are included in order to facilitate configuration by
+        // the writing of magic bytes.
+        logic [0:6][7:0] magic;
+    } write_reg_t;
 
     // FIXME: Currently the array must be encapsulated in a struct,
     // otherwise Yosys miscalculates its size.
-    /* verilator lint_off LITENDIAN */
     typedef struct packed {
         logic [0:1][7:0] xy;
     } pot_reg_t;
@@ -168,19 +174,19 @@ package sid;
         pot_reg_t pot;
         reg8_t    osc3;
         reg8_t    env3;
-    } misc_reg_t;
+    } read_reg_t;
 
-    // Write-only registers.
+    // Byte addressable write-only registers.
     typedef union packed {
-        logic [0:24][7:0] bytes;
-        main_reg_t        regs;
+        logic [0:31][7:0] bytes;
+        write_reg_t       regs;
     } reg_i_t;
                     
-    // Read-only registers.
+    // Byte addressable read-only registers.
     typedef union packed {
         // logic ['h19:'h1c][7:0] bytes;
         logic [0:3][7:0] bytes;
-        misc_reg_t       regs;
+        read_reg_t       regs;
     } reg_o_t;
     /* verilator lint_on LITENDIAN */
 
@@ -232,7 +238,7 @@ package sid;
         s22_t        voice2;
         s22_t        voice3;
         s22_t        ext_in;
-        // Filter state
+        // Filter state.
         filter_v_t   state;
     } filter_i_t;
 

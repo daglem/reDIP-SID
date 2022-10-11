@@ -109,19 +109,6 @@ module sid_core #(
         .out   (out.voice3.envelope)
     );
 
-/*
-    // SID filter / audio output.
-    sid_filter filter (
-        .clk    (clk),
-        .model  (model),
-        .reg_i  (reg_i.regs.filter),
-        .voice1 (vout1[19:4]),
-        .voice2 (vout2[19:4]),
-        .voice3 (vout3[19:4]),
-        .out    (audio_o)
-    );
-*/
-
     // SID POTX / POTY.
     sid_pot pot (
        .clk     (clk),
@@ -158,7 +145,7 @@ module sid_core #(
             if (bus_i.res) begin
                 // Reset write-only registers.
                 reg_i <= '0;
-            end else if (w && bus_i.addr < 'h19) begin
+            end else if (w) begin
                 // Register write.
                 reg_i.bytes[bus_i.addr] <= bus_i.data;
             end
