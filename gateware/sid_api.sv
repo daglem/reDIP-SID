@@ -92,7 +92,7 @@ module sid_api #(
     sid::model_e   voice_model;
     sid::voice_i_t voice_i;
     sid::reg8_t    osc_o;
-    sid::reg24_t   voice_o;
+    sid::s22_t     voice_o;
 
     logic [3:0] voice_stage = 0, next_voice_stage;
     
@@ -106,9 +106,9 @@ module sid_api #(
     
     // Pipeline for filter outputs.
     sid::filter_i_t filter_i;
-    sid::s24_t      filter_o;
-    sid::s24_t      filter_o_left;
-    sid::s24_t      audio_i_right;
+    sid::s22_t      filter_o;
+    sid::s22_t      filter_o_left;
+    sid::s22_t      audio_i_right;
     // Filter states.
     sid::filter_v_t filter_v;
     sid::filter_v_t filter1_v = 0;
@@ -196,10 +196,10 @@ module sid_api #(
               filter_i.fc_base   <= sid1_cfg.fc_base;
               filter_i.fc_offset <= sid1_cfg.fc_offset + FC_OFFSET_6581;
               filter_i.regs      <= core1_o.filter_regs;
-              filter_i.ext_in    <= audio_i.left;
+              filter_i.ext_in    <= audio_i.left[23 -: 22];
               filter_i.state     <= filter1_v;
               // Save audio input for SID #2.
-              audio_i_right      <= audio_i.right;
+              audio_i_right      <= audio_i.right[23 -: 22];
 
               // Ready for SID #1 filter pipeline, see below.
           end
@@ -238,8 +238,8 @@ module sid_api #(
           end
           2: begin
               filter2_v     <= filter_v;
-              audio_o.left  <= filter_o_left;
-              audio_o.right <= filter_o;
+              audio_o.left  <= { filter_o_left, 2'b0 };
+              audio_o.right <= { filter_o,      2'b0 };
           end
         endcase
         

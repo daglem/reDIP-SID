@@ -144,9 +144,7 @@ module redip_sid (
         .data_o  (data_o),
         .pot_i   (pot_i),
         .pot_o   (pot_o),
-        // Crop audio inputs to 20 bits, in order to match SID voices.
-        .audio_i ({ 24'(signed'(audio_i.left[23-:20])),
-                    24'(signed'(audio_i.right[23-:20])) }),
+        .audio_i (audio_i),
         .audio_o (audio_o)
     );
 

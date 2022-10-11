@@ -33,7 +33,7 @@ module sid_voice #(
     input  sid::model_e   model,
     input  sid::voice_i_t voice_i,
     // The outputs are delayed by 1 cycle.
-    output sid::s24_t     voice_o,
+    output sid::s22_t     voice_o,
     output sid::reg8_t    osc_o
 );
 
@@ -47,7 +47,7 @@ module sid_voice #(
     sid::reg12_t norm_6581;     // Output from 6581 waveform DAC
     sid::reg12_t norm_dac = 0;  // 6581 / 8580 result
     sid::reg8_t  norm_osc = 0;  // For OSC3
-    sid::reg12_t comb;          // Selected combined waveform
+    sid::reg8_t  comb;          // Selected combined waveform
     sid::reg8_t  pst      = 0;  // Combined waveforms
     sid::reg8_t  ps__6581 = 0;
     sid::reg8_t  ps__8580 = 0;
@@ -63,7 +63,9 @@ module sid_voice #(
     sid::s16_t wave_dac;
     sid::s16_t env_dac  = 0;
     // Output from voice DCA.
+    /* verilator lint_off UNUSED */
     sid::s32_t voice_res;
+    /* verilator lint_on UNUSED */
 
     // MOS6581 waveform DAC output.
     sid_dac #(
@@ -82,8 +84,8 @@ module sid_voice #(
     );
               
     // Voice DCA (digitally controlled amplifier).
-    // voice_res = voice_DC + waveform_o*envelope_o
-    // The result fits in 21 bits.
+    // voice_res = voice_DC + waveform*envelope
+    // The result fits in 22 bits.
     muladd voice_dca (
         .c (voice_DC),
         .s (1'b0),
@@ -114,10 +116,10 @@ module sid_voice #(
         // Final waveform selection on cycle 2.
         // All inputs to the combinational logic are from cycle 1.
         unique case (selector_prev)
-          'b0111:  comb = { pst, 4'b0 };
-          'b0110:  comb = { ((model_prev == sid::MOS6581) ? ps__6581 : ps__8580), 4'b0 };
-          'b0101:  comb = { ((model_prev == sid::MOS6581) ? p_t_6581 : p_t_8580), 4'b0 };
-          'b0011:  comb = { _st, 4'b0 };
+          'b0111:  comb = pst;
+          'b0110:  comb = ((model_prev == sid::MOS6581) ? ps__6581 : ps__8580);
+          'b0101:  comb = ((model_prev == sid::MOS6581) ? p_t_6581 : p_t_8580);
+          'b0011:  comb = _st;
           default: comb = 0;
         endcase
 
@@ -125,15 +127,15 @@ module sid_voice #(
         voice_DC = (model_prev == sid::MOS6581) ?
                    VOICE_DC_6581 :
                    VOICE_DC_8580;
-        wave_dac = npst ? 16'(norm_dac) : 16'(comb) +
+        wave_dac = (npst ? 16'(norm_dac) : 16'({ comb, 4'b0 })) +
                    ((model_prev == sid::MOS6581) ?
                     WAVEFORM_DC_6581 :
                     WAVEFORM_DC_8580);
 
         // The outputs are delayed by 1 cycle.
-        osc_o   = npst ? norm_osc : comb[11-:8];
-        // 8 bits x 16.5 bits = 20.5 bits
-        voice_o = voice_res[23-:24];
+        osc_o   = npst ? norm_osc : comb;
+        // The DCA output fits in 22 bits.
+        voice_o = voice_res[21:0];
     end
 
     always_ff @(posedge clk) begin
@@ -152,7 +154,7 @@ module sid_voice #(
                     norm_6581 :
                     norm;
         // For OSC3.
-        norm_osc <= norm[11-:8];
+        norm_osc <= norm[11 -: 8];
         // Flag for regular waveform.
         // FIXME: Yosys lacks support for the inside operator.
         // npst     <= voice_i.waveform.selector inside { 'b1000, 'b0100, 'b0010, 'b0001 };

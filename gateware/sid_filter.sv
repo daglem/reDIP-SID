@@ -55,7 +55,7 @@ module sid_filter #(
     input  logic [2:0]     stage,
     input  sid::filter_i_t filter_i,
     output sid::filter_v_t state_o,
-    output sid::s24_t      audio_o
+    output sid::s22_t      audio_o
 );
 
     // MOS6581 filter cutoff: 200Hz - 24.2kHz (from cutoff curves below)
@@ -211,11 +211,11 @@ module sid_filter #(
                             _1_Q_8580_lsl10[filter_i.regs.res];
 
               // Mux for filter path.
-              // Each voice is 20.5 bits, i.e. the sum of four voices is 22.5 bits.
-              vi <= 16'((((filter_i.regs.filt[0]) ? filter_i.voice1 : '0) +
-                         ((filter_i.regs.filt[1]) ? filter_i.voice2 : '0) +
-                         ((filter_i.regs.filt[2]) ? filter_i.voice3 : '0) +
-                         ((filter_i.regs.filt[3]) ? filter_i.ext_in : '0)) >>> 7);
+              // Each voice is 22 bits, i.e. the sum of four voices is 24 bits.
+              vi <= 16'((((filter_i.regs.filt[0]) ? 24'(filter_i.voice1) : '0) +
+                         ((filter_i.regs.filt[1]) ? 24'(filter_i.voice2) : '0) +
+                         ((filter_i.regs.filt[2]) ? 24'(filter_i.voice3) : '0) +
+                         ((filter_i.regs.filt[3]) ? 24'(filter_i.ext_in) : '0)) >>> 7);
 
               // Mux for direct audio path.
               // 3 OFF (mode[3]) disconnects voice 3 from the direct audio path.
@@ -224,11 +224,11 @@ module sid_filter #(
               vd <= 16'((((filter_i.model == sid::MOS6581) ?
                           MIXER_DC_6581 :
                           MIXER_DC_8580) +
-                         (filter_i.regs.filt[0] ? '0 : filter_i.voice1) +
-                         (filter_i.regs.filt[1] ? '0 : filter_i.voice2) +
+                         (filter_i.regs.filt[0] ? '0 : 24'(filter_i.voice1)) +
+                         (filter_i.regs.filt[1] ? '0 : 24'(filter_i.voice2)) +
                          (filter_i.regs.filt[2] |
-                          filter_i.regs.mode[3] ? '0 : filter_i.voice3) +
-                         (filter_i.regs.filt[3] ? '0 : filter_i.ext_in)) >>> 7);
+                          filter_i.regs.mode[3] ? '0 : 24'(filter_i.voice3)) +
+                         (filter_i.regs.filt[3] ? '0 : 24'(filter_i.ext_in))) >>> 7);
 
               // Save settings to facilitate expedited filter pipeline setup.
               mode <= filter_i.regs.mode;
@@ -287,7 +287,7 @@ module sid_filter #(
           7: begin
               // Final result for audio output ready.
               // The effective width is 20 bits (4 bit volume * 16 bit audio).
-              audio_o <= { o[19:0], 4'b0 };
+              audio_o <= { o[20:0], 1'b0 };
           end
         endcase
     end

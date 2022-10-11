@@ -37,6 +37,7 @@ package sid;
     // Audio signals.
     typedef logic signed [31:0] s32_t;
     typedef logic signed [23:0] s24_t;
+    typedef logic signed [21:0] s22_t;  // Output from voice DCA
     typedef logic signed [16:0] s17_t;  // Before clamping to 16 bits
     typedef logic signed [15:0] s16_t;
     typedef logic signed [12:0] s13_t;  // tanh_x unclamped
@@ -227,10 +228,10 @@ package sid;
         reg9_t       fc_base;    // Base cutoff frequency in Hz
         s12_t        fc_offset;  // Final FC register offset for curve shifting
         // Input signals.
-        s24_t        voice1;
-        s24_t        voice2;
-        s24_t        voice3;
-        s24_t        ext_in;
+        s22_t        voice1;
+        s22_t        voice2;
+        s22_t        voice3;
+        s22_t        ext_in;
         // Filter state
         filter_v_t   state;
     } filter_i_t;
