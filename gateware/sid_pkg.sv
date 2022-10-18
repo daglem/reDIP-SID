@@ -38,6 +38,7 @@ package sid;
     typedef logic signed [31:0] s32_t;
     typedef logic signed [23:0] s24_t;
     typedef logic signed [21:0] s22_t;  // Output from voice DCA
+    typedef logic signed [19:0] s20_t;  // Output from audio output stage
     typedef logic signed [16:0] s17_t;  // Before clamping to 16 bits
     typedef logic signed [15:0] s16_t;
     typedef logic signed [12:0] s13_t;  // tanh_x unclamped
@@ -224,7 +225,7 @@ package sid;
         s16_t vhp;
         s16_t vbp;
         s16_t vlp;
-    } filter_v_t;
+    } filter_state_t;
 
     // Input to audio filter / audio output stage.
     typedef struct packed {
@@ -238,8 +239,6 @@ package sid;
         s22_t        voice2;
         s22_t        voice3;
         s22_t        ext_in;
-        // Filter state.
-        filter_v_t   state;
     } filter_i_t;
 
 endpackage

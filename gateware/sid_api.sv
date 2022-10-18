@@ -106,13 +106,9 @@ module sid_api #(
     
     // Pipeline for filter outputs.
     sid::filter_i_t filter_i;
-    sid::s22_t      filter_o;
-    sid::s22_t      filter_o_left;
+    sid::s20_t      filter_o;
+    sid::s20_t      filter_o_left;
     sid::s22_t      audio_i_right;
-    // Filter states.
-    sid::filter_v_t filter_v;
-    sid::filter_v_t filter1_v = 0;
-    sid::filter_v_t filter2_v = 0;
 
     logic [3:0] filter_state = 0, next_filter_state;
     /* verilator lint_off UNUSED */
@@ -123,9 +119,9 @@ module sid_api #(
 
     sid_filter filter_pipeline (
         .clk      (clk),
+        .sidno    (filter_no),
         .stage    (filter_stage),
         .filter_i (filter_i),
-        .state_o  (filter_v),
         .audio_o  (filter_o) // 8 cycle delay
     );
     
@@ -197,7 +193,6 @@ module sid_api #(
               filter_i.fc_offset <= sid1_cfg.fc_offset + FC_OFFSET_6581;
               filter_i.regs      <= core1_o.filter_regs;
               filter_i.ext_in    <= audio_i.left[23 -: 22];
-              filter_i.state     <= filter1_v;
               // Save audio input for SID #2.
               audio_i_right      <= audio_i.right[23 -: 22];
 
@@ -224,7 +219,6 @@ module sid_api #(
               filter_i.fc_offset <= sid2_cfg.fc_offset + FC_OFFSET_6581;
               filter_i.regs      <= core2_o.filter_regs;
               filter_i.ext_in    <= audio_i_right;
-              filter_i.state     <= filter2_v;
           end
         endcase
               
@@ -233,13 +227,11 @@ module sid_api #(
         // Combine 2 audio stage outputs.
         case (filter_done)
           1: begin
-              filter1_v     <= filter_v;
               filter_o_left <= filter_o;
           end
           2: begin
-              filter2_v     <= filter_v;
-              audio_o.left  <= { filter_o_left, 2'b0 };
-              audio_o.right <= { filter_o,      2'b0 };
+              audio_o.left  <= { filter_o_left, 4'b0 };
+              audio_o.right <= { filter_o,      4'b0 };
           end
         endcase
         

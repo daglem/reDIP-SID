@@ -52,10 +52,10 @@ module sid_filter #(
     localparam PI = $acos(-1)
 )(
     input  logic           clk,
+    input  logic           sidno,
     input  logic [2:0]     stage,
     input  sid::filter_i_t filter_i,
-    output sid::filter_v_t state_o,
-    output sid::s22_t      audio_o
+    output sid::s20_t      audio_o
 );
 
     // MOS6581 filter cutoff: 200Hz - 24.2kHz (from cutoff curves below)
@@ -172,6 +172,8 @@ module sid_filter #(
     // vlp = vlp - w0*vbp
     // vbp = vbp - w0*vhp
     // vhp = 1/Q*vbp - vlp - vi
+    // FIXME: Yosys doesn't support this directly - we use sv2v for now.
+    sid::filter_state_t state[2];
 
     sid::s17_t dv;
     sid::s16_t vbp_next;
@@ -187,8 +189,8 @@ module sid_filter #(
         // Intermediate results for filter.
         // Shifts -w0*vbp and -w0*vlp right by 17.
         dv       = 17'(o >>> 17);
-        vbp_next = clamp(filter_i.state.vbp + dv);
-        vlp_next = clamp(filter_i.state.vlp + dv);
+        vlp_next = clamp(state[sidno].vlp + dv);
+        vbp_next = clamp(state[sidno].vbp + dv);
         vhp_next = clamp(o[10 +: 17]);
     end
 
@@ -239,39 +241,39 @@ module sid_filter #(
               w0_T_lsl17_6581 <= w0_T_lsl17_6581_tanh[tanh_x_mirror(fc_x)];
           end
           3: begin
-              // vbp = vbp - w0*vhp
-              // We first calculate -w0*vhp
-              c <= 0;
-              s <= 1'b1;
-              a <= (filter_i.model == sid::MOS6581) ?
-                   w0_T_lsl17_6581_base + w0_T_lsl17_6581_y0 + tanh_y_mirror(fc_x[10], w0_T_lsl17_6581) :
-                   w0_T_lsl17_8580;     // w0*T << 17
-              b <= filter_i.state.vhp;  // vhp
-          end
-          4: begin
-              // Result for vbp ready. See calculation of vbp_next above.
-              state_o.vbp <= vbp_next;
-
               // vlp = vlp - w0*vbp
               // We first calculate -w0*vbp
               c <= 0;
               s <= 1'b1;
-              // a <= a;                   // w0*T << 17
-              b <= filter_i.state.vbp;  // vbp
+              a <= (filter_i.model == sid::MOS6581) ?
+                   w0_T_lsl17_6581_base + w0_T_lsl17_6581_y0 + tanh_y_mirror(fc_x[10], w0_T_lsl17_6581) :
+                   w0_T_lsl17_8580;   // w0*T << 17
+              b <= state[sidno].vbp;  // vbp
+          end
+          4: begin
+              // Result for vlp ready. See calculation of vlp_next above.
+              state[sidno].vlp <= vlp_next;
+
+              // vbp = vbp - w0*vhp
+              // We first calculate -w0*vhp
+              c <= 0;
+              s <= 1'b1;
+              // a <= a;              // w0*T << 17
+              b <= state[sidno].vhp;  // vhp
           end
           5: begin
-              // Result for vlp ready. See calculation of vlp_next above.
-              state_o.vlp <= vlp_next;
+              // Result for vbp ready. See calculation of vbp_next above.
+              state[sidno].vbp <= vbp_next;
 
               // vhp = 1/Q*vbp - vlp - vi
-              c <= -(32'(vlp_next) + 32'(vi)) << 10;
+              c <= -(32'(state[sidno].vlp) + 32'(vi)) << 10;
               s <= 1'b0;
-              a <= 16'(_1_Q_lsl10);  // 1/Q << 10
-              b <= state_o.vbp;      // vbp
+              a <= 16'(_1_Q_lsl10);   // 1/Q << 10
+              b <= vbp_next;          // vbp
           end
           6: begin
               // Result for vbp ready. See calculation of vhp_next above.
-              state_o.vhp <= vhp_next;
+              state[sidno].vhp <= vhp_next;
 
               // Audio output: aout = vol*amix
               // In the real SID, the signal is inverted first in the mixer
@@ -280,14 +282,14 @@ module sid_filter #(
               s <= 1'b0;
               a <= { 12'b0, vol };   // Master volume
               b <=  clamp(17'(vd) +  // Audio mixer / master volume input
-                          (mode[0] ? 17'(state_o.vlp) : '0) +
-                          (mode[1] ? 17'(state_o.vbp) : '0) +
-                          (mode[2] ? 17'(vhp_next)    : '0));
+                          (mode[0] ? 17'(state[sidno].vlp) : '0) +
+                          (mode[1] ? 17'(state[sidno].vbp) : '0) +
+                          (mode[2] ? 17'(vhp_next)         : '0));
           end
           7: begin
               // Final result for audio output ready.
               // The effective width is 20 bits (4 bit volume * 16 bit audio).
-              audio_o <= { o[20:0], 1'b0 };
+              audio_o <= o[19:0];
           end
         endcase
     end

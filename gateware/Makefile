@@ -16,15 +16,26 @@ MOD = $(TOP).sv \
 	sid_voice.sv \
 	sid_filter.sv \
 	sid_core.sv \
-	sid_api.sv \
-	muacm.v
+	sid_api.sv
+
+ifdef MUACM
+MOD += muacm.v
+FLG = -DMUACM
+endif
+
 SRC = $(PKG) $(FUN) $(MOD)
-#FLG = -DMUACM
 
 all: $(TOP).bin
 
-$(TOP).json: $(SRC) Makefile
-	yosys -p 'read_verilog -sv $(FLG) $(PKG) $(MOD); synth_ice40 -abc9 -device u -dff -top $(TOP) -json $@'
+# FIXME: We use sv2v for now, since Yosys doesn't support arrays of structs.
+#$(TOP).json: $(SRC) Makefile
+#	yosys -p 'read_verilog -sv $(FLG) $(PKG) $(MOD); synth_ice40 -abc9 -device u -dff -top $(TOP) -json $@'
+
+$(TOP).json: $(TOP).v
+	yosys -p 'read_verilog -sv $<; synth_ice40 -abc9 -device u -dff -top $(TOP) -json $@'
+
+$(TOP).v: $(SRC) Makefile
+	sv2v -E always -E assert -E logic -E unbasedunsized -w $@ -DYOSYS $(FLG) $(PKG) $(MOD)
 
 %.asc: %.json %.pcf
 	nextpnr-ice40 --up5k --package sg48 --freq 24 --json $*.json --pcf $*.pcf --asc $@
@@ -40,6 +51,6 @@ sim:
 	verilator --Mdir sim_audio --clk clk --cc -O3 --x-assign fast --x-initial fast --noassert --exe --build sid_pkg.sv sid_api.sv --top sid_api sid_api_sim.cpp
 
 clean:
-	rm -rf $(TOP).json $(TOP).asc $(TOP).bin sim_trace sim_audio
+	rm -rf $(TOP).v $(TOP).json $(TOP).asc $(TOP).bin sim_trace sim_audio
 
 .PHONY: all prog sim clean
