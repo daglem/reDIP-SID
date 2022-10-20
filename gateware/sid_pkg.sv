@@ -220,13 +220,6 @@ package sid;
         voice_i_t    voice3;
     } core_o_t;
 
-    // Filter state variables.
-    typedef struct packed {
-        s16_t vhp;
-        s16_t vbp;
-        s16_t vlp;
-    } filter_state_t;
-
     // Input to audio filter / audio output stage.
     typedef struct packed {
         model_e      model;

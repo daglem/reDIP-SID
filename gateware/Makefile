@@ -27,12 +27,13 @@ SRC = $(PKG) $(FUN) $(MOD)
 
 all: $(TOP).bin
 
-# FIXME: We use sv2v for now, since Yosys doesn't support arrays of structs.
-#$(TOP).json: $(SRC) Makefile
-#	yosys -p 'read_verilog -sv $(FLG) $(PKG) $(MOD); synth_ice40 -abc9 -device u -dff -top $(TOP) -json $@'
-
+ifneq "$(SV2V)" "1"
+$(TOP).json: $(SRC) Makefile
+	yosys -p 'read_verilog -sv $(FLG) $(PKG) $(MOD); synth_ice40 -abc9 -device u -dff -top $(TOP) -json $@'
+else
 $(TOP).json: $(TOP).v
 	yosys -p 'read_verilog -sv $<; synth_ice40 -abc9 -device u -dff -top $(TOP) -json $@'
+endif
 
 $(TOP).v: $(SRC) Makefile
 	sv2v -E always -E assert -E logic -E unbasedunsized -w $@ -DYOSYS $(FLG) $(PKG) $(MOD)

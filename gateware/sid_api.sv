@@ -119,7 +119,6 @@ module sid_api #(
 
     sid_filter filter_pipeline (
         .clk      (clk),
-        .sidno    (filter_no),
         .stage    (filter_stage),
         .filter_i (filter_i),
         .audio_o  (filter_o) // 8 cycle delay
