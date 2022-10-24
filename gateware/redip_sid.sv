@@ -154,10 +154,10 @@ module redip_sid (
         .BITS      ($bits(audio_o))
     ) i2s_io (
         .clk       (clk_24),
-        .i2s_sclk  (i2s_sclk),
-        .i2s_lrclk (i2s_lrclk),
-        .i2s_dout  (i2s_dout),
-        .i2s_din   (i2s_din),
+        .pad_lrclk (i2s_lrclk),
+        .pad_sclk  (i2s_sclk),
+        .pad_din   (i2s_din),
+        .pad_dout  (i2s_dout),
         .audio_o   (audio_o),
         .audio_i   (audio_i)
     );

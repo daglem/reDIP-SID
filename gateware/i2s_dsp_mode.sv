@@ -24,32 +24,55 @@ module i2s_dsp_mode #(
     localparam COUNTBITS = $clog2(BITS)
 )(
     input  logic clk,
-    input  logic i2s_sclk,
-    input  logic i2s_lrclk,
-    input  logic i2s_dout,
-    output logic i2s_din,
-    input  logic signed [BITS-1:0] audio_o,
-    output logic signed [BITS-1:0] audio_i = '0
+    input  logic pad_lrclk,
+    input  logic pad_sclk,
+    output logic pad_din,
+    input  logic pad_dout,
+    input  logic [BITS-1:0] audio_o,
+    output logic [BITS-1:0] audio_i = '0
 );
 
-    logic signed [BITS-1:0] dout = '0;
-    logic signed [BITS-1:0] din  = '0;
+    logic [BITS-1:0] dout = '0;
+    logic [BITS-1:0] din  = '0;
 
-    logic sclk_x    = 0;
-    logic sclk_prev = 0;
-    logic sclk_rise = 0;
-    logic sclk_fall = 0;
+    logic i2s_lrclk;
+    logic i2s_sclk;
+    logic i2s_din;
+    logic i2s_dout;
+    logic lrclk_prev = 0;
+    logic sclk_prev  = 0;
+    logic sclk_rise  = 0;
+    logic sclk_fall  = 0;
+    logic last_bit   = 0;
     logic [COUNTBITS-1:0] bitnum = 0;
+
+    // Registered inputs. Sample on the falling edge of clk,
+    // in order to detect edges as early as possible.
+    SB_IO #(
+        .PIN_TYPE    (6'b0000_00)
+    ) i2s_in[2:0] (
+        .PACKAGE_PIN ({ pad_lrclk, pad_sclk, pad_dout }),
+        .INPUT_CLK   (clk),
+        .D_IN_1      ({ i2s_lrclk, i2s_sclk, i2s_dout })
+    );
+
+    // Registered output.
+    SB_IO #(
+        .PIN_TYPE    (6'b0101_00)
+    ) i2s_out (
+        .PACKAGE_PIN (pad_din),
+        .OUTPUT_CLK  (clk),
+        .D_OUT_0     (i2s_din)
+    );
     
     always @(posedge clk) begin
-        sclk_x    <= i2s_sclk;
-        sclk_prev <= sclk_x;
-        sclk_rise <= ~sclk_prev &  sclk_x;
-        sclk_fall <=  sclk_prev & ~sclk_x;
+        lrclk_prev <= i2s_lrclk;
+        sclk_prev  <= i2s_sclk;
+        sclk_rise  <= ~sclk_prev &  i2s_sclk;
+        sclk_fall  <=  sclk_prev & ~i2s_sclk;
 
         if (sclk_fall) begin
-            // I2S_LRCLK is stable on the falling edge of I2S_SCLK.
-            if (i2s_lrclk) begin
+            if (lrclk_prev) begin
                 // I2S_LRCLK pulse; prepare for data exchange.
                 dout   <= audio_o;
                 bitnum <= 0;
@@ -57,15 +80,16 @@ module i2s_dsp_mode #(
                 bitnum <= bitnum + 1;
             end
 
-            // Ensure that any last bit is processed even if I2S_LRCLK is high
+            // Any last bit is processed even if I2S_LRCLK is high
             // (i.e. no padding, e.g. for 64 bits).
-            if (bitnum == BITS - 1) begin
-                // Shift in final input data bit, and store input data.
-                audio_i <= { din[BITS-2:0], i2s_dout };
-            end else begin
-                // Shift in input data bit.
-                din     <= { din[BITS-2:0], i2s_dout };
+            last_bit <= (bitnum == BITS - 1);
+
+            if (last_bit) begin
+                audio_i <= din;
             end
+
+            // Shift in input data bit.
+            din <= { din[BITS-2:0], i2s_dout };
         end else if (sclk_rise) begin
             // Shift out output data bit.
             { i2s_din, dout } <= { dout, 1'b0 };

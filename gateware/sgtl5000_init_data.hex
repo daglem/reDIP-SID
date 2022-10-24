@@ -1,10 +1,10 @@
 // Power supply config
-   // Make sure to switch back to not use the PLL or powering
-   // it down will lockup the chip
+   // Power down all digital blocks during setup
    // CHIP_DIG_POWER 0x0002
 00 02 00 00
 
-   // Power down all digital blocks during setup
+   // Make sure to switch back to not use the PLL or powering
+   // it down will lockup the chip
    // CHIP_CLK_CTRL 0x0004
 00 04 00 0C
 
@@ -13,6 +13,7 @@
 00 30 40 60
 
    // Set charge pump to use VDDIO rail
+   // VDDD = 1.2V (not used - LINREG_D_POWERUP = 0)
    // CHIP_LINREG_CTRL 0x0026
 00 26 00 68
 
@@ -22,6 +23,7 @@
 00 28 01 CB
 
    //Line Out bias current=0.36mA, voltage=1.65V
+   // Should we set a higher bias current for the 6581 external 1K load?
    // CHIP_LINE_OUT_CTRL 0x002C
 00 2C 03 22
 
@@ -37,8 +39,9 @@
 
 // Power up in/out/digital
 	// Power up LINEOUT, HP, ADC, DAC (analog)
+	// PLL_POWERUP = 1, CAPLESS_HEADPHONE_POWERUP = 0
 	// CHIP_ANA_POWER 0x0030
-00 30 40 FF
+00 30 40 FB
 
 	// Power up I2S_IN, I2S_OUT, DAP, DAC, ADC (digital)
 	// CHIP_DIG_POWER 0x0002
@@ -47,12 +50,13 @@
 // Line out config
 	// Set volume
 	// CHIP_LINE_OUT_VOL 0x002E
-00 2e 05 05
+00 2E 05 05
 
 // PLL Setup
 	// Power up PLL and its VCO
+	// CAPLESS_HEADPHONE_POWERUP = 0
 	// CHIP_ANA_POWER 0x0030
-00 30 45 FF
+00 30 45 FB
 
 	// Divide the input frequency by 2 (SYS_MCLK > 17MHz)
 	// CHIP_CLK_TOP_CTRL 0x0034
@@ -73,21 +77,21 @@
 
 // Input / Output routing
 // CHIP_SSS_CTRL 0x000A
-00 0a 00 70 // Route I2S_IN to DAP, route DAP to DAC
+00 0A 00 70 // Route I2S_IN to DAP, route DAP to DAC
 
 // DAP EQ
 // DAP_CONTROL 0x0100
 01 00 00 01 // Enable DAP
 //01 08 00 03 // Enable 5 band GEQ
-//01 16 00 4f // 9.5dB gain at 115Hz
+//01 16 00 4F // 9.5dB gain at 115Hz
 //01 18 00 3B // 3dB gain at 330Hz
 
 // CHIP_ANA_CTRL 0x0024
-00 24 00 27 // unmute
+00 24 00 26 // Unmute LINEOUT, HP, and ADC
 // CHIP_DAC_VOL 0x0010
-00 10 3c 3c // 0dB DAC Volume
+00 10 3C 3C // 0dB DAC Volume
 // CHIP_ADCDAC_CTRL 0x000E
-00 0e 02 00 // Enable volume ramp
+00 0E 02 00 // Enable volume ramp
 
 // End sequence
-ff
+FF
