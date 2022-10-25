@@ -56,9 +56,9 @@ module i2s_dsp_mode #(
         .D_IN_1      ({ i2s_lrclk, i2s_sclk, i2s_dout })
     );
 
-    // Registered output.
+    // Simple output, not registered.
     SB_IO #(
-        .PIN_TYPE    (6'b0101_00)
+        .PIN_TYPE    (6'b0110_00)
     ) i2s_out (
         .PACKAGE_PIN (pad_din),
         .OUTPUT_CLK  (clk),
