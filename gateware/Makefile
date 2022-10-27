@@ -27,7 +27,7 @@ SRC = $(PKG) $(FUN) $(MOD)
 
 all: $(TOP).bin
 
-ifneq "$(SV2V)" "1"
+ifeq "$(SV2V)" "0"
 $(TOP).json: $(SRC) Makefile
 	yosys -p 'read_verilog -sv $(FLG) $(PKG) $(MOD); synth_ice40 -abc9 -device u -dff -top $(TOP) -json $@'
 else
