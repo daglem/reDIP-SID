@@ -39,6 +39,7 @@ module sid_voice #(
 
     // Registered values for pipelined calculation.
     sid::model_e model_prev    = 0;
+    logic        pulse_prev    = 0;
     sid::reg4_t  selector_prev = 0;
 
     // Pre-calculated waveforms for waveform selection.
@@ -116,9 +117,9 @@ module sid_voice #(
         // Final waveform selection on cycle 2.
         // All inputs to the combinational logic are from cycle 1.
         unique case (selector_prev)
-          'b0111:  comb = pst;
-          'b0110:  comb = ((model_prev == sid::MOS6581) ? ps__6581 : ps__8580);
-          'b0101:  comb = ((model_prev == sid::MOS6581) ? p_t_6581 : p_t_8580);
+          'b0111:  comb = pst & { 8{pulse_prev} };
+          'b0110:  comb = ((model_prev == sid::MOS6581) ? ps__6581 : ps__8580) & { 8{pulse_prev} };
+          'b0101:  comb = ((model_prev == sid::MOS6581) ? p_t_6581 : p_t_8580) & { 8{pulse_prev} };
           'b0011:  comb = _st;
           default: comb = 0;
         endcase
@@ -146,6 +147,7 @@ module sid_voice #(
 
         // For pipelined selection of waveform.
         model_prev    <= model;
+        pulse_prev    <= voice_i.waveform.pulse;
         selector_prev <= voice_i.waveform.selector;
 
         // Regular waveforms, passed through the non-linear MOS6581
