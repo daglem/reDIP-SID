@@ -49,7 +49,7 @@ module sid_api #(
     // FIXME: This would be safer if Yosys were to understand structure literals.
     // sid::cfg_t sid_cfg = '{ sid1_model: ... };
     sid::cfg_t  sid1_cfg = { sid::MOS6581, sid::D400, 9'd250, 11'sd0 };
-    sid::cfg_t  sid2_cfg = { sid::MOS8580, sid::D400, 9'd250, 11'sd0 };
+    sid::cfg_t  sid2_cfg = { sid::MOS6581, sid::D400, 9'd250, 11'sd0 };
     // NB! Don't put multi-bit variables in arrays, as Yosys handles that incorrectly.
     sid::reg8_t sid1_data_o, sid2_data_o;
     logic [1:0] sid_cs;
