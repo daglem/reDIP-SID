@@ -98,6 +98,7 @@ module sid_api #(
     
     sid_voice voice_pipeline (
         .clk     (clk),
+        .active  (voice_stage >= 2 && voice_stage <= 8),
         .model   (voice_model),
         .voice_i (voice_i),
         .voice_o (voice_o),  // 1 cycle delay
