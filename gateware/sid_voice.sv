@@ -24,8 +24,8 @@
 module sid_voice #(
     localparam WAVEFORM_DC_6581 = -16'sh380,   // OSC3 = 'h38 at 5.94V.
     localparam WAVEFORM_DC_8580 = -16'sh800,   // No DC offsets in the MOS8580.
-    localparam VOICE_DC_6581    = 32'('sh800*'shff), // 1/2 the dynamic range.
-    localparam VOICE_DC_8580    = 32'sh0,      // No DC offsets in the MOS8580.
+    localparam VOICE_DC_6581    = 32'('h800*'hff), // 1/2 the dynamic range.
+    localparam VOICE_DC_8580    = 32'h0,      // No DC offsets in the MOS8580.
     localparam WF_0_TTL_6581    = 23'd200000,  // Waveform 0 TTL ~200ms
     localparam WF_0_TTL_8580    = 23'd5000000  // Waveform 0 TTL ~5s
 )(
