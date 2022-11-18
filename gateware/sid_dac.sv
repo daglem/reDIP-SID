@@ -67,10 +67,8 @@ module sid_dac #(
         vout   = bitsum[MSB-:BITS];
     end
 `else
-    /* verilator lint_off UNOPTFLAT */
     (* mem2reg *)
-    logic [MSB:0] bitsum[BITS];
-    /* verilator lint_on UNOPTFLAT */
+    logic [MSB:0] bitsum[BITS] /*verilator split_var*/;
 
     // Sum values for all set bits, adding 0.5 for rounding by truncation.
     /* verilator lint_off ALWCOMBORDER */
