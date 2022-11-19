@@ -42,10 +42,12 @@
 
 #include "Vsid_api.h"
 #include <verilated.h>
-#include <iostream>
-#include <iomanip>
 #include <fstream>
 #include <getopt.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <iomanip>
+#include <iostream>
 
 using namespace std;
 
@@ -57,8 +59,8 @@ constexpr int PHI2_HZ_NTSC  = 1022730;
 constexpr int PHI2_HZ_PAL_N = 1023440;
 
 static bool to_stdout = false;
-static bool ext_filter = false;
 static bool sid_filter = true;
+static bool ext_filter = true;
 static int sample_hz = 96000;
 static int sid_model = 0;  // MOS6581
 static int phi2_hz = PHI2_HZ_PAL;
@@ -111,7 +113,7 @@ Write simulated raw audio to "sid_api_sim.raw" (default) or to standard output.
 
 Options:
   -c, --stdout                           Write raw audio to standard output.
-  -f, --filter {sid|ext|all|none}        Enable filters (default: sid).
+  -f, --filter {sid|ext|all|none}        Enable filters (default: all).
   -r, --sample-rate <frequency>          Set sample rate in Hz (default: 96000).
   -s, --sid-model {6581|8580}            Specify SID model (default: 6581).
   -v, --video-standard {pal|ntsc|pal-n}  Specify video standard (default: pal).
@@ -208,16 +210,21 @@ int main(int argc, char** argv, char** env) {
         optind++;
     }
 
-    if (optind < argc) {
+    if (optind < argc || isatty(fileno(stdin))) {
+        if (!(optind < argc)) {
+            cerr << argv[0] << ": standard input is a terminal." << endl;
+        }
 #if VM_TRACE == 1
         cerr << "Usage: " << argv[0] << R"( [verilator-options]
 Read lines of SID register writes (cycles address value) from standard input.
 Write waveform dump to "sid_api.fst".
 )";
 #else
-        cerr << argv[0]
-             << ": unrecognized argument '" << argv[optind] << "'" << endl
-             << "Try '" << argv[0] << " --help' for more information." << endl;
+        if (optind < argc) {
+            cerr << argv[0]
+                 << ": unrecognized argument '" << argv[optind] << "'" << endl;
+        }
+        cerr << "Try '" << argv[0] << " --help' for more information." << endl;
 #endif
         return EXIT_FAILURE;
     }
@@ -244,7 +251,8 @@ Write waveform dump to "sid_api.fst".
     static constexpr double w0hp = 1.0/(1e3*10e-6);
     auto t1 = ExternalFilterCoefficients(w0lp, w0hp, cycle_T);
     // Filter states (27 bits):
-    int vlp, vhp;
+    int vlp = 0;
+    int vhp = 0;
 
     ostream* out;
     ofstream fout;
