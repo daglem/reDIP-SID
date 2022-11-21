@@ -21,7 +21,10 @@ module sid_waveform #(
     localparam INIT_OSC   = 1,
     // Default to init, since the noise LFSR stays at 'h7ffffe after reset.
     // FIXME: Is the initial value 'h7fffff possibly caused by a long reset?
-    localparam INIT_NOISE = 1
+    localparam INIT_NOISE = 1,
+    // Time for noise LFSR to be filled with 1 bits when reset or test is held.
+    localparam NOISE_TTL_6581 = 24'h8000,
+    localparam NOISE_TTL_8580 = 24'h950000
 )(
     input  logic               clk,
     input  logic               res,
@@ -45,10 +48,13 @@ module sid_waveform #(
     logic        osc19_prev = 0;
     logic        nclk       = 0;
     logic        nclk_prev  = 0;
+    logic        nres       = 0;
+    logic        nres_prev  = 0;
     sid::reg23_t noise      = INIT_NOISE ? '1 : '0;
     logic        pulse      = 0;
     logic        tri_xor;
     sid::reg12_t saw_tri    = INIT_OSC ? { 6{2'b01} } : 0;
+    sid::reg24_t noise_age  = 0;
 
     always_comb begin
         // A sync source will normally sync its destination when the MSB of the
@@ -109,26 +115,46 @@ module sid_waveform #(
             // it's delayed by one cycle.
             nclk       <= ~(res | reg_i.test | (~osc19_prev & osc[19]));
             nclk_prev  <= nclk;
+            nres       <= res | reg_i.test;
+            nres_prev  <= nres;
             osc19_prev <= osc[19];
 
-            // The noise LFSR is clocked after OSC bit 19 goes high, or when
-            // reset or test is released.
-            if (~nclk_prev & nclk) begin
-                // Completion of the shift is delayed by 2 cycles after OSC
-                // bit 19 goes high.
-                noise <= { noise[21:0], (res | reg_i.test | noise[22]) ^ noise[17] };
-            end
+            if (~nclk) begin
+                // LFSR shift phase 1.
+                if (noise_age == (model == sid::MOS6581 ?
+                                  NOISE_TTL_6581 :
+                                  NOISE_TTL_8580))
+                begin
+                    // Reset LFSR.
+                    noise <= '1;
+                end else begin
+                    noise_age <= noise_age + 1;
+                end
+            end else begin
+                noise_age <= 0;
 
-            // FIXME: If nclk stays low (i.e. reset or test), the LFSR will be
-            // fully reset after several thousand cycles.
+                // The noise LFSR is clocked after OSC bit 19 goes high, or when
+                // reset or test is released.
+                if (~nclk_prev & nclk) begin
+                    // LFSR shift phase 2.
+                    // Completion of the shift is delayed by 2 cycles after OSC
+                    // bit 19 goes high.
+                    noise <= { noise[21:0], (nres_prev | noise[22]) ^ noise[17] };
+                end else if (reg_i.noise & (reg_i.pulse | reg_i.sawtooth | reg_i.triangle)) begin
+                    // Writeback to LFSR from combined waveforms when nclk = 1.
+                    // FIXME: This should AND in actual bit values, which are
+                    // first calculated in sid_voice.sv. For now, we assume that
+                    // combined waveforms are used to write zeros to the LFSR.
+                    { noise[20], noise[18], noise[14], noise[11], noise[9], noise[5], noise[2], noise[0] } <= '0;
+                end
+            end
 
             // The pulse width comparison is done at phi2, before the oscillator
             // is updated at phi1. Thus the pulse waveform is delayed by one cycle
             // with respect to the oscillator.
             pulse <= (osc[23:12] >= { reg_i.pw_hi[3:0], reg_i.pw_lo }) | reg_i.test;
         end
-        
-        // Output waveform value before any read of OSC3 at phi2.
+
         if (phase[sid::PHI1_PHI2]) begin
             // The input oscillator MSB must be stored after sync.
             msb_i_prev <= sync_i.msb;
