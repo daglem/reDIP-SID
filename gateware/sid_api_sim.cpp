@@ -42,6 +42,7 @@
 
 #include "Vsid_api.h"
 #include <verilated.h>
+#include <climits>
 #include <fstream>
 #include <getopt.h>
 #include <stdio.h>
@@ -61,6 +62,8 @@ constexpr int PHI2_HZ_PAL_N = 1023440;
 static bool to_stdout = false;
 static bool sid_filter = true;
 static bool ext_filter = true;
+static int f0hp = 10;
+static int f0lp = 16000;
 static int sample_hz = 96000;
 static int sid_model = 0;  // MOS6581
 static int phi2_hz = PHI2_HZ_PAL;
@@ -68,6 +71,7 @@ static int phi2_hz = PHI2_HZ_PAL;
 static struct option long_opts[] = {
     { "stdout",          no_argument,       0, 'c' },
     { "filter",          required_argument, 0, 'f' },
+    { "bandpass",        required_argument, 0, 'p' },
     { "sample-rate",     required_argument, 0, 'r' },
     { "sid-model",       required_argument, 0, 's' },
     { "video-standard",  required_argument, 0, 'v' },
@@ -78,7 +82,7 @@ static struct option long_opts[] = {
 static void parse_args(int argc, char** argv) {
     int opt;
     int opt_ix = -1;
-    while ((opt = getopt_long(argc, argv, "ce:f:r:s:v:h", long_opts, &opt_ix)) != -1) {
+    while ((opt = getopt_long(argc, argv, "ce:f:p:r:s:v:h", long_opts, &opt_ix)) != -1) {
         string val = optarg ? optarg : "";
         switch (opt) {
         case 'c':
@@ -91,8 +95,15 @@ static void parse_args(int argc, char** argv) {
             else if (val == "none") { sid_filter = false; ext_filter = false; }
             else                    goto fail;
             break;
+        case 'p':
+            if (sscanf(optarg, "%d-%d", &f0hp, &f0lp) != 2 ||
+                f0hp < 1 || f0lp > 20000)
+            {
+                goto fail;
+            }
+            break;
         case 'r':
-            if ((sample_hz = strtol(val.c_str(), 0, 10)) <= 0)
+            if ((sample_hz = strtol(optarg, 0, 10)) <= 0)
                 goto fail;
             break;
         case 's':
@@ -114,6 +125,7 @@ Write simulated raw audio to "sid_api_sim.raw" (default) or to standard output.
 Options:
   -c, --stdout                           Write raw audio to standard output.
   -f, --filter {sid|ext|all|none}        Enable filters (default: all).
+  -p, --bandpass <from-to>               Ext. filter band (default: 10-16000).
   -r, --sample-rate <frequency>          Set sample rate in Hz (default: 96000).
   -s, --sid-model {6581|8580}            Specify SID model (default: 6581).
   -v, --video-standard {pal|ntsc|pal-n}  Specify video standard (default: pal).
@@ -148,11 +160,10 @@ public:
     int shiftlp, shifthp;
     int mullp, mulhp;
 
-    ExternalFilterCoefficients(double w0lp, double w0hp, double T) :
-        // Cutoff frequency accuracy (4 bits) is traded off for filter state
-        // accuracy (27 bits). This is crucial since w0lp and w0hp are so far apart.
-        shiftlp( log2(((1 << 4) - 1.0)/(1.0 - exp(-w0lp*T))) ),
-        shifthp( log2(((1 << 4) - 1.0)/(1.0 - exp(-w0hp*T))) ),
+    ExternalFilterCoefficients(double w0lp, double w0hp, double T, int w0_bits) :
+        // Fits cutoff frequencies in w0_bits.
+        shiftlp( log2(((1 << w0_bits) - 1.0)/(1.0 - exp(-w0lp*T))) ),
+        shifthp( log2(((1 << w0_bits) - 1.0)/(1.0 - exp(-w0hp*T))) ),
         mullp( (1.0 - exp(-w0lp*T))*(1 << shiftlp) + 0.5 ),
         mulhp( (1.0 - exp(-w0hp*T))*(1 << shifthp) + 0.5 )
     {}
@@ -245,12 +256,20 @@ Write waveform dump to "sid_api.fst".
 
     // The implementation of the external filter is adapted from reSID.
     // Filter coefficients:
-    // w0lp = 1/(R8*C74) = 1/(10e3*1e-9)    = 100000
-    // w0hp = 1/(Rload*C77) = 1/(1e3*10e-6) =    100
-    static constexpr double w0lp = 1.0/(10e3*1e-9);
-    static constexpr double w0hp = 1.0/(1e3*10e-6);
-    auto t1 = ExternalFilterCoefficients(w0lp, w0hp, cycle_T);
-    // Filter states (27 bits):
+    // w0lp = 1/(R8*C74) = 1/(10e3*1e-9)     = 100000
+    // w0hp = 1/(Rload*C77) = 1/(10e3*10e-6) =     10
+    double w0lp = 2*M_PI*f0lp;
+    double w0hp = 2*M_PI*f0hp;
+
+    // Cutoff frequencies are fit into 4 bits, leaving 28 bits for filter
+    // states. It is crucial to reserve a high number of bits for filter
+    // states, since w0lp and w0hp are so far apart.
+    constexpr int w0_bits = 4;
+    auto t1 = ExternalFilterCoefficients(w0lp, w0hp, cycle_T, w0_bits);
+    // Left shift of input, given 24 bit samples.
+    constexpr int shifti = int(sizeof(int))*CHAR_BIT - w0_bits - 24;
+
+    // Filter states (28 bits):
     int vlp = 0;
     int vhp = 0;
 
@@ -294,8 +313,8 @@ Write waveform dump to "sid_api.fst".
                 // C64 audio output filter enabled.
                 // The implementation of the external filter is adapted from reSID.
                 vhp += t1.mulhp*(vlp - vhp) >> t1.shifthp;
-                vlp += t1.mullp*((o << 3) - vlp) >> t1.shiftlp;
-                o = (vlp - vhp) >> 3;
+                vlp += t1.mullp*((o << shifti) - vlp) >> t1.shiftlp;
+                o = (vlp - vhp) >> shifti;
             }
             sample_t += cycle_T;
             if (sample_t >= sample_T) {
