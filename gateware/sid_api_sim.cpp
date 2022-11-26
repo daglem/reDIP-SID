@@ -157,15 +157,15 @@ Options:
 class ExternalFilterCoefficients
 {
 public:
-    int shiftlp, shifthp;
-    int mullp, mulhp;
+    int shifthp, shiftlp;
+    int mulhp, mullp;
 
-    ExternalFilterCoefficients(double w0lp, double w0hp, double T, int w0_bits) :
-        // Fits cutoff frequencies in w0_bits.
-        shiftlp( log2(((1 << w0_bits) - 1.0)/(1.0 - exp(-w0lp*T))) ),
-        shifthp( log2(((1 << w0_bits) - 1.0)/(1.0 - exp(-w0hp*T))) ),
-        mullp( (1.0 - exp(-w0lp*T))*(1 << shiftlp) + 0.5 ),
-        mulhp( (1.0 - exp(-w0hp*T))*(1 << shifthp) + 0.5 )
+    ExternalFilterCoefficients(double w0hp, double w0lp, double T, int coeff_bits) :
+        // Fits cutoff frequencies in coeff_bits.
+        shifthp( log2(((1 << coeff_bits) - 1.0)/(1.0 - exp(-w0hp*T))) ),
+        shiftlp( log2(((1 << coeff_bits) - 1.0)/(1.0 - exp(-w0lp*T))) ),
+        mulhp( (1.0 - exp(-w0hp*T))*(1 << shifthp) + 0.5 ),
+        mullp( (1.0 - exp(-w0lp*T))*(1 << shiftlp) + 0.5 )
     {}
 };
 
@@ -255,23 +255,30 @@ Write waveform dump to "sid_api.fst".
     double sample_t  = 0;
 
     // The implementation of the external filter is adapted from reSID.
-    // Filter coefficients:
-    // w0lp = 1/(R8*C74) = 1/(10e3*1e-9)     = 100000
-    // w0hp = 1/(Rload*C77) = 1/(10e3*10e-6) =     10
-    double w0lp = 2*M_PI*f0lp;
+    // Cutoff frequencies for C64 external bandpass filter:
+    // w0hp = 1/(Rload*C77) = 1/(10e3*10e-6) =     10 (1.6Hz)
+    // w0lp = 1/(R8*C74)    = 1/(10e3*1e-9)  = 100000 (16kHz)
     double w0hp = 2*M_PI*f0hp;
+    double w0lp = 2*M_PI*f0lp;
 
-    // Cutoff frequencies are fit into 4 bits, leaving 28 bits for filter
-    // states. It is crucial to reserve a high number of bits for filter
-    // states, since w0lp and w0hp are so far apart.
-    constexpr int w0_bits = 4;
-    auto t1 = ExternalFilterCoefficients(w0lp, w0hp, cycle_T, w0_bits);
+    // Filter coefficients are fit into 4 bits, leaving 27 bits for filter
+    // states (reserving one bit for summing). It is crucial to reserve a high
+    // number of bits for filter states, since the highpass frequency can be
+    // set very low (1Hz), and changes to vhp can thus be very small.
+    constexpr int coeff_bits = 4;
+    auto t1 = ExternalFilterCoefficients(w0hp, w0lp, cycle_T, coeff_bits);
     // Left shift of input, given 24 bit samples.
-    constexpr int shifti = int(sizeof(int))*CHAR_BIT - w0_bits - 24;
+    constexpr int shifti = int(sizeof(int))*CHAR_BIT - coeff_bits - 1 - 24;
 
-    // Filter states (28 bits):
-    int vlp = 0;
+    // Filter states (27 bits):
     int vhp = 0;
+    int vlp = 0;
+
+    // With floating point:
+    // double mulhp = 1.0 - exp(-w0hp*cycle_T);
+    // double mullp = 1.0 - exp(-w0lp*cycle_T);
+    // double vhp = 0;
+    // double vlp = 0;
 
     ostream* out;
     ofstream fout;
@@ -315,6 +322,10 @@ Write waveform dump to "sid_api.fst".
                 vhp += t1.mulhp*(vlp - vhp) >> t1.shifthp;
                 vlp += t1.mullp*((o << shifti) - vlp) >> t1.shiftlp;
                 o = (vlp - vhp) >> shifti;
+                // With floating point:
+                // vhp += mulhp*(vlp - vhp);
+                // vlp += mullp*(o - vlp);
+                // o = round(vlp - vhp);
             }
             sample_t += cycle_T;
             if (sample_t >= sample_T) {
