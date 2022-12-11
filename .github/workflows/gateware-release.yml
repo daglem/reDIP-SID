@@ -1,0 +1,35 @@
+name: gateware-release
+
+on:
+  push:
+    tags:
+      - gateware-*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Install OSS CAD Suite
+        uses: YosysHQ/setup-oss-cad-suite@v1
+        with:
+          # Yosys 0.24+1 7ad7b55 - Includes required support for packed arrays in packed structs.
+          osscadsuite-version: '2022-12-08'
+
+      - name: Build gateware
+        run: |
+          DISTDIR="reDIP-SID-${GITHUB_REF_NAME}"
+          mkdir $DISTDIR
+          make -C gateware
+          cp -p gateware/README.md gateware/flash.bat gateware/flash.sh gateware/redip_sid.bin $DISTDIR
+          tar -czvf $DISTDIR.tar.gz $DISTDIR
+          zip -r $DISTDIR.zip $DISTDIR
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            reDIP-SID*.tar.gz
+            reDIP-SID*.zip

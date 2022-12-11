@@ -18,7 +18,8 @@ MOD = $(TOP).sv \
 	sid_core.sv \
 	sid_api.sv
 
-ifdef MUACM
+MUACM ?= 0
+ifeq "$(MUACM)" "1"
 MOD += muacm.v
 FLG = -DMUACM
 endif
@@ -27,16 +28,19 @@ SRC = $(PKG) $(FUN) $(MOD)
 
 all: $(TOP).bin
 
-ifeq "$(SV2V)" "0"
-$(TOP).json: $(SRC) Makefile
-	yosys -p 'read_verilog -sv $(FLG) $(PKG) $(MOD); synth_ice40 -abc9 -device u -dff -top $(TOP) -json $@'
-else
+SV2V ?= 0
+ifeq "$(SV2V)" "1"
+# For Yosys < 0.24
 $(TOP).json: $(TOP).v
 	yosys -p 'read_verilog -sv $<; synth_ice40 -abc9 -device u -dff -top $(TOP) -json $@'
-endif
 
 $(TOP).v: $(SRC) Makefile
 	sv2v -E always -E assert -E logic -E unbasedunsized -w $@ -DYOSYS $(FLG) $(PKG) $(MOD)
+else
+# For Yosys >= 0.24
+$(TOP).json: $(SRC) Makefile
+	yosys -p 'read_verilog -sv $(FLG) $(PKG) $(MOD); synth_ice40 -abc9 -device u -dff -top $(TOP) -json $@'
+endif
 
 %.asc: %.json %.pcf
 	nextpnr-ice40 --up5k --package sg48 --freq 24 --json $*.json --pcf $*.pcf --asc $@
@@ -45,7 +49,7 @@ $(TOP).v: $(SRC) Makefile
 	icepack $< $@
 
 prog: $(TOP).bin
-	dfu-util -a 0 -D $< -R
+	dfu-util -d 1d50:6159,:6156 -a 0 -D $< -R
 
 sim:
 	verilator --Mdir sim_trace --timescale "1ns / 1ns" --trace-fst --trace-structs --trace-underscore --clk clk --cc -O3 -CFLAGS "-Wall" --x-assign fast --x-initial fast --noassert --exe --build sid_pkg.sv sid_api.sv --top sid_api sid_api_sim.cpp
