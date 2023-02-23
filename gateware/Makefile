@@ -21,12 +21,20 @@ MOD = $(TOP).sv \
 MUACM ?= 0
 ifeq "$(MUACM)" "1"
 MOD += muacm.v
-FLG = -DMUACM
+FLG += -DMUACM
+endif
+
+SID2 ?= 0
+ifeq "$(SID2)" "1"
+FLG += -DSID2
 endif
 
 SRC = $(PKG) $(FUN) $(MOD)
 
 all: $(TOP).bin
+
+lint:
+	verilator --lint-only $(FLG) sid_pkg.sv sid_api.sv
 
 SV2V ?= 0
 ifeq "$(SV2V)" "1"

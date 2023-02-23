@@ -109,7 +109,7 @@ module redip_sid (
         .scl_led (i2c_scl_led_n),
         .sda_btn (i2c_sda_btn_n),
         .btn     (),
-        .led     (bus_i.we),
+        .led     (~cs.cs_n & bus_i.we),
         .done    (),
         .clk     (clk_24),
         .rst     (rst_24)

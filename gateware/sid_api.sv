@@ -48,8 +48,13 @@ module sid_api #(
 
     // FIXME: This would be safer if Yosys were to understand structure literals.
     // sid::cfg_t sid_cfg = '{ sid1_model: ... };
+`ifdef SID2
+    sid::cfg_t  sid1_cfg = { sid::MOS8580, sid::D400, 9'd250, 11'sd0 };
+    sid::cfg_t  sid2_cfg = { sid::MOS8580, sid::D420 | sid::D500 | sid::DE00, 9'd250, 11'sd0 };
+`else
     sid::cfg_t  sid1_cfg = { sid::MOS6581, sid::D400, 9'd250, 11'sd0 };
     sid::cfg_t  sid2_cfg = { sid::MOS6581, sid::D400, 9'd250, 11'sd0 };
+`endif
     // NB! Don't put multi-bit variables in arrays, as Yosys handles that incorrectly.
     sid::reg8_t sid1_data_o, sid2_data_o;
     logic [1:0] sid_cs;
@@ -243,12 +248,12 @@ module sid_api #(
     always_comb begin
         // SID #1 is always located at D400.
         // SID #2 address is configurable.
-        unique case (sid2_cfg.addr)
-          sid::D400: sid_cs = { ~cs.cs_n,         ~cs.cs_n          };
-          sid::D420: sid_cs = { ~cs.cs_n & cs.a5, ~cs.cs_n & ~cs.a5 };
-          sid::D500: sid_cs = { ~cs.cs_n & cs.a8, ~cs.cs_n & ~cs.a8 };
-          sid::DE00: sid_cs = { ~cs.cs_io1_n,     ~cs.cs_n          };
-        endcase
+        sid_cs[1] = sid2_cfg.addr == sid::D400 ? ~cs.cs_n :
+                    sid2_cfg.addr[sid::D420_BIT] & ~cs.cs_n & cs.a5 |
+                    sid2_cfg.addr[sid::D500_BIT] & ~cs.cs_n & cs.a8 |
+                    sid2_cfg.addr[sid::DE00_BIT] & ~cs.cs_io1_n;
+        sid_cs[0] = sid2_cfg.addr == sid::D400 ? ~cs.cs_n :
+                    ~cs.cs_n & ~sid_cs[1];
     end
     
     always_comb begin

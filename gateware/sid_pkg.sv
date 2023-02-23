@@ -68,16 +68,24 @@ package sid;
         MOS8580
     } model_e;
     
-    typedef enum logic [1:0] {
-        D400,
-        D420,
-        D500,
-        DE00
+    typedef enum {
+        D420_BIT,
+        D500_BIT,
+        DE00_BIT
+    } addr_bit_e;
+
+    typedef enum logic [2:0] {
+        D400 = 0,
+        D420 = 1 << D420_BIT,
+        D500 = 1 << D500_BIT,
+        DE00 = 1 << DE00_BIT
     } addr_e;
+
+    typedef logic [2:0] addr_t;
 
     typedef struct packed {
         model_e model;
-        addr_e  addr;  // Only used for SID #2.
+        addr_t  addr;  // Only used for SID #2.
         reg9_t  fc_base;
         s11_t   fc_offset;
     } cfg_t;
