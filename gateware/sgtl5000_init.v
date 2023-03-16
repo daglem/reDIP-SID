@@ -165,6 +165,7 @@ module sgtl5000_init (
 	// --
 
 	// Instance
+	/* verilator lint_off PINMISSING */
 	SB_IO #(
 		.PIN_TYPE(6'b1010_01),	// PIN_OUTPUT_TRISTATE / PIN_INPUT
 		.PULLUP(1'b0),
@@ -175,6 +176,7 @@ module sgtl5000_init (
 		.D_OUT_0       ({iob_scl_o,  iob_sda_o }),
 		.D_IN_0        ({iob_scl_i,  iob_sda_i })
 	);
+	/* verilator lint_on PINMISSING */
 
 	// Muxing
 		// Always open-drain drive

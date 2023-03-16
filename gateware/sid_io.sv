@@ -51,13 +51,17 @@ module sid_io (
     // bus_i.oe used in sid_core.sv
     logic oe_io = 0;
 
+    logic we    = 0;
+    logic oe    = 0;
+    logic res   = 0;
+
     // POT signals.
     logic [1:0] charged_x;
 
-    initial begin
-        bus_i.we  = 0;
-        bus_i.oe  = 0;
-        bus_i.res = 0;
+    always_comb begin
+        bus_i.we  = we;
+        bus_i.oe  = oe;
+        bus_i.res = res;
     end
 
     // The 6510 phi2 clock driver only weakly drives the clock line high.
@@ -83,11 +87,14 @@ module sid_io (
     // Registered input for res_n. Note that res_n may be applied at any time and
     // can thus be metastable. In a real SID, the reset value is held at phi2.
     SB_IO #(
-        .PIN_TYPE    (6'b0000_00)
+        .PIN_TYPE     (6'b0000_00)
     ) io_res (
-        .PACKAGE_PIN (pad_res_n),
-        .INPUT_CLK   (clk),
-        .D_IN_0      (res_n_x)
+        .PACKAGE_PIN  (pad_res_n),
+`ifdef VERILATOR
+        .CLOCK_ENABLE (1'b1),
+`endif
+        .INPUT_CLK    (clk),
+        .D_IN_0       (res_n_x)
     );
     
     // Hold other (registered) inputs at phi1, i.e. D-latch enable = phi2.
@@ -100,6 +107,9 @@ module sid_io (
     ) io_r_w_n (
         .PACKAGE_PIN       (pad_r_w_n),
         .LATCH_INPUT_VALUE (phi1_io),
+`ifdef VERILATOR
+        .CLOCK_ENABLE      (1'b1),
+`endif
         .INPUT_CLK         (clk),
         .D_IN_0            (r_w_n)
     );
@@ -110,6 +120,9 @@ module sid_io (
     ) io_cs[3:0] (
         .PACKAGE_PIN       (pad_cs),
         .LATCH_INPUT_VALUE (phi1_io),
+`ifdef VERILATOR
+        .CLOCK_ENABLE      (1'b1),
+`endif
         .INPUT_CLK         (clk),
         .D_IN_0            (cs)
     );
@@ -120,6 +133,9 @@ module sid_io (
     ) io_addr[4:0] (
         .PACKAGE_PIN       (pad_addr),
         .LATCH_INPUT_VALUE (phi1_io),
+`ifdef VERILATOR
+        .CLOCK_ENABLE      (1'b1),
+`endif
         .INPUT_CLK         (clk),
         .D_IN_0            (bus_i.addr)
     );
@@ -130,6 +146,9 @@ module sid_io (
     ) io_data[7:0] (
         .PACKAGE_PIN       (pad_data),
         .LATCH_INPUT_VALUE (phi1_io),
+`ifdef VERILATOR
+        .CLOCK_ENABLE      (1'b1),
+`endif
         .INPUT_CLK         (clk),
         .OUTPUT_CLK        (clk),
         .OUTPUT_ENABLE     (oe_io),
@@ -152,7 +171,7 @@ module sid_io (
         // The reset signal is already registered on the I/O input,
         // so we only add one extra register stage wrt. metastability.
         // Also OR in the system reset for PLL sync / BRAM powerup.
-        bus_i.res <= ~res_n_x | rst;
+        res       <= ~res_n_x | rst;
 
         // The data output must be held by the output enable for at least 10ns
         // after the falling edge of phi2 (ref. SID datasheet). This is ensured
@@ -162,10 +181,10 @@ module sid_io (
         // Delay the start of the pin OE by ANDing with phi2, in order to avoid
         // any output glitches.
         oe_io    <= phi2_io & phi2 & r_w_n & ~cs.cs_n;
-        bus_i.oe <= phi2 & r_w_n;
+        oe       <= phi2 & r_w_n;
 
         // Write enable must be held at the detected falling edge of phi2.
-        bus_i.we <= phi2_prev & ~r_w_n;
+        we       <= phi2_prev & ~r_w_n;
     end
 
     // The POT pins are open drain I/O only, however the SB_IO primitive
@@ -175,6 +194,9 @@ module sid_io (
         .PIN_TYPE      (6'b1010_00)
     ) io_pot[1:0] (
         .PACKAGE_PIN   (pad_pot),
+`ifdef VERILATOR
+        .CLOCK_ENABLE  (1'b1),
+`endif
         .INPUT_CLK     (clk),
         .OUTPUT_ENABLE (pot_o.discharge),
         .D_IN_0        (charged_x),

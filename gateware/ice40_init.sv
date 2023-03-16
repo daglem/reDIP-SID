@@ -37,6 +37,7 @@ module ice40_init (
     // fout = fin*(DIVF + 1) / (2^DIVQ*(DIVR + 1))
     logic pll_lock;
 
+    /* verilator lint_off PINMISSING */
     SB_PLL40_2F_CORE #(
         .FEEDBACK_PATH ("SIMPLE"),
         .PLLOUT_SELECT_PORTA("GENCLK_HALF"),
@@ -53,6 +54,7 @@ module ice40_init (
         .BYPASS        (1'b0),
         .RESETB        (1'b1)
     );
+    /* verilator lint_on PINMISSING */
 
     // Hold reset for a minimum of 10us (minimum 240 cycles at 24MHz),
     // to allow BRAM to power up. For simplicity, we only start counting

@@ -1,6 +1,4 @@
-// This module is copied from https://github.com/YosysHQ/yosys/raw/master/techlibs/ice40/cells_sim.v
 /* verilator lint_off WIDTH */
-
 //(* abc9_box, lib_whitebox *) // TODO
 module SB_MAC16 (
 	input CLK, CE,
@@ -171,5 +169,4 @@ module SB_MAC16 (
 	assign LCI = (BOTADDSUB_CARRYSELECT == 0) ? 1'b0 : (BOTADDSUB_CARRYSELECT == 1) ? 1'b1 : (BOTADDSUB_CARRYSELECT == 2) ? ACCUMCI : CI;
 	assign O = {Oh, Ol};
 endmodule
-
 /* verilator lint_on WIDTH */

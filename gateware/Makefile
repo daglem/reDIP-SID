@@ -34,7 +34,7 @@ SRC = $(PKG) $(FUN) $(MOD)
 all: $(TOP).bin
 
 lint:
-	verilator --lint-only $(FLG) sid_pkg.sv sid_api.sv
+	verilator --lint-only -Icells_sim $(FLG) $(PKG) $(TOP).sv
 
 SV2V ?= 0
 ifeq "$(SV2V)" "1"

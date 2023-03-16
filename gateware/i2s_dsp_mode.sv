@@ -24,10 +24,10 @@ module i2s_dsp_mode #(
     localparam COUNTBITS = $clog2(BITS)
 )(
     input  logic clk,
-    input  logic pad_lrclk,
-    input  logic pad_sclk,
-    output logic pad_din,
-    input  logic pad_dout,
+    inout  logic pad_lrclk,
+    inout  logic pad_sclk,
+    inout  logic pad_din,
+    inout  logic pad_dout,
     input  logic [BITS-1:0] audio_o,
     output logic [BITS-1:0] audio_i = '0
 );
@@ -47,22 +47,32 @@ module i2s_dsp_mode #(
     logic [COUNTBITS-1:0] bitnum = 0;
 
     // Registered inputs.
+    /* verilator lint_off PINMISSING */
     SB_IO #(
-        .PIN_TYPE    (6'b0000_00)
+        .PIN_TYPE     (6'b0000_00)
     ) i2s_in[2:0] (
-        .PACKAGE_PIN ({ pad_lrclk, pad_sclk, pad_dout }),
-        .INPUT_CLK   (clk),
-        .D_IN_0      ({ i2s_lrclk, i2s_sclk, i2s_dout })
+        .PACKAGE_PIN  ({ pad_lrclk, pad_sclk, pad_dout }),
+`ifdef VERILATOR
+        .CLOCK_ENABLE (1'b1),
+`endif
+        .INPUT_CLK    (clk),
+        .D_IN_0       ({ i2s_lrclk, i2s_sclk, i2s_dout })
     );
+    /* verilator lint_on PINMISSING */
 
     // Simple output, not registered.
+    /* verilator lint_off PINMISSING */
     SB_IO #(
-        .PIN_TYPE    (6'b0110_00)
+        .PIN_TYPE     (6'b0110_00)
     ) i2s_out (
-        .PACKAGE_PIN (pad_din),
-        .OUTPUT_CLK  (clk),
-        .D_OUT_0     (i2s_din)
+        .PACKAGE_PIN  (pad_din),
+`ifdef VERILATOR
+        .CLOCK_ENABLE (1'b1),
+`endif
+        .OUTPUT_CLK   (clk),
+        .D_OUT_0      (i2s_din)
     );
+    /* verilator lint_on PINMISSING */
 
     always_comb begin
         i2s_din = dout[BITS-1];
@@ -92,7 +102,7 @@ module i2s_dsp_mode #(
 
             // The last bit is processed even if I2S_LRCLK is high
             // (i.e. no padding, e.g. for 64 bits).
-            last_bit <= (bitnum == BITS - 1);
+            last_bit <= (bitnum == COUNTBITS'(BITS - 1));
 
             if (last_bit) begin
                 audio_i <= din;

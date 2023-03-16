@@ -24,10 +24,10 @@ module redip_sid (
     inout  logic i2c_scl_led_n,
     inout  logic i2c_sda_btn_n,
     // I2S
-    output logic i2s_din,
-    input  logic i2s_dout,
-    input  logic i2s_sclk,
-    input  logic i2s_lrclk,
+    inout  logic i2s_din,
+    inout  logic i2s_dout,
+    inout  logic i2s_sclk,
+    inout  logic i2s_lrclk,
     // SPI
     inout  logic spi_sio0,
     inout  logic spi_sio1,

@@ -39,7 +39,7 @@ module sid_voice #(
 );
 
     // Registered values for pipelined calculation.
-    sid::model_e model_prev    = 0;
+    sid::model_e model_prev    = sid::MOS6581;
     logic        pulse_prev    = 0;
     sid::reg4_t  selector_prev = 0;
 
