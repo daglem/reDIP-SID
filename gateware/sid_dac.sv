@@ -68,21 +68,15 @@ module sid_dac #(
     end
 `else
     (* mem2reg *)
-    logic [MSB:0] bitsum[BITS] /*verilator split_var*/;
+    logic [MSB:0] bitsum;
 
     // Sum values for all set bits, adding 0.5 for rounding by truncation.
-    /* verilator lint_off ALWCOMBORDER */
-    for (genvar i = 0; i < BITS; i++) begin
-        always_comb begin
-            bitsum[i] =
-                (i == 0 ? 1 << (SCALEBITS - 1) : bitsum[i-1]) +
-                (vin[i] ? bitval[i] : 0);
-        end
-    end
-    /* verilator lint_on ALWCOMBORDER */
-
     always_comb begin
-        vout = bitsum[BITS-1][MSB-:BITS];
+        bitsum = 1 << (SCALEBITS - 1);
+        for (integer i = 0; i < BITS; i++) begin
+            bitsum += (vin[i] ? bitval[i] : 0);
+        end
+        vout = bitsum[MSB-:BITS];
     end
 `endif
 
