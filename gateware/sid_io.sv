@@ -124,7 +124,7 @@ module sid_io (
         .CLOCK_ENABLE      (1'b1),
 `endif
         .INPUT_CLK         (clk),
-        .D_IN_0            (cs)
+        .D_IN_0            ({ cs })
     );
 
     // Address pin inputs.

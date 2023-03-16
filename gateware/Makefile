@@ -36,6 +36,9 @@ all: $(TOP).bin
 lint:
 	verilator --lint-only -Icells_sim $(FLG) $(PKG) $(TOP).sv
 
+lint-slang:
+	slang --lint-only -y. -ycells_sim -Wno-unconnected-port $(FLG) $(PKG) $(TOP).sv
+
 SV2V ?= 0
 ifeq "$(SV2V)" "1"
 # For Yosys < 0.24

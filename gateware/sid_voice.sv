@@ -77,11 +77,17 @@ module sid_voice #(
         logic [0:5][22:0] age;
         logic [0:5][11:0] value;
     } waveform_0;
+    /* verilator lint_on LITENDIAN */
 
     logic [22:0] waveform_0_age = 0;
     logic [11:0] waveform_0_value;
     logic        waveform_0_faded;
-    /* verilator lint_on LITENDIAN */
+
+    // Combined waveform lookup tables.
+    sid::reg8_t sid_waveform_PS__6581[2048];
+    sid::reg8_t sid_waveform_PS__8580[4096];
+    sid::reg8_t sid_waveform_P_T_6581[2048];
+    sid::reg8_t sid_waveform_P_T_8580[2048];
 
     // MOS6581 waveform DAC output.
     sid_dac #(
@@ -203,12 +209,6 @@ module sid_voice #(
                         16'(voice_i.envelope);
         end
     end
-
-    // Combined waveform lookup tables.
-    sid::reg8_t sid_waveform_PS__6581[2048];
-    sid::reg8_t sid_waveform_PS__8580[4096];
-    sid::reg8_t sid_waveform_P_T_6581[2048];
-    sid::reg8_t sid_waveform_P_T_8580[2048];
 
     // od -An -tx1 -v reSID/src/wave6581_PS_.dat | head -128 | cut -b2- > sid_waveform_PS__6581.hex
     // od -An -tx1 -v reSID/src/wave8580_PS_.dat |             cut -b2- > sid_waveform_PS__8580.hex
