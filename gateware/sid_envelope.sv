@@ -19,7 +19,8 @@
 module sid_envelope #(
     // Default to no init, since the counter will reach 0 after a maximum of
     // one exponential decay cycle (at decay = 0) after reset release.
-    localparam INIT_ENV = 0
+    localparam INIT_ENV = 0,
+    localparam LFSR_COUNTERS = 1
 )(
     input  logic               clk,
     input  logic               res,
@@ -47,7 +48,7 @@ module sid_envelope #(
     logic        sustain_cmp = 0;
     logic        sustain;
     // 15-bit rate counter.
-    sid::reg15_t rate_cnt = 0;
+    sid::reg15_t rate_cnt = LFSR_COUNTERS ? '1 : '0;
     logic        rate_cnt_res = 0;
     logic        prev_rate_cnt_res = 0;
     sid::reg7_t  exp_step = 0;
@@ -57,7 +58,7 @@ module sid_envelope #(
     logic        rise_00 = 0;
     sid::reg5_t  exp_seg = 0;
     // 5-bit exponential decay counter.
-    sid::reg5_t  exp_cnt = 0;
+    sid::reg5_t  exp_cnt = LFSR_COUNTERS ? '1 : '0;
     logic        exp_cnt_res = 0;
     sid::reg4_t  adr = 0;
 
@@ -147,7 +148,7 @@ module sid_envelope #(
             // Invert counter bits on change of counter direction.
             env_cnt_inv <= env_cnt_up ^ attack;
         end
-        
+
         // Multiplexer for rate period index (attack / decay / release).
         if (phase[sid::PHI2_PHI1]) begin
             // The reset flag for the rate counter below is latched by the next phi2.
@@ -159,63 +160,124 @@ module sid_envelope #(
             endcase
         end
 
-        // TODO: Add alternative LFSR15 / LFSR5 implementations of counters.
+        if (LFSR_COUNTERS) begin
+            // LFSR counters were used in the real SID, see
+            // https://github.com/libsidplayfp/SID_schematics/wiki/Envelope-Overview
 
-        // Envelope rate counter reset / count.
-        if (phase[sid::PHI2]) begin
-            prev_rate_cnt_res <= rate_cnt_res;
-            
-            rate_cnt_res <=
-                (adr == 'h0 && rate_cnt ==     8) ||
-                (adr == 'h1 && rate_cnt ==    31) ||
-                (adr == 'h2 && rate_cnt ==    62) ||
-                (adr == 'h3 && rate_cnt ==    94) ||
-                (adr == 'h4 && rate_cnt ==   148) ||
-                (adr == 'h5 && rate_cnt ==   219) ||
-                (adr == 'h6 && rate_cnt ==   266) ||
-                (adr == 'h7 && rate_cnt ==   312) ||
-                (adr == 'h8 && rate_cnt ==   391) ||
-                (adr == 'h9 && rate_cnt ==   976) ||
-                (adr == 'hA && rate_cnt ==  1953) ||
-                (adr == 'hB && rate_cnt ==  3125) ||
-                (adr == 'hC && rate_cnt ==  3906) ||
-                (adr == 'hD && rate_cnt == 11719) ||
-                (adr == 'hE && rate_cnt == 19531) ||
-                (adr == 'hF && rate_cnt == 31250) ||
-                res;
-        end
+            // Envelope rate counter reset / count.
+            if (phase[sid::PHI2]) begin
+                prev_rate_cnt_res <= rate_cnt_res;
 
-        if (phase[sid::PHI2_PHI1]) begin
-            // The period of the LFSR15 is 2^15 - 1; wrap counter around at 2^15 - 2.
-            if (rate_cnt_res || rate_cnt == 'h7FFE) begin
-                rate_cnt <= 0;
-            end else begin
-                rate_cnt <= rate_cnt + 1;
+                rate_cnt_res <=
+                               (adr == 'h0 && rate_cnt == 'h7f00) ||
+                               (adr == 'h1 && rate_cnt == 'h0006) ||
+                               (adr == 'h2 && rate_cnt == 'h003c) ||
+                               (adr == 'h3 && rate_cnt == 'h0330) ||
+                               (adr == 'h4 && rate_cnt == 'h20c0) ||
+                               (adr == 'h5 && rate_cnt == 'h6755) ||
+                               (adr == 'h6 && rate_cnt == 'h3800) ||
+                               (adr == 'h7 && rate_cnt == 'h500e) ||
+                               (adr == 'h8 && rate_cnt == 'h1212) ||
+                               (adr == 'h9 && rate_cnt == 'h0222) ||
+                               (adr == 'hA && rate_cnt == 'h1848) ||
+                               (adr == 'hB && rate_cnt == 'h59b8) ||
+                               (adr == 'hC && rate_cnt == 'h3840) ||
+                               (adr == 'hD && rate_cnt == 'h77e2) ||
+                               (adr == 'hE && rate_cnt == 'h7625) ||
+                               (adr == 'hF && rate_cnt == 'h0a93) ||
+                               res;
             end
-        end
-            
-        // Exponential counter reset / count.
-        if (phase[sid::PHI2]) begin
-            exp_cnt_res <=
-                // Exponential decay.
-                (exp_seg[0] && exp_cnt ==  2) ||
-                (exp_seg[1] && exp_cnt ==  4) ||
-                (exp_seg[2] && exp_cnt ==  8) ||
-                (exp_seg[3] && exp_cnt == 16) ||
-                (exp_seg[4] && exp_cnt == 30) ||
-                // No exponential decay.
-                (prev_rate_cnt_res && (attack || exp_seg == '0)) ||
-                res;
-        end
 
-        if (phase[sid::PHI2_PHI1]) begin
-            // The period of the LFSR5 is 2^5 - 1; wrap counter around at 2^5 - 2.
-            // Note that this check is redundant, since the counter can only
-            // reach this value (30) when exp_seg[4] is set (famous last words).
-            if (exp_cnt_res || exp_cnt == 'h1E) begin
-                exp_cnt <= 0;
-            end else if (prev_rate_cnt_res) begin
-                exp_cnt <= exp_cnt + 1;
+            if (phase[sid::PHI2_PHI1]) begin
+                if (rate_cnt_res) begin
+                    rate_cnt <= '1;
+                end else begin
+                    rate_cnt <= { rate_cnt[13:0], rate_cnt[14] ^ rate_cnt[13] };
+                end
+            end
+
+            // Exponential counter reset / count.
+            if (phase[sid::PHI2]) begin
+                exp_cnt_res <=
+                              // Exponential decay.
+                              (exp_seg[0] && exp_cnt == 'h1c) ||
+                              (exp_seg[1] && exp_cnt == 'h11) ||
+                              (exp_seg[2] && exp_cnt == 'h1b) ||
+                              (exp_seg[3] && exp_cnt == 'h08) ||
+                              (exp_seg[4] && exp_cnt == 'h0f) ||
+                              // No exponential decay.
+                              (prev_rate_cnt_res && (attack || exp_seg == '0)) ||
+                              res;
+            end
+
+            if (phase[sid::PHI2_PHI1]) begin
+                if (exp_cnt_res) begin
+                    exp_cnt <= '1;
+                end else if (prev_rate_cnt_res) begin
+                    exp_cnt <= { exp_cnt[3:0], exp_cnt[4] ^ exp_cnt[2] };
+                end
+            end
+        end else begin  // !LFSR_COUNTERS
+            // LFSR counters were used in the real SID, however normal counters
+            // don't necessarily use any more resources thanks to FPGA carry
+            // logic, and they also simplify testing.
+
+            // Envelope rate counter reset / count.
+            if (phase[sid::PHI2]) begin
+                prev_rate_cnt_res <= rate_cnt_res;
+
+                rate_cnt_res <=
+                               (adr == 'h0 && rate_cnt ==     8) ||
+                               (adr == 'h1 && rate_cnt ==    31) ||
+                               (adr == 'h2 && rate_cnt ==    62) ||
+                               (adr == 'h3 && rate_cnt ==    94) ||
+                               (adr == 'h4 && rate_cnt ==   148) ||
+                               (adr == 'h5 && rate_cnt ==   219) ||
+                               (adr == 'h6 && rate_cnt ==   266) ||
+                               (adr == 'h7 && rate_cnt ==   312) ||
+                               (adr == 'h8 && rate_cnt ==   391) ||
+                               (adr == 'h9 && rate_cnt ==   976) ||
+                               (adr == 'hA && rate_cnt ==  1953) ||
+                               (adr == 'hB && rate_cnt ==  3125) ||
+                               (adr == 'hC && rate_cnt ==  3906) ||
+                               (adr == 'hD && rate_cnt == 11719) ||
+                               (adr == 'hE && rate_cnt == 19531) ||
+                               (adr == 'hF && rate_cnt == 31250) ||
+                               res;
+            end
+
+            if (phase[sid::PHI2_PHI1]) begin
+                // The period of the LFSR15 is 2^15 - 1; wrap counter around at 2^15 - 2.
+                if (rate_cnt_res || rate_cnt == 'h7FFE) begin
+                    rate_cnt <= 0;
+                end else begin
+                    rate_cnt <= rate_cnt + 1;
+                end
+            end
+
+            // Exponential counter reset / count.
+            if (phase[sid::PHI2]) begin
+                exp_cnt_res <=
+                              // Exponential decay.
+                              (exp_seg[0] && exp_cnt ==  2) ||
+                              (exp_seg[1] && exp_cnt ==  4) ||
+                              (exp_seg[2] && exp_cnt ==  8) ||
+                              (exp_seg[3] && exp_cnt == 16) ||
+                              (exp_seg[4] && exp_cnt == 30) ||
+                              // No exponential decay.
+                              (prev_rate_cnt_res && (attack || exp_seg == '0)) ||
+                              res;
+            end
+
+            if (phase[sid::PHI2_PHI1]) begin
+                // The period of the LFSR5 is 2^5 - 1; wrap counter around at 2^5 - 2.
+                // Note that this check is redundant, since the counter can only
+                // reach this value (30) when exp_seg[4] is set (famous last words).
+                if (exp_cnt_res || exp_cnt == 'h1E) begin
+                    exp_cnt <= 0;
+                end else if (prev_rate_cnt_res) begin
+                    exp_cnt <= exp_cnt + 1;
+                end
             end
         end
     end
