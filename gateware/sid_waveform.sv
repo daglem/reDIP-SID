@@ -40,6 +40,7 @@ module sid_waveform #(
     // Even bits are high on powerup, and there is no reset.
     // Since initial values != 0 require LUTs, we make this configurable.
     sid::reg24_t osc        = INIT_OSC ? { 12{2'b01} } : 0;
+    sid::reg24_t osc_next;
     logic        msb_i_prev = 0;
     logic        msb_i_up;
     logic        sync_res;
@@ -64,7 +65,8 @@ module sid_waveform #(
         // circuit, which takes the form of a ring oscillator when all three
         // oscillators are synced on the same cycle. Here, like in reSID, no
         // oscillator will be synced in this special case of the special case.
-        sync_o.msb  = osc[23];
+        osc_next    = osc + { 8'b0, reg_i.freq_hi, reg_i.freq_lo };
+        sync_o.msb  = osc_next[23];
         msb_i_up    = ~msb_i_prev & sync_i.msb;
         sync_o.sync = reg_i.test | (reg_i.sync & msb_i_up);
         sync_res    = reg_i.test | (reg_i.sync & msb_i_up & ~sync_i.sync);
@@ -89,22 +91,18 @@ module sid_waveform #(
         // In the real SID, an intermediate sum is latched by phi2, and this
         // sum is simultaneously synced, output to waveform generation bits,
         // and written back to osc on phi1.
-        // Here, this is broken up into steps more suitable for an FPGA.
-        if (phase[sid::PHI1] && sync_res) begin
-            osc <= '0;
-        end else if (phase[sid::PHI2_PHI1]) begin
-            osc <= osc + { 8'b0, reg_i.freq_hi, reg_i.freq_lo };
+        if (phase[sid::PHI2_PHI1]) begin
+            if (sync_res) begin
+                osc <= '0;
+            end else begin
+                osc <= osc_next;
+            end
         end
 
-        // From the expression for tri_xor above it follows that saw_tri = 0 on
-        // sync. Thus we can reset / set saw_tri for the 6581 on sync in order
-        // to avoid introducing another state to compute the final result.
         // In the 8580, sawtooth / triangle is latched by phi2, and is thus
-        // delayed by one SID cycle. Here, we can use PHI1_PHI2 for this.
-        if (model == sid::MOS6581 && phase[sid::PHI1] && sync_res) begin
-            saw_tri <= '0;
-        end else if ((model == sid::MOS6581 && phase[sid::PHI1]) ||
-                     (model == sid::MOS8580 && phase[sid::PHI1_PHI2]))
+        // delayed by one SID cycle.
+        if ((model == sid::MOS6581 && phase[sid::PHI1]) ||
+            (model == sid::MOS8580 && phase[sid::PHI2_PHI1]))
         begin
             saw_tri <= { osc[23], osc[22:12] ^ { 11{tri_xor} } };
         end
@@ -155,7 +153,7 @@ module sid_waveform #(
             pulse <= (osc[23:12] >= { reg_i.pw_hi[3:0], reg_i.pw_lo }) | reg_i.test;
         end
 
-        if (phase[sid::PHI1_PHI2]) begin
+        if (phase[sid::PHI1]) begin
             // The input oscillator MSB must be stored after sync.
             msb_i_prev <= sync_i.msb;
         end
