@@ -57,17 +57,16 @@ package sid;
     typedef enum {
         PHI2,
         PHI2_PHI1,
-        PHI1,
-        PHI1_PHI2
+        PHI1
     } phase_e;
 
-    typedef logic [PHI1_PHI2:0] phase_t;
-    
+    typedef logic [PHI1:0] phase_t;
+
     typedef enum logic [0:0] {
         MOS6581,
         MOS8580
     } model_e;
-    
+
     typedef enum {
         D420_BIT,
         D500_BIT,
@@ -108,7 +107,7 @@ package sid;
     typedef struct packed {
         logic [1:0] charged;
     } pot_i_t;
-    
+
     typedef struct packed {
         logic       discharge;
     } pot_o_t;
@@ -190,7 +189,7 @@ package sid;
         logic [0:31][7:0] bytes;
         write_reg_t       regs;
     } reg_i_t;
-                    
+
     // Byte addressable read-only registers.
     typedef union packed {
         // logic ['h19:'h1c][7:0] bytes;

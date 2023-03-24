@@ -97,6 +97,9 @@ module sid_waveform #(
             end else begin
                 osc <= osc_next;
             end
+
+            // The input oscillator MSB must be stored on sync.
+            msb_i_prev <= sync_i.msb;
         end
 
         // In the 8580, sawtooth / triangle is latched by phi2, and is thus
@@ -107,7 +110,7 @@ module sid_waveform #(
             saw_tri <= { osc[23], osc[22:12] ^ { 11{tri_xor} } };
         end
 
-        // Noise and pulse.
+        // Noise.
         if (phase[sid::PHI2_PHI1]) begin
             // OSC bit 19 is read before the update of OSC at PHI2_PHI1, i.e.
             // it's delayed by one cycle.
@@ -146,16 +149,14 @@ module sid_waveform #(
                     { noise[20], noise[18], noise[14], noise[11], noise[9], noise[5], noise[2], noise[0] } <= '0;
                 end
             end
+        end
 
+        // Pulse.
+        if (phase[sid::PHI2_PHI1]) begin
             // The pulse width comparison is done at phi2, before the oscillator
             // is updated at phi1. Thus the pulse waveform is delayed by one cycle
             // with respect to the oscillator.
             pulse <= (osc[23:12] >= { reg_i.pw_hi[3:0], reg_i.pw_lo }) | reg_i.test;
-        end
-
-        if (phase[sid::PHI1]) begin
-            // The input oscillator MSB must be stored after sync.
-            msb_i_prev <= sync_i.msb;
         end
     end
 endmodule

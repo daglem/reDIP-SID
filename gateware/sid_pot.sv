@@ -46,7 +46,7 @@ module sid_pot #(
     end
 
     always_ff @(posedge clk) begin
-        if (phase[sid::PHI1_PHI2]) begin
+        if (phase[sid::PHI2_PHI1]) begin
             // Count phi1 cycles.
             pot_cnt <= pot_cnt + 1;
         end
@@ -59,7 +59,7 @@ module sid_pot #(
     // it is not necessary to emulate this accurately.
     for (genvar i = 0; i < 2; i++) begin : pot
         always_ff @(posedge clk) begin
-            if (phase[sid::PHI1_PHI2]) begin
+            if (phase[sid::PHI2_PHI1]) begin
                 // Reset/set position detection status / load POT register.
                 if (pot_o.discharge) begin
                     pos_det[i]    <= 0;

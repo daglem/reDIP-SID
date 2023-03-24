@@ -43,7 +43,7 @@ module sid_api #(
 
     always_ff @(posedge clk) begin
         phi2_prev <= phi2;
-        phase     <= { phase[2:0], phi2_prev & ~phi2 };
+        phase     <= { phase[1:0], phi2_prev & ~phi2 };
     end
 
     // FIXME: This would be safer if Yosys were to understand structure literals.
@@ -76,7 +76,7 @@ module sid_api #(
         .out     (core1_o),
         .osc3    (sid1_osc3)
     );
-    
+
     // SID core #2 - no POT pins.
     /* verilator lint_off PINCONNECTEMPTY */
     sid_core sid2 (
@@ -100,7 +100,7 @@ module sid_api #(
     sid::s22_t     voice_o;
 
     logic [3:0] voice_stage = 0, next_voice_stage;
-    
+
     sid_voice voice_pipeline (
         .clk     (clk),
         .active  (voice_stage >= 2 && voice_stage <= 8),
@@ -109,7 +109,7 @@ module sid_api #(
         .voice_o (voice_o),  // 1 cycle delay
         .osc_o   (osc_o)     // 1 cycle delay
     );
-    
+
     // Pipeline for filter outputs.
     sid::filter_i_t filter_i;
     sid::s20_t      filter_o;
@@ -129,11 +129,11 @@ module sid_api #(
         .filter_i (filter_i),
         .audio_o  (filter_o) // 8 cycle delay
     );
-    
+
     always_comb begin
         case (voice_stage)
           // Start voice pipeline when the SIDs are done.
-          0: next_voice_stage = { 3'b0, phase[sid::PHI1_PHI2] };
+          0: next_voice_stage = { 3'b0, phase[sid::PHI1] };
           // Finished after stage 9.
           9: next_voice_stage = 0;
           default:
@@ -162,7 +162,7 @@ module sid_api #(
             next_filter_done = 0;
         endcase
     end
-    
+
     always_ff @(posedge clk) begin
         // Calculate 2*3 voice outputs.
         // osc_o and voice_o are delayed by 1 cycle.
@@ -226,7 +226,7 @@ module sid_api #(
               filter_i.ext_in    <= audio_i_right;
           end
         endcase
-              
+
         voice_stage <= next_voice_stage;
 
         // Combine 2 audio stage outputs.
@@ -239,11 +239,11 @@ module sid_api #(
               audio_o.right <= { filter_o,      4'b0 };
           end
         endcase
-        
+
         filter_state <= next_filter_state;
         filter_done  <= next_filter_done;
     end
-    
+
     // Chip select decode.
     always_comb begin
         // SID #1 is always located at D400.
@@ -255,7 +255,7 @@ module sid_api #(
         sid_cs[0] = sid2_cfg.addr == sid::D400 ? ~cs.cs_n :
                     ~cs.cs_n & ~sid_cs[1];
     end
-    
+
     always_comb begin
         // Default to SID #1 for data out.
         data_o = sid_cs == 2'b10 ? sid2_data_o : sid1_data_o;
