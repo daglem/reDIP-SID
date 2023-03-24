@@ -26,10 +26,11 @@ module sid_voice #(
     localparam WAVEFORM_DC_8580 = -16'sh800,   // No DC offsets in the MOS8580.
     localparam VOICE_DC_6581    = 32'('h340*'hff), // Measured from samples.
     localparam VOICE_DC_8580    = 32'h0,      // No DC offsets in the MOS8580.
-    localparam WF_0_TTL_6581    = 23'd200000,  // Waveform 0 TTL ~200ms
-    localparam WF_0_TTL_8580    = 23'd5000000  // Waveform 0 TTL ~5s
+    localparam WF_0_TTL_6581    = 13'd200,  // Waveform 0 TTL ~200ms
+    localparam WF_0_TTL_8580    = 13'd5000  // Waveform 0 TTL ~5s
 )(
     input  logic          clk,
+    input  logic          tick_ms,
     input  logic          active,
     input  sid::model_e   model,
     input  sid::voice_i_t voice_i,
@@ -74,12 +75,12 @@ module sid_voice #(
     // FIXME: Yosys doesn't support multidimensional packed arrays outside
     // of structs, nor arrays of structs.
     struct packed {
-        logic [0:5][22:0] age;
+        logic [0:5][12:0] age;
         logic [0:5][11:0] value;
     } waveform_0;
     /* verilator lint_on LITENDIAN */
 
-    logic [22:0] waveform_0_age = 0;
+    logic [12:0] waveform_0_age = 0;
     logic [11:0] waveform_0_value;
     logic        waveform_0_faded;
 
@@ -104,7 +105,7 @@ module sid_voice #(
         .vin  (voice_i.envelope),
         .vout (env_6581)
     );
-              
+
     // Voice DCA (digitally controlled amplifier).
     // voice_res = voice_DC + waveform*envelope
     // The result fits in 22 bits.
@@ -199,7 +200,7 @@ module sid_voice #(
             _st      <= sid_waveform__ST(model, voice_i.waveform.saw_tri);
 
             // Update of waveform 0.
-            waveform_0_age   <= voice_i.waveform.selector == 'b0000 ? waveform_0.age[0] + 1 : 0;
+            waveform_0_age   <= voice_i.waveform.selector == 'b0000 ? waveform_0.age[0] + { 12'b0, tick_ms } : 0;
             waveform_0.age   <= { waveform_0.age[1:5],   waveform_0_age   };
             waveform_0.value <= { waveform_0.value[1:5], waveform_0_value };
 

@@ -23,10 +23,11 @@ module sid_waveform #(
     // FIXME: Is the initial value 'h7fffff possibly caused by a long reset?
     localparam INIT_NOISE = 1,
     // Time for noise LFSR to be filled with 1 bits when reset or test is held.
-    localparam NOISE_TTL_6581 = 24'h8000,
-    localparam NOISE_TTL_8580 = 24'h950000
+    localparam NOISE_TTL_6581 = 14'd33,
+    localparam NOISE_TTL_8580 = 14'd9765
 )(
     input  logic               clk,
+    input  logic               tick_ms,
     input  logic               res,
     input  sid::model_e        model,
     input  sid::phase_t        phase,
@@ -55,7 +56,7 @@ module sid_waveform #(
     logic        pulse      = 0;
     logic        tri_xor;
     sid::reg12_t saw_tri    = INIT_OSC ? { 6{2'b01} } : 0;
-    sid::reg24_t noise_age  = 0;
+    logic [13:0] noise_age  = 0;
 
     always_comb begin
         // A sync source will normally sync its destination when the MSB of the
@@ -129,7 +130,7 @@ module sid_waveform #(
                     // Reset LFSR.
                     noise <= '1;
                 end else begin
-                    noise_age <= noise_age + 1;
+                    noise_age <= noise_age + { 12'b0, tick_ms };
                 end
             end else begin
                 noise_age <= 0;

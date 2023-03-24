@@ -46,6 +46,25 @@ module sid_api #(
         phase     <= { phase[1:0], phi2_prev & ~phi2 };
     end
 
+    // Tick approximately every ms, for smaller counters in submodules.
+    // ~1MHz / 1024 = ~1kHz
+    logic  [9:0]  timer = 0;
+    logic [10:0]  timer_next;
+    logic         timer_tick;
+
+    always_comb begin
+        // Use carry as tick.
+        timer_next = { 1'b0, timer } + 1;
+        timer_tick = timer_next[10];
+    end
+
+    always_ff @(posedge clk) begin
+        if (phase[sid::PHI2]) begin
+            // Update timer, discarding carry.
+            timer <= timer_next[9:0];
+        end
+    end
+
     // FIXME: This would be safer if Yosys were to understand structure literals.
     // sid::cfg_t sid_cfg = '{ sid1_model: ... };
 `ifdef SID2
@@ -66,6 +85,7 @@ module sid_api #(
     // SID core #1.
     sid_core sid1 (
         .clk     (clk),
+        .tick_ms (timer_tick),
         .model   (sid1_cfg.model),
         .bus_i   (bus_i),
         .phase   (phase),
@@ -81,6 +101,7 @@ module sid_api #(
     /* verilator lint_off PINCONNECTEMPTY */
     sid_core sid2 (
         .clk     (clk),
+        .tick_ms (timer_tick),
         .model   (sid2_cfg.model),
         .bus_i   (bus_i),
         .phase   (phase),
@@ -103,6 +124,7 @@ module sid_api #(
 
     sid_voice voice_pipeline (
         .clk     (clk),
+        .tick_ms (timer_tick),
         .active  (voice_stage >= 2 && voice_stage <= 8),
         .model   (voice_model),
         .voice_i (voice_i),

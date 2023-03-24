@@ -17,10 +17,11 @@
 `default_nettype none
 
 module sid_core #(
-    localparam BUS_VALUE_TTL_MOS6581 = 20'h01D00,
-    localparam BUS_VALUE_TTL_MOS8580 = 20'hA2000
+    localparam BUS_VALUE_TTL_MOS6581 = 10'd7,
+    localparam BUS_VALUE_TTL_MOS8580 = 10'd664
 )(
     input  logic         clk,
+    input  logic         tick_ms,
     input  sid::model_e  model,
     input  sid::bus_i_t  bus_i,
     input  sid::phase_t  phase,
@@ -41,7 +42,7 @@ module sid_core #(
         reg_o.regs.osc3 = osc3;
         reg_o.regs.env3 = out.voice3.envelope;
     end
-    
+
     // SID waveform generators.
 
     // We could have generated the waveform generators, however Yosys currently
@@ -52,6 +53,7 @@ module sid_core #(
 
     sid_waveform waveform1 (
         .clk        (clk),
+        .tick_ms    (tick_ms),
         .res        (bus_i.res),
         .model      (model),
         .phase      (phase),
@@ -63,6 +65,7 @@ module sid_core #(
 
     sid_waveform waveform2 (
         .clk        (clk),
+        .tick_ms    (tick_ms),
         .res        (bus_i.res),
         .model      (model),
         .phase      (phase),
@@ -74,6 +77,7 @@ module sid_core #(
 
     sid_waveform waveform3 (
         .clk        (clk),
+        .tick_ms    (tick_ms),
         .res        (bus_i.res),
         .model      (model),
         .phase      (phase),
@@ -84,7 +88,7 @@ module sid_core #(
     );
 
     // SID envelope generators.
-    
+
     sid_envelope envelope1 (
         .clk   (clk),
         .res   (bus_i.res),
@@ -92,7 +96,7 @@ module sid_core #(
         .reg_i (reg_i.regs.voice1.envelope),
         .out   (out.voice1.envelope)
     );
-    
+
     sid_envelope envelope2 (
         .clk   (clk),
         .res   (bus_i.res),
@@ -100,7 +104,7 @@ module sid_core #(
         .reg_i (reg_i.regs.voice2.envelope),
         .out   (out.voice2.envelope)
     );
-    
+
     sid_envelope envelope3 (
         .clk   (clk),
         .res   (bus_i.res),
@@ -123,9 +127,9 @@ module sid_core #(
     logic w;
 
     // Fade-out of value on data bus.
-    logic [19:0] bus_ttl;
-    logic [19:0] bus_age   = 0;
-    sid::reg8_t  bus_value = 0;
+    logic [9:0] bus_ttl;
+    logic [9:0] bus_age   = 0;
+    sid::reg8_t bus_value = 0;
 
     always_comb begin
         // Read / write.
@@ -135,7 +139,7 @@ module sid_core #(
         // Time to live for value on data bus.
         bus_ttl = (model == sid::MOS6581) ? BUS_VALUE_TTL_MOS6581 : BUS_VALUE_TTL_MOS8580;
     end
-        
+
     always_ff @(posedge clk) begin
         // Output from register or bus value.
         data_o <= r ? reg_o.bytes[bus_i.addr - 'h19] : bus_value;
@@ -164,7 +168,7 @@ module sid_core #(
                     bus_value <= 0;
                 end else begin
                     // Count up to complete fade-out of bus value.
-                    bus_age   <= bus_age + 1;
+                    bus_age   <= bus_age + { 9'b0, tick_ms };
                 end
             end
         end
