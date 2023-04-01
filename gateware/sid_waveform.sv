@@ -48,10 +48,10 @@ module sid_waveform #(
 
     // Waveforms.
     logic        osc19_prev = 0;
-    logic        nclk       = 0;
-    logic        nclk_prev  = 0;
-    logic        nres       = 0;
+    logic        nres;
+    logic        nclk;
     logic        nres_prev  = 0;
+    logic        nclk_prev  = 0;
     sid::reg23_t noise      = INIT_NOISE ? '1 : '0;
     logic        pulse      = 0;
     logic        tri_xor;
@@ -80,6 +80,10 @@ module sid_waveform #(
         // modulation.
         tri_xor = ~reg_i.sawtooth & ((reg_i.ring_mod & ~sync_i.msb) ^ osc[23]);
 
+        // Noise LFSR reset and clock.
+        nres = res | reg_i.test;
+        nclk = ~(nres | (~osc19_prev & osc[19]));
+
         // Waveform output, to waveform mixer / DAC.
         out.selector = { reg_i.noise, reg_i.pulse, reg_i.sawtooth, reg_i.triangle };
         out.noise    = { noise[20], noise[18], noise[14], noise[11], noise[9], noise[5], noise[2], noise[0] };
@@ -99,7 +103,7 @@ module sid_waveform #(
                 osc <= osc_next;
             end
 
-            // The input oscillator MSB must be stored on sync.
+            // The input oscillator MSB is latched by phi2.
             msb_i_prev <= sync_i.msb;
         end
 
@@ -115,11 +119,9 @@ module sid_waveform #(
         if (phase[sid::PHI2_PHI1]) begin
             // OSC bit 19 is read before the update of OSC at PHI2_PHI1, i.e.
             // it's delayed by one cycle.
-            nclk       <= ~(res | reg_i.test | (~osc19_prev & osc[19]));
-            nclk_prev  <= nclk;
-            nres       <= res | reg_i.test;
-            nres_prev  <= nres;
             osc19_prev <= osc[19];
+            nres_prev  <= nres;
+            nclk_prev  <= nclk;
 
             if (~nclk) begin
                 // LFSR shift phase 1.
@@ -130,7 +132,7 @@ module sid_waveform #(
                     // Reset LFSR.
                     noise <= '1;
                 end else begin
-                    noise_age <= noise_age + { 12'b0, tick_ms };
+                    noise_age <= noise_age + { 13'b0, tick_ms };
                 end
             end else begin
                 noise_age <= 0;
