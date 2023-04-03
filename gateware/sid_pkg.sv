@@ -201,7 +201,7 @@ package sid;
     // Oscillator synchronization.
     typedef struct packed {
         logic msb;
-        logic sync;
+        logic synced;
     } sync_t;
 
     // Input to waveform mixer.

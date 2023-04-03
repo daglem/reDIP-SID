@@ -43,7 +43,7 @@ module sid_waveform #(
     sid::reg24_t osc        = INIT_OSC ? { 12{2'b01} } : 0;
     sid::reg24_t osc_next;
     logic        msb_i_prev = 0;
-    logic        msb_i_up;
+    logic        msb_i;
     logic        sync_res;
 
     // Waveforms.
@@ -54,8 +54,8 @@ module sid_waveform #(
     logic        nclk_prev  = 0;
     sid::reg23_t noise      = INIT_NOISE ? '1 : '0;
     logic        pulse      = 0;
-    logic        tri_xor;
-    sid::reg12_t saw_tri    = INIT_OSC ? { 6{2'b01} } : 0;
+    logic        tri_xor    = 0;
+    sid::reg12_t saw_tri    = 0;
     logic [13:0] noise_age  = 0;
 
     always_comb begin
@@ -66,19 +66,13 @@ module sid_waveform #(
         // circuit, which takes the form of a ring oscillator when all three
         // oscillators are synced on the same cycle. Here, like in reSID, no
         // oscillator will be synced in this special case of the special case.
-        osc_next    = osc + { 8'b0, reg_i.freq_hi, reg_i.freq_lo };
-        sync_o.msb  = osc_next[23];
-        msb_i_up    = ~msb_i_prev & sync_i.msb;
-        sync_o.sync = reg_i.test | (reg_i.sync & msb_i_up);
-        sync_res    = reg_i.test | (reg_i.sync & msb_i_up & ~sync_i.sync);
-
-        // The sawtooth and triangle waveforms are constructed from the upper
-        // 12 bits of the oscillator. When sawtooth is not selected, and the MSB
-        // is high, the lower 11 of these 12 bits are inverted. When triangle is
-        // selected, the lower 11 bits are shifted up to produce the final
-        // output. The MSB may be modulated by the preceding oscillator for ring
-        // modulation.
-        tri_xor = ~reg_i.sawtooth & ((reg_i.ring_mod & ~sync_i.msb) ^ osc[23]);
+        osc_next      = osc + { 8'b0, reg_i.freq_hi, reg_i.freq_lo };
+        sync_o.msb    = osc_next[23];
+        sync_o.synced = reg_i.test | (reg_i.sync & ~msb_i_prev & sync_i.msb);
+        // Note that we cannot include sync_i.synced in the expressions above,
+        // since this would introduce a circular dependency.
+        msb_i         = sync_i.msb & ~sync_i.synced;
+        sync_res      = reg_i.test | (reg_i.sync & ~msb_i_prev & msb_i);
 
         // Noise LFSR reset and clock.
         nres = res | reg_i.test;
@@ -104,7 +98,15 @@ module sid_waveform #(
             end
 
             // The input oscillator MSB is latched by phi2.
-            msb_i_prev <= sync_i.msb;
+            msb_i_prev <= msb_i;
+
+            // The sawtooth and triangle waveforms are constructed from the
+            // upper 12 bits of the oscillator. When sawtooth is not selected,
+            // and the MSB is high, the lower 11 of these 12 bits are
+            // inverted. When triangle is selected, the lower 11 bits are
+            // shifted up to produce the final output. The MSB may be modulated
+            // by the preceding oscillator for ring modulation.
+            tri_xor <= ~reg_i.sawtooth & ((reg_i.ring_mod & ~msb_i) ^ (osc_next[23] & ~sync_res));
         end
 
         // In the 8580, sawtooth / triangle is latched by phi2, and is thus
