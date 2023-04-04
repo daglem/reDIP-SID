@@ -187,20 +187,37 @@ module sid_io (
         we       <= phi2_prev & ~r_w_n;
     end
 
+    // The MOS6581 datasheet specifies a minimum POT sink current of 500uA.
+    // Use SB_RGBA_DRV to limit the current draw on the POT pins to 2mA.
+    SB_RGBA_DRV #(
+        .CURRENT_MODE ("0b1"),       // Half current mode
+        .RGB0_CURRENT ("0b000001"),  // 2mA POTX
+        .RGB1_CURRENT ("0b000001"),  // 2mA POTY
+        .RGB2_CURRENT ("0b000000")   // 0mA /IO1, uses SB_IO only
+    ) rgba_drv (
+	.CURREN       (1'b1),
+	.RGBLEDEN     (pot_o.discharge),
+	.RGB0PWM      (1'b1),
+	.RGB1PWM      (1'b1),
+	.RGB0         (pad_pot[0]),
+	.RGB1         (pad_pot[1])
+    );
+
+    // The POT pins are shared between the SB_RGBA_DRV primitive above
+    // (sink current when pot_o.discharge = 1) and the SB_IO primitive below
+    // (read input when pot_o.discharge = 0).
     // The POT pins are open drain I/O only, however the SB_IO primitive
     // can still be used instead of SB_IO_OD.
-    // Tristate output with enable, registered input.
+    // No output, registered input.
     SB_IO #(
-        .PIN_TYPE      (6'b1010_00)
+        .PIN_TYPE      (6'b0000_00)
     ) io_pot[1:0] (
         .PACKAGE_PIN   (pad_pot),
 `ifdef VERILATOR
         .CLOCK_ENABLE  (1'b1),
 `endif
         .INPUT_CLK     (clk),
-        .OUTPUT_ENABLE (pot_o.discharge),
-        .D_IN_0        (charged_x),
-        .D_OUT_0       (1'b0)
+        .D_IN_0        (charged_x)
     );
 
     always_ff @(posedge clk) begin
