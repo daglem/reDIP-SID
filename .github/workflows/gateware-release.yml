@@ -13,10 +13,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install OSS CAD Suite
-        uses: YosysHQ/setup-oss-cad-suite@v1
+        uses: YosysHQ/setup-oss-cad-suite@v2
         with:
-          # Yosys 0.24+1 7ad7b55 - Includes required support for packed arrays in packed structs.
-          osscadsuite-version: '2022-12-08'
+          osscadsuite-version: '2023-04-04'
 
       - name: Build gateware
         run: |
