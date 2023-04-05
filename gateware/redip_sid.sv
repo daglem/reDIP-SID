@@ -95,7 +95,7 @@ module redip_sid (
 
     ice40_init ice40_init (
         .boot    (boot),
-        .image   ({ 1'b0, bootloader }),
+        .image   (2'b01),
         .sys_clk (sys_clk),
         .clk_24  (clk_24),
         .rst_24  (rst_24),
