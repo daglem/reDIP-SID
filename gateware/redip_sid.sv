@@ -90,7 +90,6 @@ module redip_sid (
     logic rst_48;
 
     // iCE40 FPGA initialization.
-    logic bootloader;
     logic boot = 1'b0;
 
     ice40_init ice40_init (
@@ -163,6 +162,8 @@ module redip_sid (
     );
 
 `ifdef MUACM
+    logic bootloader;
+
     /* verilator lint_off PINCONNECTEMPTY */
     muacm muacm (
         .usb_dp        (usb_d_p),
@@ -189,7 +190,24 @@ module redip_sid (
         boot <= boot | bootloader;
     end
 `else
-    always_comb bootloader = 0;
+    // When μACM is not configured, we drop into the bootloader once a
+    // physical USB connection is detected. A USB host has 15k pulldowns on
+    // D+ and D-, which will counter the 100k I/O pullups.
+    // To boot the SID firmware after flashing, first disconnect USB, and then
+    // either press the user button or power cycle the board.
+    logic dp, dn;
+
+    SB_IO #(
+        .PIN_TYPE    (6'b0000_01),  // Unregistered inputs
+        .PULLUP      (1'b1)         // 100k pullups
+    ) io_phi2 (
+        .PACKAGE_PIN ({ usb_d_p, usb_d_n }),
+        .D_IN_0      ({ dp, dn })
+    );
+
+    always_ff @(posedge clk_48) begin
+        boot <= boot | ~(dp | dn);
+    end
 `endif
 
 endmodule

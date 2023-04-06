@@ -29,10 +29,9 @@ implemented.
 The gateware may be installed on the reDIP SID hardware via USB using
 [dfu-util](https://dfu-util.sourceforge.net/):
 
-* Power down the board.
-* Keep the user button pressed while powering up the board.
-* Release the user button once the green LED starts blinking.
+* Connect a USB cable. The green LED should start blinking.
 * Install the gateware with `./flash.sh` (Linux / Mac OS) or `flash.bat` (Windows).
+* Disconnect USB, and then either press the user button or power cycle the board.
 
 ## License
 
