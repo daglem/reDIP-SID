@@ -34,10 +34,12 @@ module i2c_master #(
 );
 
 	// Commands
+	/* verilator lint_off UNUSED */
 	localparam [1:0] CMD_START = 2'b00;
 	localparam [1:0] CMD_STOP  = 2'b01;
 	localparam [1:0] CMD_WRITE = 2'b10;
 	localparam [1:0] CMD_READ  = 2'b11;
+	/* verilator lint_on UNUSED */
 
 	// FSM states
 	localparam

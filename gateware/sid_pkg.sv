@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // This file is part of reDIP SID, a MOS 6581/8580 SID FPGA emulation platform.
-// Copyright (C) 2022  Dag Lem <resid@nimrod.no>
+// Copyright (C) 2022 - 2023  Dag Lem <resid@nimrod.no>
 //
 // This source describes Open Hardware and is licensed under the CERN-OHL-S v2.
 //
@@ -45,22 +45,13 @@ package sid;
     typedef logic signed [11:0] s12_t;  // tanh_x offset
     typedef logic signed [10:0] s11_t;  // tanh_x clamped
 
-    // FIXME: Currently the array must be encapsulated in a struct,
-    // otherwise Yosys miscalculates its size.
-    /* verilator lint_off LITENDIAN */
     typedef struct packed {
         s24_t left;
         s24_t right;
     } audio_t;
-    /* verilator lint_on LITENDIAN */
 
-    typedef enum {
-        PHI2,
-        PHI2_PHI1,
-        PHI1
-    } phase_e;
-
-    typedef logic [PHI1:0] phase_t;
+    // Pipeline cycles.
+    typedef logic [3:0] cycle_t;
 
     typedef enum logic [0:0] {
         MOS6581,
@@ -84,7 +75,7 @@ package sid;
 
     typedef struct packed {
         model_e model;
-        addr_t  addr;  // Only used for SID #2.
+        addr_t  addr;  // Only used for SID 2.
         reg9_t  fc_base;
         s11_t   fc_offset;
     } cfg_t;
@@ -92,8 +83,8 @@ package sid;
     typedef struct packed {
         reg5_t addr;
         reg8_t data;
-        logic  we;
-        logic  oe;
+        logic  phi2;
+        logic  r_w_n;
         logic  res;
     } bus_i_t;
 
@@ -112,6 +103,8 @@ package sid;
         logic       discharge;
     } pot_o_t;
 
+    // Control registers.
+
     typedef struct packed {
         // FREQ Lo/Hi
         reg8_t freq_lo;
@@ -119,25 +112,33 @@ package sid;
         // PW Lo/Hi
         reg8_t pw_lo;
         reg8_t pw_hi;
-        // Control Reg (upper 7 bits)
-        logic  noise;
-        logic  pulse;
-        logic  sawtooth;
-        logic  triangle;
-        logic  test;
-        logic  ring_mod;
-        logic  sync;
+    } freq_pw_t;
+
+    // Control Reg (upper 7 bits).
+    typedef struct packed {
+        logic noise;
+        logic pulse;
+        logic sawtooth;
+        logic triangle;
+        logic test;
+        logic ring_mod;
+        logic sync;
+    } control_t;
+
+    typedef struct packed {
+        freq_pw_t freq_pw;
+        control_t control;
     } waveform_reg_t;
 
     typedef struct packed {
-        // Control Reg (lower 1 bit)
+        // Control Reg (lower 1 bit).
         logic  gate;
-        // Attack/Decay
+        // Attack/Decay.
         reg4_t attack;
         reg4_t decay;
-        // Sustain/Release
+        // Sustain/Release.
         reg4_t sustain;
-        reg4_t release_;  // release is a Verilog keyword
+        reg4_t release_;  // release is a Verilog keyword.
     } envelope_reg_t;
 
     typedef struct packed {
@@ -157,88 +158,17 @@ package sid;
         reg4_t vol;
     } filter_reg_t;
 
-    // Write-only registers for the full 5 bit address space.
-    /* verilator lint_off LITENDIAN */
-    typedef struct packed {
-        // voice_reg_t [0:2] voice;
-        voice_reg_t  voice1;
-        voice_reg_t  voice2;
-        voice_reg_t  voice3;
-        filter_reg_t filter;
-
-        // Extra write-only registers, not present in the real SID.
-        // These are included in order to facilitate configuration by
-        // the writing of magic bytes.
-        logic [0:6][7:0] magic;
-    } write_reg_t;
-
     // FIXME: Currently the array must be encapsulated in a struct,
     // otherwise Yosys miscalculates its size.
+    /* verilator lint_off LITENDIAN */
     typedef struct packed {
         logic [0:1][7:0] xy;
     } pot_reg_t;
+    /* verilator lint_on LITENDIAN */
 
     typedef struct packed {
         pot_reg_t pot;
         reg8_t    osc3;
         reg8_t    env3;
-    } read_reg_t;
-
-    // Byte addressable write-only registers.
-    typedef union packed {
-        logic [0:31][7:0] bytes;
-        write_reg_t       regs;
-    } reg_i_t;
-
-    // Byte addressable read-only registers.
-    typedef union packed {
-        // logic ['h19:'h1c][7:0] bytes;
-        logic [0:3][7:0] bytes;
-        read_reg_t       regs;
-    } reg_o_t;
-    /* verilator lint_on LITENDIAN */
-
-    // Oscillator synchronization.
-    typedef struct packed {
-        logic msb;
-        logic synced;
-    } sync_t;
-
-    // Input to waveform mixer.
-    typedef struct packed {
-        // Noise, pulse, sawtooth, triangle.
-        reg4_t  selector;
-        reg8_t  noise;
-        logic   pulse;
-        reg12_t saw_tri;
-    } waveform_i_t;
-
-    // Input to waveform mixer / voice DCA.
-    typedef struct packed {
-        waveform_i_t waveform;
-        reg8_t       envelope;
-    } voice_i_t;
-
-    // Digital output from SID core.
-    typedef struct packed {
-        filter_reg_t filter_regs;
-        voice_i_t    voice1;
-        voice_i_t    voice2;
-        voice_i_t    voice3;
-    } core_o_t;
-
-    // Input to audio filter / audio output stage.
-    typedef struct packed {
-        model_e      model;
-        filter_reg_t regs;
-        // Filter cutoff curve parameters.
-        reg9_t       fc_base;    // Base cutoff frequency in Hz
-        s12_t        fc_offset;  // Final FC register offset for curve shifting
-        // Input signals.
-        s22_t        voice1;
-        s22_t        voice2;
-        s22_t        voice3;
-        s22_t        ext_in;
-    } filter_i_t;
-
+    } misc_reg_t;
 endpackage

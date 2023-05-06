@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // This file is part of reDIP SID, a MOS 6581/8580 SID FPGA emulation platform.
-// Copyright (C) 2022  Dag Lem <resid@nimrod.no>
+// Copyright (C) 2022 - 2023  Dag Lem <resid@nimrod.no>
 //
 // This source describes Open Hardware and is licensed under the CERN-OHL-S v2.
 //
@@ -30,7 +30,6 @@ module sid_io (
     inout  logic        pad_res_n,
     inout  logic  [1:0] pad_pot,
     // Internal interfaces.
-    output logic        phi2  = 0,
     output sid::bus_i_t bus_i,
     output sid::cs_t    cs,
     input  sid::reg8_t  data_o,
@@ -39,29 +38,23 @@ module sid_io (
 );
 
     // Control signals.
-    logic r_w_n;
     logic phi2_io;
+    logic phi2_x = 0;
+    logic phi2 = 0;
     logic phi1_io;   // Inverted phi2
     logic res_n_x;
-
-    // Delayed phi2 for write enable.
-    logic phi2_prev = 0;
+    logic res = 0;
 
     // Output enable to be registered in the SB_IO OE register, separate from
-    // bus_i.oe used in sid_core.sv
+    // bus_i.oe used in sid_control.sv
     logic oe_io = 0;
-
-    logic we    = 0;
-    logic oe    = 0;
-    logic res   = 0;
 
     // POT signals.
     logic [1:0] charged_x;
 
     always_comb begin
-        bus_i.we  = we;
-        bus_i.oe  = oe;
-        bus_i.res = res;
+        bus_i.phi2 = phi2;
+        bus_i.res  = res;
     end
 
     // The 6510 phi2 clock driver only weakly drives the clock line high.
@@ -75,7 +68,7 @@ module sid_io (
     // phi2 is configured as a simple input pin (not registered, i.e. without
     // any delay), so that the signal can be used to latch other signals,
     // which are stable until at least 10ns after the falling edge of phi2
-    // (ref. 6510 datasheet).
+    // (ref. MOS6510 datasheet).
     SB_IO #(
         .PIN_TYPE    (6'b0000_01),
         .PULLUP      (1'b1)
@@ -96,7 +89,7 @@ module sid_io (
         .INPUT_CLK    (clk),
         .D_IN_0       (res_n_x)
     );
-    
+
     // Hold other (registered) inputs at phi1, i.e. D-latch enable = phi2.
     // This allows us to read out the signals after the falling edge of phi2,
     // where the signals were stable.
@@ -111,7 +104,7 @@ module sid_io (
         .CLOCK_ENABLE      (1'b1),
 `endif
         .INPUT_CLK         (clk),
-        .D_IN_0            (r_w_n)
+        .D_IN_0            (bus_i.r_w_n)
     );
 
     // Chip select, including extra pins.
@@ -163,15 +156,13 @@ module sid_io (
 
     always_ff @(posedge clk) begin
         // Bring phi2 into FPGA clock domain.
-        // phi2 is metastable, but can be used by the calling module
-        // for detection of the falling edge of phi2.
-        phi2      <= phi2_io;
-        phi2_prev <= phi2;
+        phi2_x <= phi2_io;
+        phi2   <= phi2_x;
 
         // The reset signal is already registered on the I/O input,
         // so we only add one extra register stage wrt. metastability.
         // Also OR in the system reset for PLL sync / BRAM powerup.
-        res       <= ~res_n_x | rst;
+        res   <= ~res_n_x | rst;
 
         // The data output must be held by the output enable for at least 10ns
         // after the falling edge of phi2 (ref. SID datasheet). This is ensured
@@ -180,11 +171,7 @@ module sid_io (
         // address conflict with expansion port cartridges.
         // Delay the start of the pin OE by ANDing with phi2, in order to avoid
         // any output glitches.
-        oe_io    <= phi2_io & phi2 & r_w_n & ~cs.cs_n;
-        oe       <= phi2 & r_w_n;
-
-        // Write enable must be held at the detected falling edge of phi2.
-        we       <= phi2_prev & ~r_w_n;
+        oe_io <= phi2_io & phi2 & bus_i.r_w_n & ~cs.cs_n;
     end
 
     // The MOS6581 datasheet specifies a minimum POT sink current of 500uA.
@@ -196,9 +183,9 @@ module sid_io (
         .RGB2_CURRENT ("0b000000")   // 0mA /IO1, uses SB_IO only
     ) rgba_drv (
 	.CURREN       (1'b1),
-	.RGBLEDEN     (pot_o.discharge),
-	.RGB0PWM      (1'b1),
-	.RGB1PWM      (1'b1),
+	.RGBLEDEN     (1'b1),
+	.RGB0PWM      (pot_o.discharge),
+	.RGB1PWM      (pot_o.discharge),
 	.RGB0         (pad_pot[0]),
 	.RGB1         (pad_pot[1])
     );
@@ -210,14 +197,14 @@ module sid_io (
     // can still be used instead of SB_IO_OD.
     // No output, registered input.
     SB_IO #(
-        .PIN_TYPE      (6'b0000_00)
+        .PIN_TYPE     (6'b0000_00)
     ) io_pot[1:0] (
-        .PACKAGE_PIN   (pad_pot),
+        .PACKAGE_PIN  (pad_pot),
 `ifdef VERILATOR
-        .CLOCK_ENABLE  (1'b1),
+        .CLOCK_ENABLE (1'b1),
 `endif
-        .INPUT_CLK     (clk),
-        .D_IN_0        (charged_x)
+        .INPUT_CLK    (clk),
+        .D_IN_0       (charged_x)
     );
 
     always_ff @(posedge clk) begin

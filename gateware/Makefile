@@ -9,13 +9,13 @@ MOD = $(TOP).sv \
 	i2s_dsp_mode.sv \
 	muladd.sv \
 	sid_io.sv \
-	sid_pot.sv \
+	sid_control.sv \
 	sid_waveform.sv \
 	sid_envelope.sv \
+	sid_pot.sv \
 	sid_dac.sv \
 	sid_voice.sv \
 	sid_filter.sv \
-	sid_core.sv \
 	sid_api.sv
 
 MUACM ?= 0
@@ -27,6 +27,11 @@ endif
 SID2 ?= 0
 ifeq "$(SID2)" "1"
 FLG += -DSID2
+endif
+
+RIPPLE_COUNTERS ?= 0
+ifeq "$(RIPPLE_COUNTERS)" "1"
+FLG += -DRIPPLE_COUNTERS
 endif
 
 SRC = $(PKG) $(FUN) $(MOD)
@@ -63,7 +68,7 @@ prog: $(TOP).bin
 	dfu-util -d 1d50:6159,:6156 -a 0 -D $< -R
 
 sim:
-	verilator --Mdir sim_trace --timescale "1ns / 1ns" --trace-fst --trace-structs --trace-underscore --clk clk --cc -O3 -CFLAGS "-Wall" --x-assign fast --x-initial fast --noassert --exe --build -Icells_sim sid_pkg.sv sid_api.sv --top sid_api sid_api_sim.cpp
+	verilator --Mdir sim_trace -DVM_TRACE -DRIPPLE_COUNTERS --timescale "1ns / 1ns" --trace-fst --trace-structs --trace-underscore --clk clk --cc -O3 -CFLAGS "-Wall" --x-assign fast --x-initial fast --noassert --exe --build -Icells_sim sid_pkg.sv sid_api.sv --top sid_api sid_api_sim.cpp
 	verilator --Mdir sim_audio --clk clk --cc -O3 -CFLAGS "-Wall" --x-assign fast --x-initial fast --noassert --exe --build -Icells_sim sid_pkg.sv sid_api.sv --top sid_api sid_api_sim.cpp
 
 clean:

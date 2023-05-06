@@ -1,3 +1,5 @@
+/* verilator lint_off UNUSED */
+/* verilator lint_off UNDRIVEN */
 (* blackbox *)
 module SB_RGBA_DRV(
 	input CURREN,
@@ -14,3 +16,5 @@ parameter RGB0_CURRENT = "0b000000";
 parameter RGB1_CURRENT = "0b000000";
 parameter RGB2_CURRENT = "0b000000";
 endmodule
+/* verilator lint_on UNDRIVEN */
+/* verilator lint_on UNUSED */

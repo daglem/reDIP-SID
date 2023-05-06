@@ -15,14 +15,14 @@ jobs:
       - name: Install OSS CAD Suite
         uses: YosysHQ/setup-oss-cad-suite@v2
         with:
-          osscadsuite-version: '2023-04-04'
+          osscadsuite-version: '2023-05-05'
 
       - name: Build gateware
         run: |
           DISTDIR="reDIP-SID-${GITHUB_REF_NAME}"
           mkdir $DISTDIR
           make -C gateware
-          cp -p gateware/README.md gateware/flash.bat gateware/flash.sh gateware/redip_sid.bin $DISTDIR
+          cp -p gateware/README.md gateware/Pipelining.md gateware/flash.bat gateware/flash.sh gateware/redip_sid.bin $DISTDIR
           tar -czvf $DISTDIR.tar.gz $DISTDIR
           zip -r $DISTDIR.zip $DISTDIR
 

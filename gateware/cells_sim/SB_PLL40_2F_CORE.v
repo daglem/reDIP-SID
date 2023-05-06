@@ -1,3 +1,5 @@
+/* verilator lint_off UNUSED */
+/* verilator lint_off UNDRIVEN */
 (* blackbox *)
 module SB_PLL40_2F_CORE (
 	input   REFERENCECLK,
@@ -32,3 +34,5 @@ module SB_PLL40_2F_CORE (
 	parameter TEST_MODE = 1'b0;
 	parameter EXTERNAL_DIVIDE_FACTOR = 1;
 endmodule
+/* verilator lint_on UNDRIVEN */
+/* verilator lint_on UNUSED */

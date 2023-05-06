@@ -4,6 +4,7 @@
 `define ICE40_DEFAULT_ASSIGNMENT_1
 `endif
 
+/* verilator lint_off UNUSED */
 /* verilator lint_off COMBDLY */
 /* verilator lint_off LATCH */
 module SB_IO (
@@ -117,3 +118,4 @@ endspecify
 endmodule
 /* verilator lint_on LATCH */
 /* verilator lint_on COMBDLY */
+/* verilator lint_on UNUSED */

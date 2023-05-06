@@ -1,3 +1,4 @@
+/* verilator lint_off UNUSED */
 (* blackbox, keep *)
 module SB_WARMBOOT (
 	input BOOT,
@@ -5,3 +6,4 @@ module SB_WARMBOOT (
 	input S0
 );
 endmodule
+/* verilator lint_on UNUSED */

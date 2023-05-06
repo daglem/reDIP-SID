@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // This file is part of reDIP SID, a MOS 6581/8580 SID FPGA emulation platform.
-// Copyright (C) 2022  Dag Lem <resid@nimrod.no>
+// Copyright (C) 2022 - 2023  Dag Lem <resid@nimrod.no>
 //
 // This source describes Open Hardware and is licensed under the CERN-OHL-S v2.
 //
@@ -21,10 +21,10 @@ module sid_pot #(
     localparam INIT_POT = 0
 )(
     input  logic          clk,
-    input  sid::phase_t   phase,
-    output sid::pot_reg_t pot_reg = '0,
+    input  sid::cycle_t   cycle,
     input  sid::pot_i_t   pot_i,
-    output sid::pot_o_t   pot_o
+    output sid::pot_o_t   pot_o,
+    output sid::pot_reg_t pot = '0
 );
 
     // 9 bit counter, used by both POTX and POTY.
@@ -46,7 +46,7 @@ module sid_pot #(
     end
 
     always_ff @(posedge clk) begin
-        if (phase[sid::PHI2_PHI1]) begin
+        if (cycle == 1) begin
             // Count phi1 cycles.
             pot_cnt <= pot_cnt + 1;
         end
@@ -57,17 +57,17 @@ module sid_pot #(
     // POT register once the input is high, or the counter = FF.
     // In the real SID, the register load is delayed by one cycle, however
     // it is not necessary to emulate this accurately.
-    for (genvar i = 0; i < 2; i++) begin : pot
+    for (genvar i = 0; i < 2; i++) begin : pots
         always_ff @(posedge clk) begin
-            if (phase[sid::PHI2_PHI1]) begin
+            if (cycle == 1) begin
                 // Reset/set position detection status / load POT register.
                 if (pot_o.discharge) begin
                     pos_det[i]    <= 0;
                 end else if (~pos_det[i] & (pot_i.charged[i] | pos_FF)) begin
                     // Load POT registers when the POT position is detected,
                     // once within every 512 cycles.
-                    pos_det[i]    <= 1;
-                    pot_reg.xy[i] <= pot_cnt[7:0];
+                    pos_det[i]  <= 1;
+                    pot.xy[i] <= pot_cnt[7:0];
                 end
             end
         end

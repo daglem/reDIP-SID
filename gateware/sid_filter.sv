@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // This file is part of reDIP SID, a MOS 6581/8580 SID FPGA emulation platform.
-// Copyright (C) 2022  Dag Lem <resid@nimrod.no>
+// Copyright (C) 2022 - 2023  Dag Lem <resid@nimrod.no>
 //
 // This source describes Open Hardware and is licensed under the CERN-OHL-S v2.
 //
@@ -46,15 +46,19 @@ endfunction
 
 
 module sid_filter #(
-    // The 6581 DC offset is approximately -1/18 of the dynamic range of one voice.
+    // FC offset for average 6581 filter curve.
+    localparam FC_OFFSET_6581 = 12'sh600,
+    // The 6581 mixer DC offset is approximately -1/18 of the dynamic range of one voice.
     localparam MIXER_DC_6581 = 24'(-(1 << 20)/18),
     localparam MIXER_DC_8580 = 24'(0),
     localparam PI = $acos(-1)
 )(
-    input  logic           clk,
-    input  logic [2:0]     stage,
-    input  sid::filter_i_t filter_i,
-    output sid::s20_t      audio_o
+    input  logic             clk,
+    input  sid::cycle_t      cycle,
+    input  sid::filter_reg_t freg,
+    input  sid::cfg_t        cfg,
+    input  sid::s22_t        voice_i,
+    output sid::s20_t        audio_o
 );
 
     // MOS6581 filter cutoff: 200Hz - 24.2kHz (from cutoff curves below)
@@ -89,9 +93,6 @@ module sid_filter #(
     // Extreme     : fc_curve(x, 200, +760)
     //
 
-    sid::reg11_t fc;
-    sid::reg11_t fc_6581;
-
     sid::s16_t w0_T_lsl17_8580;
     sid::s16_t w0_T_lsl17_6581;
     sid::s16_t w0_T_lsl17_6581_base = 0;
@@ -111,12 +112,20 @@ module sid_filter #(
 
     // MOS8580 filter cutoff: 0 - 12.5kHz.
     // Max w0 = 2*pi*12500 = 78540
-    // We us the same scaling factor for w0*T as above.
+    // We use the same scaling factor for w0*T as above.
     // The maximum value of the scaled w0*T is 1.048576/8*2*pi*12500 = 10294,
     // which is approximately 5 times the maximum fc (2^11 - 1 = 2047),
     // and may be calculated as 5*fc = 4*fc + fc (shift and add).
 
     // MOS6581 filter cutoff DAC output.
+    sid::reg11_t fc;
+    sid::reg11_t fc_6581;
+
+    always_comb begin
+        // Filter cutoff register value.
+        fc = { freg.fc_hi, freg.fc_lo[2:0] };
+    end
+
     sid_dac #(
         .BITS(11)
     ) fc_dac (
@@ -146,12 +155,6 @@ module sid_filter #(
         end
     end
 
-    sid::s16_t vi = 0;
-    sid::s16_t vd = 0;
-
-    sid::reg4_t mode = 0;
-    sid::reg4_t vol  = 0;
-
     // Hardware 16x16->32 multiply-add:
     // o = c +- (a * b)
     sid::s32_t o;
@@ -172,122 +175,210 @@ module sid_filter #(
     // vlp = vlp - w0*vbp
     // vbp = vbp - w0*vhp
     // vhp = 1/Q*vbp - vlp - vi
-    sid::s16_t vlp, vlp2, vlp_next;
-    sid::s16_t vbp, vbp2, vbp_next;
-    sid::s16_t vhp, vhp2, vhp_next;
+    //
+    // (vlp, vbp, vhp) x 2
+    sid::s16_t v5 = 0, v4 = 0, v3 = 0, v2 = 0, v1 = 0, v0 = 0;
     sid::s17_t dv;
+    sid::s16_t v_next;
 
-    sid::reg11_t fc_x;
+    // Simplify by converting cycle number to pipeline stage number.
+    `define stage(cycle_1) (cycle == (cycle_1) || cycle == (cycle_1) + 5)
+    `define cycle_between(cycle_1, cycle_2) (cycle >= (cycle_1) && cycle <= (cycle_2))
+    `define stage_between(cycle_1, cycle_2) (`cycle_between((cycle_1), (cycle_2)) || `cycle_between((cycle_1) + 5, (cycle_2) + 5))
+
+    // Mux and sum for direct audio path and filter input path.
+    // Each voice is 22 bits, i.e. the sum of four voices is 24 bits.
+    sid::s24_t  vd   = 0;
+    sid::s24_t  vi   = 0;
+    sid::reg4_t filt = 0;
+    sid::s24_t  vd1  = 0;
+
+    always_ff @(posedge clk) begin
+        if (`stage(1)) begin
+            vd   <= 0;
+            vi   <= 0;
+            filt <= freg.filt;
+        end else if (`stage_between(2, 5)) begin
+            // Direct audio path.
+            // 3 OFF (mode[3]) disconnects voice 3 from the direct audio path.
+            if (~(filt[0] || (freg.mode[3] && `stage(4)))) begin
+                vd <= vd + 24'(voice_i);
+            end
+
+            // Filter path.
+            if (filt[0]) begin
+                vi <= vi + 24'(voice_i);
+            end
+
+            filt <= filt >> 1;
+        end
+
+        if (`stage(6)) begin
+            // Buffer input to master volume.
+            vd1  <= vd;
+        end
+    end
+
+    // Mux and sum for filter outputs.
+    // Each filter output is 16 bits, i.e. the sum of three outputs is 17.5
+    // bits. We assume that filter outputs are out of phase, so that we don't
+    // need more than 17 bits.
+    sid::s17_t  vf   = 0;
+    sid::reg4_t mode = 0;
+
+    // Audio mixers.
+    always_ff @(posedge clk) begin
+        if (`stage(4)) begin
+            vf   <= 0;
+            mode <= freg.mode;
+        end else if (`stage_between(5, 7)) begin
+            if (mode[0]) begin
+                vf <= vf + v_next;
+            end
+
+            mode <= mode >> 1;
+        end
+    end
+
+    sid::reg4_t  vol   = 0;
+    sid::model_e model = sid::MOS6581;
+    sid::s12_t   fc_offset;
+    sid::reg11_t fc_x  = 0;
 
     always_comb begin
-        // Filter cutoff register value.
-        fc = { filter_i.regs.fc_hi, filter_i.regs.fc_lo[2:0] };
+        // Filter cutoff offset.
+        fc_offset = cfg.fc_offset + FC_OFFSET_6581;
 
         // Intermediate results for filter.
         // Shifts -w0*vbp and -w0*vlp right by 17.
-        dv       = 17'(o >>> 17);
-        vlp_next = clamp(vlp + dv);
-        vbp_next = clamp(vbp + dv);
-        vhp_next = clamp(o[10 +: 17]);
+        dv = 17'(o >>> 17);
+
+        // Next hp or lp/bp.
+        v_next = clamp(`stage(7) ? o[10+:17] : 17'(v5) + dv);
+
+        // Final result for audio output, at cycle 9 and 14.
+        // The effective width is 20 bits (4 bit volume * 16 bit audio).
+        audio_o = o[19:0];
     end
 
+    // Calculation of filter outputs. TDM to use only one multiplier.
     always_ff @(posedge clk) begin
-        case (stage)
-          1: begin
-              // MOS6581: w0 = filter curve
-              // 1.048576/8*fc_base is approximated by fc_base >> 3.
-              w0_T_lsl17_6581_base <= { 10'b0, filter_i.fc_base[8:3] };
-              // We have to register fc_x in order to meet timing.
-              fc_x <= tanh_x_clamp(signed'(13'(fc_6581)) - filter_i.fc_offset);
+        if (`stage_between(5, 7)) begin
+            // (vlp, vbp, vhp) x 2
+            { v5, v4, v3, v2, v1, v0 } <= { v4, v3, v2, v1, v0, v_next };
+        end
 
-              // MOS8580: w0 = 5*fc = 4*fc + fc
-              w0_T_lsl17_8580 <= { 3'b0, fc, 2'b0 } + { 5'b0, fc };
+        if (`stage(2)) begin
+            // MOS6581: w0 = filter curve
+            // 1.048576/8*fc_base is approximated by fc_base >> 3.
+            w0_T_lsl17_6581_base <= { 10'b0, cfg.fc_base[8:3] };
+            // We have to register fc_x in order to meet timing.
+            fc_x <= tanh_x_clamp(signed'(13'(fc_6581)) - fc_offset);
 
-              // MOS6581: 1/Q =~ ~res/8 (not used - op-amps are not ideal)
-              // MOS8580: 1/Q =~ 2^((4 - res)/8)
-              _1_Q_lsl10 <= (filter_i.model == sid::MOS6581) ?
-                            _1_Q_6581_lsl10[filter_i.regs.res] :
-                            _1_Q_8580_lsl10[filter_i.regs.res];
+            // MOS8580: w0 = 5*fc = 4*fc + fc
+            w0_T_lsl17_8580 <= { 3'b0, fc, 2'b0 } + { 5'b0, fc };
 
-              // Mux for filter path.
-              // Each voice is 22 bits, i.e. the sum of four voices is 24 bits.
-              vi <= 16'((((filter_i.regs.filt[0]) ? 24'(filter_i.voice1) : '0) +
-                         ((filter_i.regs.filt[1]) ? 24'(filter_i.voice2) : '0) +
-                         ((filter_i.regs.filt[2]) ? 24'(filter_i.voice3) : '0) +
-                         ((filter_i.regs.filt[3]) ? 24'(filter_i.ext_in) : '0)) >>> 7);
+            // MOS6581: 1/Q =~ ~res/8 (not used - op-amps are not ideal)
+            // MOS8580: 1/Q =~ 2^((4 - res)/8)
+            _1_Q_lsl10 <= (cfg.model == sid::MOS6581) ?
+                          _1_Q_6581_lsl10[freg.res] :
+                          _1_Q_8580_lsl10[freg.res];
+        end
 
-              // Mux for direct audio path.
-              // 3 OFF (mode[3]) disconnects voice 3 from the direct audio path.
-              // We add in the mixer DC here, to save time in calculation of
-              // the final audio sum.
-              vd <= 16'((((filter_i.model == sid::MOS6581) ?
-                          MIXER_DC_6581 :
-                          MIXER_DC_8580) +
-                         (filter_i.regs.filt[0] ? '0 : 24'(filter_i.voice1)) +
-                         (filter_i.regs.filt[1] ? '0 : 24'(filter_i.voice2)) +
-                         (filter_i.regs.filt[2] |
-                          filter_i.regs.mode[3] ? '0 : 24'(filter_i.voice3)) +
-                         (filter_i.regs.filt[3] ? '0 : 24'(filter_i.ext_in))) >>> 7);
+        if (`stage(3)) begin
+            // Read from BRAM.
+            w0_T_lsl17_6581 <= w0_T_lsl17_6581_tanh[tanh_x_mirror(fc_x)];
 
-              // Save settings to facilitate expedited filter pipeline setup.
-              mode <= filter_i.regs.mode;
-              vol  <= filter_i.regs.vol;
-          end
-          2: begin
-              // Read from BRAM.
-              w0_T_lsl17_6581 <= w0_T_lsl17_6581_tanh[tanh_x_mirror(fc_x)];
-          end
-          3: begin
+            // Save model and volume for later stages.
+            model <= cfg.model;
+            vol   <= freg.vol;
+        end
+
+        unique0 case (cycle)
+          4, 9: begin
               // vlp = vlp - w0*vbp
               // We first calculate -w0*vbp
               c <= 0;
               s <= 1'b1;
-              a <= (filter_i.model == sid::MOS6581) ?
+              a <= (model == sid::MOS6581) ?
                    w0_T_lsl17_6581_base + w0_T_lsl17_6581_y0 + tanh_y_mirror(fc_x[10], w0_T_lsl17_6581) :
-                   w0_T_lsl17_8580;   // w0*T << 17
-              b <= vbp;               // vbp
+                   w0_T_lsl17_8580;  // w0*T << 17
+              b <= v4;               // vbp
           end
-          4: begin
-              // Result for vlp ready. See calculation of vlp_next above.
-              { vlp, vlp2 } <= { vlp2, vlp_next };
+          5, 10: begin
+              // Result for vlp ready.
 
               // vbp = vbp - w0*vhp
               // We first calculate -w0*vhp
-              c <= 0;
-              s <= 1'b1;
-              // a <= a;              // w0*T << 17
-              b <= vhp;               // vhp
+              // c <= 0;
+              // s <= 1'b1;
+              // a <= ...
+              b <= v3;               // vhp
           end
-          5: begin
-              // Result for vbp ready. See calculation of vbp_next above.
-              { vbp, vbp2 } <= { vbp2, vbp_next };
+          6, 11: begin
+              // Result for vbp ready.
 
               // vhp = 1/Q*vbp - vlp - vi
-              c <= -(32'(vlp2) + 32'(vi)) << 10;
+              // c <= -(32'(v0) + (32'(vi) >>> 7)) << 10;
+              c <= -(((32'(v0) << 7) + 32'(vi)) << 3);
               s <= 1'b0;
-              a <= 16'(_1_Q_lsl10);   // 1/Q << 10
-              b <= vbp_next;          // vbp
+              a <= 16'(_1_Q_lsl10);  // 1/Q << 10
+              b <= v_next;           // vbp
           end
-          6: begin
-              // Result for vbp ready. See calculation of vhp_next above.
-              { vhp, vhp2 } <= { vhp2, vhp_next };
-
+          // 7, 12: Result for vhp ready
+          8, 13: begin
               // Audio output: aout = vol*amix
               // In the real SID, the signal is inverted first in the mixer
               // op-amp, and then again in the volume control op-amp.
               c <= 0;
-              s <= 1'b0;
-              a <= { 12'b0, vol };    // Master volume
-              b <=  clamp(17'(vd) +   // Audio mixer / master volume input
-                          (mode[0] ? 17'(vlp2)     : '0) +
-                          (mode[1] ? 17'(vbp2)     : '0) +
-                          (mode[2] ? 17'(vhp_next) : '0));
-          end
-          7: begin
-              // Final result for audio output ready.
-              // The effective width is 20 bits (4 bit volume * 16 bit audio).
-              audio_o <= o[19:0];
+              // s <= 1'b0;
+              a <= { 12'b0, vol };   // Master volume
+              b <= clamp(17'((vd1 +  // Audio mixer / master volume input
+                              ((model == sid::MOS6581) ?
+                               MIXER_DC_6581 :
+                               MIXER_DC_8580)
+                              ) >>> 7) +
+                         vf);
           end
         endcase
     end
+
+`ifdef VM_TRACE
+    // Latch states for simulation.
+    /* verilator lint_off UNUSED */
+    typedef struct packed {
+        sid::s24_t   vd;
+        sid::s24_t   vi;
+        sid::s16_t   w0_T;
+        sid::reg11_t _1_Q;
+        sid::s16_t   vhp;
+        sid::s16_t   vbp;
+        sid::s16_t   vlp;
+        sid::s17_t   vf;
+        sid::s20_t   vo;
+    } sim_t;
+
+    sim_t sim[2];
+
+    always_ff @(posedge clk) begin
+        if (`stage(6)) begin
+            sim[cycle > 6].vd   <= vd;
+            sim[cycle > 6].vi   <= vi;
+            sim[cycle > 6].w0_T <= a;
+            sim[cycle > 6]._1_Q <= _1_Q_lsl10;
+        end
+
+        if (`stage(8)) begin
+            sim[cycle > 8].vf  <= vf;
+            sim[cycle > 8].vhp <= v0;
+            sim[cycle > 8].vbp <= v1;
+            sim[cycle > 8].vlp <= v2;
+        end
+
+        if (`stage(9)) begin
+            sim[cycle > 9].vo <= audio_o;
+        end
+    end
+    /* verilator lint_on UNUSED */
+`endif
 endmodule

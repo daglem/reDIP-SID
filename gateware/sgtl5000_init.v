@@ -200,6 +200,7 @@ module sgtl5000_init (
 	// ----------
 
 	// Instance
+	/* verilator lint_off PINCONNECTEMPTY */
 	i2c_master #(
 		.DW(4)
 	) master_I (
@@ -216,6 +217,7 @@ module sgtl5000_init (
 		.clk      (clk),
 		.rst      (rst)
 	);
+	/* verilator lint_on PINCONNECTEMPTY */
 
 	// Control
 	always @(*)

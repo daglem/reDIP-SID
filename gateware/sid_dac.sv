@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // This file is part of reDIP SID, a MOS 6581/8580 SID FPGA emulation platform.
-// Copyright (C) 2022  Dag Lem <resid@nimrod.no>
+// Copyright (C) 2022 - 2023  Dag Lem <resid@nimrod.no>
 //
 // This source describes Open Hardware and is licensed under the CERN-OHL-S v2.
 //
@@ -73,7 +73,7 @@ module sid_dac #(
     // Sum values for all set bits, adding 0.5 for rounding by truncation.
     always_comb begin
         bitsum = 1 << (SCALEBITS - 1);
-        for (integer i = 0; i < BITS; i++) begin
+        for (int i = 0; i < BITS; i++) begin
             bitsum += (vin[i] ? bitval[i] : 0);
         end
         vout = bitsum[MSB-:BITS];

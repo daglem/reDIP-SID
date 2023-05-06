@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // This file is part of reDIP SID, a MOS 6581/8580 SID FPGA emulation platform.
-// Copyright (C) 2022  Dag Lem <resid@nimrod.no>
+// Copyright (C) 2022 - 2023  Dag Lem <resid@nimrod.no>
 //
 // This source describes Open Hardware and is licensed under the CERN-OHL-S v2.
 //
@@ -74,7 +74,6 @@ module redip_sid (
 );
 
     // SID API parameters.
-    logic        phi2_x;
     sid::bus_i_t bus_i;
     sid::cs_t    cs;
     sid::reg8_t  data_o;
@@ -108,7 +107,7 @@ module redip_sid (
         .scl_led (i2c_scl_led_n),
         .sda_btn (i2c_sda_btn_n),
         .btn     (),
-        .led     (~cs.cs_n & bus_i.we),
+        .led     (~cs.cs_n & bus_i.phi2 & ~bus_i.r_w_n),
         .done    (),
         .clk     (clk_24),
         .rst     (rst_24)
@@ -126,7 +125,6 @@ module redip_sid (
         .pad_phi2  (phi2),
         .pad_res_n (res_n),
         .pad_pot   ({ pot_y, pot_x }),
-        .phi2      (phi2_x),
         .bus_i     (bus_i),
         .cs        (cs),
         .data_o    (data_o),
@@ -137,7 +135,6 @@ module redip_sid (
     // SID API.
     sid_api sid_api (
         .clk     (clk_24),
-        .phi2    (phi2_x),
         .bus_i   (bus_i),
         .cs      (cs),
         .data_o  (data_o),

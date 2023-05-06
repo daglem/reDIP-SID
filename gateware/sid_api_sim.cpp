@@ -193,17 +193,17 @@ static void clk12(Vsid_api* api) {
 }
 
 static void phi2(Vsid_api* api) {
-    api->phi2 = 1;
+    api->bus_i |= (0b1 << 2);
     clk12(api);
 }
 
 static void phi1(Vsid_api* api) {
-    api->phi2 = 0;
+    api->bus_i &= ~(0b1 << 2);
     clk12(api);
 }
 
 static void write(Vsid_api* api, int addr, int data) {
-    api->bus_i = (addr << 11) | (data << 3) | (0b1 << 2) | (api->bus_i & 1);
+    api->bus_i = (addr << 11) | (data << 3) | (api->bus_i & 0b101);
 }
 
 
@@ -243,7 +243,6 @@ Write waveform dump to "sid_api.fst".
     auto api = new Vsid_api;
 
     api->clk     = 0;
-    api->phi2    = 0;
     api->bus_i   = 0;
     api->cs      = 0b0100;  // cs_n = 0, cs_io1_n = 1
     api->pot_i   = 0;
