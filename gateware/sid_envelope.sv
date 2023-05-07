@@ -58,6 +58,7 @@ module sid_envelope #(
         // 5-bit exponential decay counter.
         sid::reg5_t  exp_seg;
         sid::reg5_t  exp_cnt;
+        logic        prev_exp_cnt_res;
     } envelope_t;
 
     envelope_t e5 = '0, e4 = '0, e3 = '0, e2 = '0, e1 = '0, e0 = '0;
@@ -215,7 +216,7 @@ module sid_envelope #(
             // The counter bits are inverted when the counting direction changes.
             // The count is delayed by yet another cycle.
             e0.env_cnt <= primed ?
-                          (e5.env_cnt ^ { 8{e5.env_cnt_inv} }) + { 7'b0, e5.env_cnt_en & exp_cnt_res & ~e5.sustain } :
+                          (e5.env_cnt ^ { 8{e5.env_cnt_inv} }) + { 7'b0, e5.env_cnt_en & e5.prev_exp_cnt_res & ~e5.sustain } :
                           ENV_INIT;
 
 `ifndef RIPPLE_COUNTERS
@@ -233,9 +234,6 @@ module sid_envelope #(
             end else if (e5.prev_rate_cnt_res) begin
                 e0.exp_cnt <= { e5.exp_cnt[3:0], e5.exp_cnt[4] ^ e5.exp_cnt[2] };
             end
-
-            // Latch reset signal for next cycle.
-            e0.prev_rate_cnt_res <= rate_cnt_res;
 `else
             // LFSR counters were used in the real SID, however ripple counters
             // don't necessarily use any more resources thanks to FPGA carry
@@ -256,10 +254,10 @@ module sid_envelope #(
             end else if (e5.prev_rate_cnt_res) begin
                 e0.exp_cnt <= e5.exp_cnt + 1;
             end
-
-            // Latch reset signal for next cycle.
-            e0.prev_rate_cnt_res <= rate_cnt_res;
 `endif
+            // Latch reset signals for next cycle.
+            e0.prev_rate_cnt_res <= rate_cnt_res;
+            e0.prev_exp_cnt_res  <= exp_cnt_res;
 
             // Set/reset selectors for exponential curve segments.
             // In the real SID, the selectors are both latched and input to
