@@ -21,7 +21,9 @@
 module sid_voice #(
     localparam WAVEFORM_DC_6581 = -16'sh380,  // OSC3 = 'h38 at 5.94V.
     localparam WAVEFORM_DC_8580 = -16'sh800,  // No DC offsets in the MOS8580.
-    localparam VOICE_DC_6581    = 32'('h340*'hff), // Measured from samples.
+    // FIXME: The 6581 voice DC offset has been measured as low as 'h340 on one
+    // SID chip, and should thus probably be configurable.
+    localparam VOICE_DC_6581    = 32'('h800*'hff), // 1/2 the dynamic range.
     localparam VOICE_DC_8580    = 32'h0       // No DC offsets in the MOS8580.
 )(
     input  logic        clk,
