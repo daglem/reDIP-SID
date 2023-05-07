@@ -138,7 +138,7 @@ module sid_control #(
         // this would delay the output by one cycle, possibly violating the
         // minimum MOS6510 TDSU of 100ns for SID 2 OSC3/ENV3.
         // data_o = dbus.value[cs == 2'b10];
-        data_o = cs && r ? r_value : dbus.value[cs == 2'b10];
+        data_o = |cs && r ? r_value : dbus.value[cs == 2'b10];
     end
 
     // Value on data bus for each SID chip.
