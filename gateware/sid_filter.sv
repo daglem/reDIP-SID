@@ -118,18 +118,18 @@ module sid_filter #(
     // and may be calculated as 5*fc = 4*fc + fc (shift and add).
 
     // MOS6581 filter cutoff DAC output.
-    sid::reg11_t fc;
+    sid::reg11_t fc_8580;
     sid::reg11_t fc_6581;
 
     always_comb begin
         // Filter cutoff register value.
-        fc = { freg.fc_hi, freg.fc_lo[2:0] };
+        fc_8580 = { freg.fc_hi, freg.fc_lo[2:0] };
     end
 
     sid_dac #(
         .BITS(11)
     ) fc_dac (
-        .vin  (fc),
+        .vin  (fc_8580),
         .vout (fc_6581)
     );
 
@@ -214,8 +214,11 @@ module sid_filter #(
         end
 
         if (`stage(6)) begin
-            // Buffer input to master volume.
-            vd1  <= vd;
+            // Buffer input to master volume, adding in mixer DC at the same
+            // time.
+            vd1 <= vd + ((model == sid::MOS6581) ?
+                         MIXER_DC_6581 :
+                         MIXER_DC_8580);
         end
     end
 
@@ -276,7 +279,7 @@ module sid_filter #(
             fc_x <= tanh_x_clamp(signed'(13'(fc_6581)) - fc_offset);
 
             // MOS8580: w0 = 5*fc = 4*fc + fc
-            w0_T_lsl17_8580 <= { 3'b0, fc, 2'b0 } + { 5'b0, fc };
+            w0_T_lsl17_8580 <= { 3'b0, fc_8580, 2'b0 } + { 5'b0, fc_8580 };
 
             // MOS6581: 1/Q =~ ~res/8 (not used - op-amps are not ideal)
             // MOS8580: 1/Q =~ 2^((4 - res)/8)
@@ -332,12 +335,8 @@ module sid_filter #(
               // op-amp, and then again in the volume control op-amp.
               c <= 0;
               // s <= 1'b0;
-              a <= { 12'b0, vol };   // Master volume
-              b <= clamp(17'((vd1 +  // Audio mixer / master volume input
-                              ((model == sid::MOS6581) ?
-                               MIXER_DC_6581 :
-                               MIXER_DC_8580)
-                              ) >>> 7) +
+              a <= { 12'b0, vol };         // Master volume
+              b <= clamp(17'(vd1 >>> 7) +  // Audio mixer / master volume input
                          vf);
           end
         endcase
