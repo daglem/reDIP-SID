@@ -35,7 +35,6 @@ module sid_waveform #(
     input  logic          res,
     input  logic[1:0]     model,
     input  sid::freq_pw_t freq_pw_1,
-    input  sid::control_t control_3,
     input  sid::control_t control_4,
     input  sid::control_t control_5,
     input logic [2:0]     test,
@@ -46,27 +45,40 @@ module sid_waveform #(
     // Initialization flag.
     logic primed = 0;
 
+    // Keep track of the current SID model.
+    logic model_5 = 0, model_4;
+
+    always_comb begin
+        model_4 = model[cycle >= 8];
+    end
+
+    always_ff @(posedge clk) begin
+        if (cycle >= 5 && cycle <= 10) begin
+            model_5 <= model_4;
+        end
+    end
+
     // ------------------------------------------------------------------------
     // Oscillators
     // ------------------------------------------------------------------------
     // Phase-accumulating oscillators. Two extra pipeline stages for synchronization.
-    sid::reg24_t o7 = 0, o6 = 0, o5 = 0, o4 = 0, o3 = 0, o2 = 0, o1 = 0, o0 = 0;
+    sid::reg24_t o5 = 0, o4 = 0, o3 = 0, o2 = 0, o1 = 0, o0 = 0;
     sid::reg24_t osc_next;
     // Inter-oscillator synchronization.
-    logic        o7_msb_up;
+    logic        o5_msb_up;
     logic        o0_msb_up = 0, o1_msb_up = 0;
-    logic        o7_synced, o0_synced, o1_synced;
-    logic        o7_reset,  o0_reset,  o1_reset;
+    logic        o5_synced, o0_synced, o1_synced;
+    logic        o5_reset,  o0_reset,  o1_reset;
     // Latched signals for noise and pulse.
-    logic [7:0]  osc19_prev    = '0;
-    logic [7:0]  osc19_prev_up = '0;
-    logic [7:0]  pulse         = '0;
+    logic [5:0]  osc19_prev    = '0;
+    logic [5:0]  osc19_prev_up = '0;
+    logic [5:0]  pulse         = '0;
     logic        pulse_next;
 
     always_comb begin
         // Constant value / ripple carry add can in theory be combined in single iCE40 LCs.
-        osc_next  = primed ? o7 + { 8'b0, freq_pw_1.freq_hi, freq_pw_1.freq_lo } : OSC_INIT;
-        o7_msb_up = ~o7[23] & osc_next[23];
+        osc_next  = primed ? o5 + { 8'b0, freq_pw_1.freq_hi, freq_pw_1.freq_lo } : OSC_INIT;
+        o5_msb_up = ~o5[23] & osc_next[23];
 
         // A sync source will normally sync its destination when the MSB of the
         // sync source rises. However if the sync source is itself synced on the
@@ -82,47 +94,58 @@ module sid_waveform #(
         // At cycle 4 and 7 (SID 1 / SID 2):
         // voice 1 osc = o1
         // voice 2 osc = o0
-        // voice 3 osc = o7
+        // voice 3 osc = o5
         //
         //  ---------<----------      ---------<----------
         // |                    | =  |                    |
-        //  -> v1 -> v2 -> v3 ->      -> o1 -> o0 -> o7 ->
+        //  -> v1 -> v2 -> v3 ->      -> o1 -> o0 -> o5 ->
         //
-        o7_synced = test[0] || (sync[0] && o0_msb_up);
+        o5_synced = test[0] || (sync[0] && o0_msb_up);
         o0_synced = test[1] || (sync[1] && o1_msb_up);
-        o1_synced = test[2] || (sync[2] && o7_msb_up);
+        o1_synced = test[2] || (sync[2] && o5_msb_up);
 
-        o7_reset = test[0] || (sync[0] && o0_msb_up && !o0_synced);
+        o5_reset = test[0] || (sync[0] && o0_msb_up && !o0_synced);
         o0_reset = test[1] || (sync[1] && o1_msb_up && !o1_synced);
-        o1_reset = test[2] || (sync[2] && o7_msb_up && !o7_synced);
+        o1_reset = test[2] || (sync[2] && o5_msb_up && !o5_synced);
 
         // The pulse width comparison is done at phi2, before the oscillator
         // is updated at phi1. Thus the pulse waveform is delayed by one cycle
         // with respect to the oscillator.
-        pulse_next = (o7[23-:12] >= { freq_pw_1.pw_hi[3:0], freq_pw_1.pw_lo }) | test[0];
+        pulse_next = (o5[23-:12] >= { freq_pw_1.pw_hi[3:0], freq_pw_1.pw_lo }) | test[0];
     end
 
     always_ff @(posedge clk) begin
-        if (cycle >= 2 && cycle <= 9) begin
-            // Update oscillators.
-            // In the real SID, an intermediate sum is latched by phi2, and this
-            // sum is simultaneously synced, output to waveform generation bits,
-            // and written back to osc on phi1.
-            { o7, o6, o5, o4, o3, o2, o1, o0 } <= { o6, o5, o4, o3, o2, o1, o0, osc_next };
-            { o1_msb_up, o0_msb_up } <= { o0_msb_up, o7_msb_up };
+        // Rotation on cycles 2 - 7 for update of oscillators.
+        // Rotation on six additional cycles for oscillator synchronization and
+        // writeback of the oscillator MSB, and to keep other processes in sync.
+        if (cycle >= 2 && cycle <= 13) begin
+            { o5, o4, o3, o2, o1, o0 } <= { o4, o3, o2, o1, o0, o5 };
 
-            // Save previous rise of OSC bit 19 for generation of the noise waveform.
-            // OSC bit 19 is read before the update of OSC at phi1, i.e.
-            // it's delayed by one cycle.
-            osc19_prev    <= { osc19_prev[6:0], o7[19] };
-            osc19_prev_up <= { osc19_prev_up[6:0], ~osc19_prev[7] & o7[19] };
+            osc19_prev    <= { osc19_prev[4:0],    osc19_prev[5] };
+            osc19_prev_up <= { osc19_prev_up[4:0], osc19_prev_up[5] };
+            pulse         <= { pulse[4:0],         pulse[5] };
 
-            // Pulse.
-            pulse <= { pulse[6:0], pulse_next };
+            if (cycle >= 2 && cycle <= 7) begin
+                // Update oscillators.
+                // In the real SID, an intermediate sum is latched by phi2, and this
+                // sum is simultaneously synced, output to waveform generation bits,
+                // and written back to osc on phi1.
+                o0 <= osc_next;
+                { o1_msb_up, o0_msb_up } <= { o0_msb_up, o5_msb_up };
+
+                // Save previous rise of OSC bit 19 for generation of the noise waveform.
+                // OSC bit 19 is read before the update of OSC at phi1, i.e.
+                // it's delayed by one cycle.
+                osc19_prev[0]    <= o5[19];
+                osc19_prev_up[0] <= ~osc19_prev[5] & o5[19];
+
+                // Pulse.
+                pulse[0] <= pulse_next;
+            end
 
             if (cycle == 4 || cycle == 7) begin
                 // Reset of oscillators by test bit or synchronization.
-                if (o7_reset) begin
+                if (o5_reset) begin
                     o0 <= 0;
                 end
 
@@ -134,27 +157,20 @@ module sid_waveform #(
                     o2 <= 0;
                 end
             end
+
+            if (cycle >= 6 && cycle <= 11) begin
+                // Writeback to next cycle add for the 6581 oscillator MSB via
+                // the sawtooth waveform selector.
+                if (model_5 == sid::MOS6581 && control_5.sawtooth) begin
+                    o4[23] <= wav[11];
+                end
+            end
         end
     end
 
     // ------------------------------------------------------------------------
     // Waveform generators
     // ------------------------------------------------------------------------
-    // Keep track of the current SID model.
-    logic model_5 = 0, model_4 = 0, model_3;
-
-    always_comb begin
-        model_3 = model[cycle >= 7];
-    end
-
-    always_ff @(posedge clk) begin
-        if (cycle >= 4 && cycle <= 10) begin
-            { model_5, model_4 } <= { model_4, model_3 };
-        end
-    end
-
-    // Pulse is generated earlier.
-
     // Noise.
     typedef struct packed {
         sid::reg23_t lfsr;
@@ -164,6 +180,7 @@ module sid_waveform #(
     } noise_t;
 
     noise_t     n5 = '0, n4 = '0, n3 = '0, n2 = '0, n1 = '0, n0 = '0;
+    logic       cycle_16 = 0;
     logic       nres;
     logic       nclk;
     logic       nset;
@@ -172,58 +189,69 @@ module sid_waveform #(
     // Noise.
     always_comb begin
         // Noise LFSR reset and clock.
-        nres = res | control_3.test;
-        nclk = ~(nres | osc19_prev_up[1]);
-        nset = (n5.age == ((model_3 == sid::MOS6581) ?
+        nres = res | control_4.test;
+        nclk = ~(nres | osc19_prev_up[2]);
+        nset = (n5.age == ((model_4 == sid::MOS6581) ?
                            NOISE_TTL_6581 :
                            NOISE_TTL_8580));
 
-        noise = { n0.lfsr[20], n0.lfsr[18], n0.lfsr[14],
-                  n0.lfsr[11], n0.lfsr[9], n0.lfsr[5], n0.lfsr[2], n0.lfsr[0] };
+        // Noise bits are taken out from the noise LFSR.
+        noise = { n0.lfsr[20], n0.lfsr[18], n0.lfsr[14], n0.lfsr[11],
+                  n0.lfsr[9], n0.lfsr[5], n0.lfsr[2], n0.lfsr[0] };
     end
 
     always_ff @(posedge clk) begin
-        if (cycle >= 4 && cycle <= 9) begin
-            // The noise LFSR stays at 'h7ffffe after reset (clocked on reset release).
-            // FIXME: Check whether this is also true for the MOS8580.
-            // n0 is updated below.
+        // Rotation on cycles 5 - 10 for update of the noise LFSR.
+        // Rotation on six additional cycles for writeback from combined
+        // waveforms.
+        if (cycle >= 5 || cycle_16) begin
             { n5, n4, n3, n2, n1, n0 } <= { n4, n3, n2, n1, n0, n5 };
+            cycle_16 <= cycle == 15;
 
-            n0.nres_prev <= nres;
-            n0.nclk_prev <= nclk;
-
-            if (~nclk || !primed) begin
-                // LFSR shift phase 1.
-                if (nset || !primed) begin
-                    // Reset LFSR.
-                    n0.lfsr <= '1;
-                end else begin
-                    n0.age <= n5.age + { 13'b0, tick_ms };
-                end
-            end else begin
-                n0.age <= 0;
-
+            if (cycle >= 5 && cycle <= 10) begin
                 // The noise LFSR is clocked after OSC bit 19 goes high, or when
                 // reset or test is released.
-                if (~n5.nclk_prev & nclk) begin
-                    // LFSR shift phase 2.
-                    // Completion of the shift is delayed by 2 cycles after OSC
-                    // bit 19 goes high.
-                    n0.lfsr <= { n5.lfsr[21:0], (n5.nres_prev | n5.lfsr[22]) ^ n5.lfsr[17] };
-                end else if (control_3.noise & (control_3.pulse | control_3.sawtooth | control_3.triangle)) begin
-                    // Writeback to LFSR from combined waveforms when nclk = 1.
-                    // FIXME: This should AND in actual bit values, which are
-                    // first calculated after waveform selection below. For now,
-                    // we assume that combined waveforms are used to write zeros
-                    // to the LFSR.
-                    // { n0.lfsr[20], n0.lfsr[18], n0.lfsr[14],
-                    //   n0.lfsr[11], n0.lfsr[9], n0.lfsr[5], n0.lfsr[2], n0.lfsr[0] } <= '0;
-                    n0.lfsr <= { n5.lfsr[22:21], 1'b0, n5.lfsr[19], 1'b0, n5.lfsr[17:15], 1'b0, n5.lfsr[13:12],
-                                 1'b0, n5.lfsr[10], 1'b0, n5.lfsr[8:6], 1'b0, n5.lfsr[4:3], 1'b0, n5.lfsr[1], 1'b0 };
+                // The LFSR stays at 'h7ffffe after reset (clocked on reset release).
+                n0.nres_prev <= nres;
+                n0.nclk_prev <= nclk;
+
+                if (~nclk || !primed) begin
+                    // LFSR shift phase 1.
+                    if (nset || !primed) begin
+                        // Reset LFSR.
+                        // Note that the test bit in combination with combined
+                        // waveforms should probably yield a different result, since
+                        // zero bits can enter the LFSR.
+                        n0.lfsr <= '1;
+                    end else begin
+                        n0.age <= n5.age + { 13'b0, tick_ms };
+                    end
+                end else begin
+                    n0.age <= 0;
+
+                    if (~n5.nclk_prev & nclk) begin
+                        // LFSR shift phase 2.
+                        // Completion of the shift is delayed by 2 cycles after OSC
+                        // bit 19 goes high.
+                        n0.lfsr <= { n5.lfsr[21:0], (n5.nres_prev | n5.lfsr[22]) ^ n5.lfsr[17] };
+                    end
+                end
+            end
+
+            if (cycle >= 6 && cycle <= 11) begin
+                // Writeback to LFSR from combined waveforms.
+                if (control_5.noise) begin
+                    // Writeback to current bit.
+                    if (n0.nclk_prev) begin
+                        { n1.lfsr[20], n1.lfsr[18], n1.lfsr[14], n1.lfsr[11],
+                          n1.lfsr[9], n1.lfsr[5], n1.lfsr[2], n1.lfsr[0] } <= wav[11-:8];
+                    end
                 end
             end
         end
     end
+
+    // Pulse is generated earlier.
 
     // Sawtooth / triangle.
     sid::reg12_t st5 = 0, st4 = 0, st3 = 0, st2 = 0, st0 = 0, st1 = 0;
@@ -256,7 +284,7 @@ module sid_waveform #(
 
     // Power-on initialization.
     always_ff @(posedge clk) begin
-        if (cycle == 10 && !primed) begin
+        if (cycle == 11 && !primed) begin
             // All oscillators and noise LFSRs are initialized.
             primed <= 1;
         end
@@ -265,7 +293,7 @@ module sid_waveform #(
     // ------------------------------------------------------------------------
     // Waveform selectors
     // ------------------------------------------------------------------------
-    sid::reg4_t  waveform_4, waveform_5;
+    sid::reg4_t  waveform_5;
 
     // Pre-calculated waveforms for waveform selection.
     sid::reg12_t norm     = 0;  // Selected regular waveform
@@ -285,7 +313,6 @@ module sid_waveform #(
         logic [5:0][12:0] age;
     } waveform_0_t;
 
-    // (* nowrshmsk *)
     waveform_0_t waveform_0 = '0;
     logic        waveform_0_faded;
     logic        waveform_0_tick;
@@ -302,22 +329,19 @@ module sid_waveform #(
         // * pulse:   1
         // * noise:   2
 
-        waveform_4 = { control_4.noise, control_4.pulse, control_4.sawtooth, control_4.triangle };
-
-        // All combined waveforms which include noise output zero after a few
-        // cycles.
-        unique case (waveform_4)
-          'b1000:  norm_next = { noise, 4'b0 };
-          'b0100:  norm_next = { 12{pulse[2]} };
-          'b0010:  norm_next = saw_tri;
-          'b0001:  norm_next = { saw_tri[10:0], 1'b0 };
+        // Selection of pulse, sawtooth, and triangle.
+        // Noise and combined waveforms are selected on the next cycle.
+        unique case ({ control_4.pulse, control_4.sawtooth, control_4.triangle })
+          'b100:   norm_next = { 12{pulse[2]} };
+          'b010:   norm_next = saw_tri;
+          'b001:   norm_next = { saw_tri[10:0], 1'b0 };
           default: norm_next = 0;
         endcase
     end
 
     always_ff @(posedge clk) begin
         if (cycle >= 5 && cycle <= 10) begin
-            // Regular waveforms.
+            // Regular waveforms, except noise.
             norm     <= norm_next;
 
             // Combined waveform candidates from BRAM and combinational logic.
@@ -333,16 +357,28 @@ module sid_waveform #(
     always_comb begin
         waveform_5 = { control_5.noise, control_5.pulse, control_5.sawtooth, control_5.triangle };
 
-        // Final waveform selection on cycle 2.
-        // All inputs to the combinational logic are from cycle 1.
-        unique case (waveform_5)
-          'b0111:  wav = { pst & { 8{pulse[3]} }, 4'b0 };
-          'b0110:  wav = { ((model_5 == sid::MOS6581) ? ps__6581 : ps__8580) & { 8{pulse[3]} }, 4'b0 };
-          'b0101:  wav = { ((model_5 == sid::MOS6581) ? p_t_6581 : p_t_8580) & { 8{pulse[3]} }, 4'b0 };
-          'b0011:  wav = { _st, 4'b0 };
-          'b0000:  wav = waveform_0.value[5];
+        // All waveform combinations excluding noise.
+        unique case (waveform_5[2:0])
+          'b111:   wav = { pst & { 8{pulse[3]} }, 4'b0 };
+          'b110:   wav = { ((model_5 == sid::MOS6581) ? ps__6581 : ps__8580) & { 8{pulse[3]} }, 4'b0 };
+          'b101:   wav = { ((model_5 == sid::MOS6581) ? p_t_6581 : p_t_8580) & { 8{pulse[3]} }, 4'b0 };
+          'b011:   wav = { _st, 4'b0 };
+          'b000:   wav = waveform_0.value[5];
           default: wav = norm;
         endcase
+
+        // Add noise.
+        if (control_5.noise) begin
+            if (waveform_5[2:0] == 'b000) begin
+                // Only noise is selected.
+                wav = { noise, 4'b0 };
+            end else begin
+                // Noise outputs can zero waveform output bits.
+                // FIXME: Investigate whether neighboring waveform output bits
+                // are affected.
+                wav[11-:8] &= noise;
+            end
+        end
 
         // Update of waveform 0 for next cycle.
         waveform_0_faded = (waveform_0.age[5] == ((model_5 == sid::MOS6581) ?

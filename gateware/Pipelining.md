@@ -13,14 +13,14 @@ The voice pipeline combines several SID modules, and produces one voice output
 per cycle for two SID chips. The table below depicts the data path for SID 1,
 voice 1.
 
-| Stages | Module             | Cycle 1        | Cycle 2        | Cycle 3        | Cycle 4       | Cycle 5         | Cycle 6           | Cycle 7               | Cycle 8     |
-|  ----: | -------------------| -------------- |--------------- | -------------- | --------------| ----------------| ----------------- | --------------------- | ----------- |
-|  1 - 3 | Control registers  | Write voice 1  | Write voice 2  | Write voice 3  |               |                 |                   |                       |             |
-|  2 - 4 | Oscillator         |                | Update osc. 1  | Update osc. 2  | Sync osc. 1-3 |                 |                   |                       |             |
-|  2 - 7 | Waveform generator |                | Buffer pulse 1 | Buffer pulse 2 | Update noise  | Waveform select | Update waveform 0 |                       |             |
-|  7 - 8 | Envelope generator |                |                |                |               |                 | Update counters   |                       |             |
-|  7 - 8 | Voice DCA          |                |                |                |               |                 | Buffer wav/env    | DCA = wav*env         |             |
-|        |                    |                |                |                |               |                 |                   |                       | Voice 1 out |
+| Stages | Module             | Cycle 1        | Cycle 2        | Cycle 3        | Cycle 4        | Cycle 5                  | Cycle 6            | Cycle 7               | Cycle 8     |
+|  ----: | -------------------| -------------- |--------------- | -------------- | -------------- | ------------------------ | ------------------ | --------------------- | ----------- |
+|  1 - 3 | Control registers  | Write voice 1  | Write voice 2  | Write voice 3  |                |                          |                    |                       |             |
+|  2 - 4 | Oscillator         |                | Update osc. 1  | Update osc. 2  | Sync osc. 1-3  |                          |                    |                       |             |
+|  2 - 7 | Waveform generator |                | Buffer pulse 1 | Buffer pulse 2 | Buffer pulse 3 | Waveform select / update | Waveform writeback |                       |             |
+|  7 - 8 | Envelope generator |                |                |                |                |                          | Update counters    |                       |             |
+|  7 - 8 | Voice DCA          |                |                |                |                |                          | Buffer wav/env     | DCA = wav*env         |             |
+|        |                    |                |                |                |                |                          |                    |                       | Voice 1 out |
 
 The voice pipeline starts on the falling edge of the ϕ₂ clock, brought into the
 FPGA clock domain by a two-stage synchronizer.

@@ -33,7 +33,6 @@ module sid_control #(
     output sid::freq_pw_t      freq_pw_1,
     output logic [2:0]         test,
     output logic [2:0]         sync,
-    output sid::control_t      control_3,
     output sid::control_t      control_4,
     output sid::control_t      control_5,
     output sid::envelope_reg_t ereg_5,
@@ -108,7 +107,6 @@ module sid_control #(
     always_comb begin
         // Assign to / from ports.
         freq_pw_1 = v0.regs.waveform.freq_pw;
-        control_3 = v2.regs.waveform.control;
         control_4 = v3.regs.waveform.control;
         control_5 = v4.regs.waveform.control;
         ereg_5    = v4.regs.envelope;

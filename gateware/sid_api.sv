@@ -38,8 +38,8 @@ module sid_api (
     // SID pipeline cycle counters.
     sid::cycle_t voice_cycle_count = 0;
     sid::cycle_t voice_cycle;
-    logic        voice_cycle_idle  = 0;
-    sid::cycle_t filter_cycle      = 0;
+    logic        voice_cycle_idle;
+    sid::cycle_t filter_cycle = 0;
 
     always_comb begin
         // Idling of voice pipeline.
@@ -126,7 +126,7 @@ module sid_api (
     sid::freq_pw_t      freq_pw_1;
     logic [2:0]         test;
     logic [2:0]         sync;
-    sid::control_t      control_3, control_4, control_5;
+    sid::control_t      control_4, control_5;
     sid::envelope_reg_t ereg_5;
     sid::filter_reg_t   freg_1;
     sid::misc_reg_t     mreg;
@@ -142,7 +142,6 @@ module sid_api (
         .freq_pw_1    (freq_pw_1),
         .test         (test),
         .sync         (sync),
-        .control_3    (control_3),
         .control_4    (control_4),
         .control_5    (control_5),
         .ereg_5       (ereg_5),
@@ -163,7 +162,6 @@ module sid_api (
         .freq_pw_1 (freq_pw_1),
         .test      (test),
         .sync      (sync),
-        .control_3 (control_3),
         .control_4 (control_4),
         .control_5 (control_5),
         .wav       (wav)
