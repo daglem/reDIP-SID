@@ -1,0 +1,192 @@
+;
+; reset-noise.a65 - Demonstration of fast noise LFSR reset for voice 3
+;
+; Dag Lem <resid@nimrod.no>
+;
+; The noise LFSR reset is performed as follows:
+;
+; 1. Clear all bits. Bits are cleared by combined waveform writeback
+;    (noise + triangle), and shifted in by setting and clearing the test bit.
+; 2. Set bits 0 - 17 by setting and clearing the test bit.
+; 3. Set bits 18 - 22 by allowing the LFSR to be clocked by oscillator bit 19.
+; 4. Reset the LFSR by setting and clearing the test bit once.
+;
+; Noise LFSR:
+;
+;                reset    -------------------------------------------
+;                  |     |                                           |
+;           test--OR-->EOR<--                                        |
+;                  |         |                                       |
+;                  2 2 2 1 1 1 1 1 1 1 1 1 1                         |
+; Register bits    2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 <---
+;                      |   |       |     |   |       |     |   |
+; Waveform bits        1   1       9     8   7       6     5   4
+;                      1   0
+
+ .word $0801
+
+; *** Symbol table  follows ***
+
+ zINDEX        = $22
+ zFREKZP       = $FB
+ vControl      = $D011
+ vSprEnable    = $D015
+ sVoc3FreqLo   = $D40E
+ sVoc3FreqHi   = $D40F
+ sVoc3Control  = $D412
+ sVoc3Osc      = $D41B
+ kCHROUT       = $FFD2
+
+; *** text follows ***
+
+    * = $0801
+    .byte $0b,$08,$01,$00,$9e,$32,$30,$36,$31,$00,$00,$00
+
+    LDX #<text
+    LDY #>text
+    JSR print
+    LDA #$80 ; Noise
+    STA sVoc3Control
+    JSR print_osc3
+    JSR newline
+    JSR disable
+    JSR zero_lfsr
+    JSR newline
+    JSR set_lfsr_0_17
+    JSR newline
+    JSR set_lfsr_18_22
+    JSR newline
+    JSR reset_lfsr
+    JSR newline
+    JSR enable
+    RTS
+
+zero_lfsr
+    LDA #$00
+    STA sVoc3FreqLo
+    STA sVoc3FreqHi
+    LDX #03  ; Max number of bits between waveform outputs
+zero_bits
+    LDA #$98 ; Noise + triangle + test bit
+    STA sVoc3Control
+    LDA #$90 ; Shift in zeros
+    STA sVoc3Control
+    JSR print_osc3
+    DEX
+    BNE zero_bits
+    RTS
+
+set_lfsr_0_17
+    LDX #17  ; Set bits 0-17
+set_low_bits
+    LDA #$88 ; Noise + test bit
+    STA sVoc3Control
+    LDA #$80 ; Shift
+    STA sVoc3Control
+    JSR print_osc3
+    DEX
+    BPL set_low_bits
+    RTS
+
+set_lfsr_18_22
+    LDX #5  ; Set bits 18-22
+set_high_bits
+    LDA #$20 ; Sawtooth
+    STA sVoc3Control
+    LDA #$80 ; 32 cycles between shifts
+    STA sVoc3FreqHi
+shift ; Wait for LFSR shift
+    LDA sVoc3Osc
+    AND #$08 ; Oscillator bit 19 = OSC3 bit 3
+    BEQ shift
+clear ; Wait for oscillator bit 19 to go low again
+    LDA sVoc3Osc
+    AND #$08
+    BNE clear
+    ; Stop counting and print OSC3
+    STA sVoc3FreqHi
+    LDA #$80 ; Noise
+    STA sVoc3Control
+    JSR print_osc3
+    DEX
+    BNE set_high_bits
+    RTS
+
+reset_lfsr
+    LDA #$88; Noise + test
+    STA sVoc3Control
+    LDA #$80;
+    STA sVoc3Control
+    JSR print_osc3
+    RTS
+
+disable
+    SEI
+    LDA #$00
+    STA vSprEnable
+    LDA vControl
+    AND #$EF
+    STA vControl
+vblank    ; Wait for vblank (raster = 0)
+raslo
+    BIT vControl
+    BPL raslo
+rashi
+    BIT vControl
+    BMI rashi
+    RTS
+
+enable
+    LDA vControl
+    ORA #$10
+    STA vControl
+    CLI
+    RTS
+
+print_osc3
+    LDA #$20
+    JSR kCHROUT
+    LDA sVoc3Osc
+    PHA
+    LSR
+    LSR
+    LSR
+    LSR
+    JSR hexout
+    PLA
+    AND #$0F
+    JSR hexout
+    RTS
+
+hexout
+    CMP #10
+    BCC digit
+    CLC
+    ADC #$07
+digit
+    ADC #$30
+    JSR kCHROUT
+    RTS
+
+newline
+    LDA #13
+    JSR kCHROUT
+    RTS
+
+print
+    STX zINDEX
+    STY zINDEX+1
+    LDY #$00
+nxtchr
+    LDA (zINDEX),Y
+    BEQ done
+    JSR kCHROUT
+    INY
+    JMP nxtchr
+done
+    RTS
+
+text
+    .byte 13
+    .asc "SID NOISE LFSR RESET - OSC3:"
+    .byte 13, 13, 0
