@@ -1,5 +1,5 @@
 ;
-; reset-noise.a65 - Demonstration of fast noise LFSR reset for voice 3
+; noise-reset.a65 - Demonstration of fast noise LFSR reset for voice 3
 ;
 ; Dag Lem <resid@nimrod.no>
 ;
@@ -9,7 +9,7 @@
 ;    (noise + triangle), and shifted in by setting and clearing the test bit.
 ; 2. Set bits 0 - 17 by setting and clearing the test bit.
 ; 3. Set bits 18 - 22 by allowing the LFSR to be clocked by oscillator bit 19.
-; 4. Reset the LFSR by setting and clearing the test bit once.
+; 4. Reset the LFSR and oscillator by setting and clearing the test bit once.
 ;
 ; Noise LFSR:
 ;
