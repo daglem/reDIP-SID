@@ -1,0 +1,160 @@
+;
+; pulse-saw.a65 - Sampling of 6581 pulse + sawtooth
+;
+; Dag Lem <resid@nimrod.no>
+;
+; 6581 pulse + sawtooth cannot be correctly sampled by monotonically increasing
+; the oscillator while the combined waveform is selected, since this will zero
+; the oscillator MSB.
+;
+; For each sample, the oscillator is stepped to and stopped at the desired
+; value using a carefully timed loop, without any waveform selected. When the
+; oscillator is stopped, pulse+sawtooth is selected, and the waveform output
+; sample is stored.
+
+.word $0801
+
+; *** Symbol table  follows ***
+
+sstart     = $8000
+sstop      = $9000
+
+zINDEX        = $22
+zFREKZP       = $FB
+vControl      = $D011
+vSprEnable    = $D015
+sVoc3FreqLo   = $D40E
+sVoc3FreqHi   = $D40F
+sVoc3PWidthLo = $D410
+sVoc3PWidthHi = $D411
+sVoc3Control  = $D412
+sVoc3Osc      = $D41B
+kSETLFS       = $FFBA
+kSETNAM       = $FFBD
+kSAVE         = $FFD8
+
+freq_hi       = $01  ; 16 cycles between each waveform step
+waveform      = $60  ; Pulse + sawtooth
+
+; *** text follows ***
+
+    * = $0801
+    .byte $0b,$08,$01,$00,$9e,$32,$30,$36,$31,$00,$00,$00
+
+    JSR disable
+    JSR sample
+    JSR enable
+    JSR save
+    RTS
+
+sample
+    LDA #$00
+    STA sVoc3PWidthLo
+    STA sVoc3PWidthHi
+    STA zFREKZP
+    STA zFREKZP+1
+loop
+    ; Reset oscillator
+    LDA #$08
+    STA sVoc3Control
+    LDA #$00
+    STA sVoc3FreqLo
+    STA sVoc3FreqHi
+    STA sVoc3Control
+    ; Load current sample number for delay
+    LDX zFREKZP
+    LDA zFREKZP+1
+    ; Start oscillator
+    LDY #freq_hi
+    STY sVoc3FreqHi
+step  ; 16 cycles delay
+    CPX #$01
+    DEX
+    SBC #$00
+    BCS cont
+    NOP
+    ; Stop oscillator
+    LDY #$00
+    STY sVoc3FreqHi
+cont
+    NOP
+    NOP
+    BCS step
+frozen
+    ; Load waveform value
+    LDA #waveform
+    STA sVoc3Control
+    LDX sVoc3Osc
+    ; Next sample number
+    CLC
+    LDA zFREKZP
+    ADC #$01
+    STA zFREKZP
+    LDA zFREKZP+1
+    ADC #$00
+    STA zFREKZP+1
+    CMP #$10 ; 16*256 = 4096 samples
+    PHP
+    BNE store
+    ; Store the last sample at index 0.
+    LDA #$00
+    STA zFREKZP
+    STA zFREKZP+1
+store
+    ; Note that the first sample is (correctly) stored at index 1,
+    ; since 1 is added to zFREKZP above.
+    LDY #$00
+    CLC
+    LDA zFREKZP
+    ADC #<sstart
+    STA zINDEX
+    LDA zFREKZP+1
+    ADC #>sstart
+    STA zINDEX+1
+    TXA
+    STA (zINDEX),Y
+    PLP
+    BNE loop
+    RTS
+
+disable
+    SEI
+    LDA #$00
+    STA vSprEnable
+    LDA vControl
+    AND #$EF
+    STA vControl
+vblank    ; Wait for vblank (raster = 0)
+raslo
+    BIT vControl
+    BPL raslo
+rashi
+    BIT vControl
+    BMI rashi
+    RTS
+
+enable
+    LDA vControl
+    ORA #$10
+    STA vControl
+    CLI
+    RTS
+
+filename
+    .asc "6581WF60.DAT"
+
+save
+    ; Set up file name
+    LDX #<filename
+    LDY #>filename
+    LDA #12
+    JSR kSETNAM
+    LDA #<sstart
+    STA zINDEX
+    LDA #>sstart
+    STA zINDEX+1
+    LDX #<sstop
+    LDY #>sstop
+    LDA #zINDEX
+    JSR kSAVE
+    RTS
