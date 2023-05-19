@@ -145,7 +145,7 @@ enable
 
 print_osc3
     LDA #$20
-    JSR kCHROUT
+    JSR chrout
     LDA sVoc3Osc
     PHA
     LSR
@@ -165,12 +165,18 @@ hexout
     ADC #$07
 digit
     ADC #$30
-    JSR kCHROUT
+    JSR chrout
     RTS
 
 newline
     LDA #13
+    JSR chrout
+    RTS
+
+chrout
+    PHP
     JSR kCHROUT
+    PLP
     RTS
 
 print
@@ -180,7 +186,7 @@ print
 nxtchr
     LDA (zINDEX),Y
     BEQ done
-    JSR kCHROUT
+    JSR chrout
     INY
     JMP nxtchr
 done
