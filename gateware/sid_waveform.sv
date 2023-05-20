@@ -318,7 +318,7 @@ module sid_waveform #(
     logic        waveform_0_tick;
 
     // Combined waveform lookup tables.
-    sid::reg8_t sid_waveform_PS__6581[2048];
+    sid::reg8_t sid_waveform_PS__6581[4096];
     sid::reg8_t sid_waveform_PS__8580[4096];
     sid::reg8_t sid_waveform_P_T_6581[2048];
     sid::reg8_t sid_waveform_P_T_8580[2048];
@@ -346,7 +346,7 @@ module sid_waveform #(
 
             // Combined waveform candidates from BRAM and combinational logic.
             pst      <= sid_waveform_PST(model_4, saw_tri);
-            ps__6581 <= sid_waveform_PS__6581[saw_tri[10:0]];
+            ps__6581 <= sid_waveform_PS__6581[saw_tri];
             ps__8580 <= sid_waveform_PS__8580[saw_tri];
             p_t_6581 <= sid_waveform_P_T_6581[saw_tri[10:0]];
             p_t_8580 <= sid_waveform_P_T_8580[saw_tri[10:0]];
@@ -408,7 +408,7 @@ module sid_waveform #(
         end
     end
 
-    // od -An -tx1 -v reSID/src/wave6581_PS_.dat | head -128 | cut -b2- > sid_waveform_PS__6581.hex
+    // od -An -tx1 -v reSID/src/wave6581_PS_.dat |             cut -b2- > sid_waveform_PS__6581.hex
     // od -An -tx1 -v reSID/src/wave8580_PS_.dat |             cut -b2- > sid_waveform_PS__8580.hex
     // od -An -tx1 -v reSID/src/wave6581_P_T.dat | head -128 | cut -b2- > sid_waveform_P_T_6581.hex
     // od -An -tx1 -v reSID/src/wave8580_P_T.dat | head -128 | cut -b2- > sid_waveform_P_T_8580.hex
