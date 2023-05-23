@@ -126,7 +126,7 @@ module sid_api (
     sid::freq_pw_t      freq_pw_1;
     logic [2:0]         test;
     logic [2:0]         sync;
-    sid::control_t      control_4, control_5;
+    sid::control_t      control_4;
     sid::envelope_reg_t ereg_5;
     sid::filter_reg_t   freg_1;
     sid::misc_reg_t     mreg;
@@ -143,7 +143,6 @@ module sid_api (
         .test         (test),
         .sync         (sync),
         .control_4    (control_4),
-        .control_5    (control_5),
         .ereg_5       (ereg_5),
         .freg_1       (freg_1),
         .mreg         (mreg),
@@ -163,7 +162,6 @@ module sid_api (
         .test      (test),
         .sync      (sync),
         .control_4 (control_4),
-        .control_5 (control_5),
         .wav       (wav)
     );
 

@@ -34,7 +34,6 @@ module sid_control #(
     output logic [2:0]         test,
     output logic [2:0]         sync,
     output sid::control_t      control_4,
-    output sid::control_t      control_5,
     output sid::envelope_reg_t ereg_5,
     output sid::filter_reg_t   freg_1,
     // Read-only registers.
@@ -108,7 +107,6 @@ module sid_control #(
         // Assign to / from ports.
         freq_pw_1 = v0.regs.waveform.freq_pw;
         control_4 = v3.regs.waveform.control;
-        control_5 = v4.regs.waveform.control;
         ereg_5    = v4.regs.envelope;
         test      = { v2.regs.waveform.control.test, v1.regs.waveform.control.test, v0.regs.waveform.control.test };
         sync      = { v2.regs.waveform.control.sync, v1.regs.waveform.control.sync, v0.regs.waveform.control.sync };
