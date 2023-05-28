@@ -51,7 +51,7 @@ package sid;
     } audio_t;
 
     // Pipeline cycles.
-    typedef logic [3:0] cycle_t;
+    typedef logic [4:0] cycle_t;
 
     typedef enum logic [0:0] {
         MOS6581,

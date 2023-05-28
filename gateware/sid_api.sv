@@ -49,11 +49,20 @@ module sid_api (
 
     always_ff @(posedge clk) begin
         // Start voice pipeline after the falling edge of phi2.
-        // Keep counting until the counter wraps around to zero.
         // Pause voice pipeline at filter pipeline cycle 5 and 6, for the
         // latter pipeline to catch up.
-        voice_cycle_count <= voice_cycle_count + 4'(phi2_prev & ~bus_i.phi2 || (voice_cycle_count != 0 &&
-                                                                                !voice_cycle_idle));
+        if (phi2_prev & ~bus_i.phi2) begin
+            // Jump directly from cycle 18 to cycle 1 if need be, just
+            // keeping within the 20 cycle budget described in
+            // Pipelining.md.
+            voice_cycle_count <= 1;
+        end else if (voice_cycle_count == 18) begin
+            // Wrap around to zero after cycle 18, which is the last cycle
+            // used in sid_control.sv
+            voice_cycle_count <= 0;
+        end else if (voice_cycle_count != 0 && !voice_cycle_idle) begin
+            voice_cycle_count <= voice_cycle_count + 1;
+        end
 
         // Start filter pipeline at voice pipeline cycle 7; one cycle before
         // the first voice output is ready.

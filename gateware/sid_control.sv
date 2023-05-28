@@ -82,7 +82,7 @@ module sid_control #(
     logic signed [4:0] vaddr_offset = 0;
 
     always_ff @(posedge clk) begin
-        if (voice_cycle == 0 || voice_cycle == 3) begin
+        if (voice_cycle == 3 || voice_cycle == 6) begin
             vaddr_offset <= 0;
         end else if (voice_cycle >= 1 && voice_cycle <= 2 ||
                      voice_cycle >= 4 && voice_cycle <= 5)
@@ -167,9 +167,9 @@ module sid_control #(
     // Write-only registers.
     always_ff @(posedge clk) begin
         // Rotation on cycles 1 - 6 for writing.
-        // Rotation on six additional cycles to keep in sync with
+        // Two additional complete freewheeling rotations to keep in sync with
         // sid_waveform.sv and sid_envelope.sv
-        if (voice_cycle >= 1 && voice_cycle <= 12) begin
+        if (voice_cycle >= 1 && voice_cycle <= 18) begin
             { v5, v4, v3, v2, v1, v0 } <= { v4, v3, v2, v1, v0, v5 };
 
             if (bus_i.res) begin

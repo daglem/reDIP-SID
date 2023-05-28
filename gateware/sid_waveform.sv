@@ -44,10 +44,6 @@ module sid_waveform #(
     // Initialization flag.
     logic primed = 0;
 
-    // Cycles beyond the 4 bit cycle counter.
-    logic cycle_16 = 0;
-    logic cycle_17 = 0;
-
     // Keep track of the current SID model for cycles 5 - 10 and 6 - 11.
     logic model_4;
     logic model_5 = 0;
@@ -60,10 +56,7 @@ module sid_waveform #(
     end
 
     always_ff @(posedge clk) begin
-        if (cycle >= 5 || cycle_16) begin
-            cycle_16 <= cycle == 15;
-            cycle_17 <= cycle_16;
-
+        if (cycle >= 5 && cycle <= 16) begin
             model_5    <= model_4;
             waveform_5 <= { control_4.noise, control_4.pulse, control_4.sawtooth, control_4.triangle };
         end
@@ -236,7 +229,7 @@ module sid_waveform #(
         // Rotation on cycles 5 - 10 for update of the noise LFSR.
         // Rotation on six additional cycles for writeback from combined
         // waveforms.
-        if (cycle >= 5 || cycle_16) begin
+        if (cycle >= 5 && cycle <= 16) begin
             { n5, n4, n3, n2, n1, n0 } <= { n4, n3, n2, n1, n0, n5 };
 
             if (cycle >= 5 && cycle <= 10) begin
@@ -341,7 +334,7 @@ module sid_waveform #(
         // Rotation on cycles 5 - 10 for update of 8580 sawtooth / triangle.
         // Freewheeling rotation on six additional cycles for final mix-in of
         // 8580 sawtooth / triangle at phi2.
-        if (cycle >= 5 || cycle_16) begin
+        if (cycle >= 5 && cycle <= 16) begin
             { st5, st4, st3, st2, st1, st0 } <= { st4, st3, st2, st1, st0, st5 };
 
             if (cycle >= 5 && cycle <= 10) begin
@@ -385,7 +378,7 @@ module sid_waveform #(
         // Cycles 5 - 10 for OSC3 and audio output. Cycles 11 - 16 for final
         // mix-in of 8580 sawtooth / triangle, used in 8580 noise LFSR
         // writeback and 8580 waveform 0 output in the next SID cycle.
-        if (cycle >= 5 || cycle_16) begin
+        if (cycle >= 5 && cycle <= 16) begin
             // Waveform candidates: Combined waveforms from BRAM and
             // combinational logic, plus sawtooth / triangle.
             // Noise and pulse are mixed in below.
@@ -422,9 +415,9 @@ module sid_waveform #(
         // mask from VICE.
         // We perform writeback to both shifted and current bits after any LFSR
         // shift, in order to avoid a further delay of the waveform
-        // output. Note note that in theory, the zeroing of bits may be
-        // different for shifted (latched) and current (SRAM) bits.
-        if (waveform_5[2]) begin
+        // output. Note that in theory, the zeroing of bits may be different
+        // for shifted (latched) and current (SRAM) bits.
+        if (cycle >= 6 && cycle <= 11 && waveform_5[2]) begin
             // The four lowermost bits of the noise waveform are grounded, and
             // always pull the neighboring two bits down via the pulse line.
             noise_mask     = (noise < 'hfc) ? { noise[7:1] & noise[6:0], 1'b0 } : 'hfc;
@@ -462,15 +455,15 @@ module sid_waveform #(
     always_ff @(posedge clk) begin
         // Update of previous waveform selector and waveform output, for
         // noise writeback and waveform 0 output.
-        if (cycle >= 6 || cycle_16 || cycle_17) begin
+        if (cycle >= 6 && cycle <= 17) begin
             wav_prev.waveform <= { wav_prev.waveform[4:0], waveform_5 };
-            wav_prev.wav      <= { wav_prev.wav[4:0], wav_prev.wav[5] };
-            wav_prev.age      <= { wav_prev.age[4:0], wav_prev.age[5] };
+            wav_prev.wav      <= { wav_prev.wav[4:0],      wav_prev.wav[5] };
+            wav_prev.age      <= { wav_prev.age[4:0],      wav_prev.age[5] };
 
             // The 6581 waveform is ready at phi1, while the final mix-in of 8580
             // sawtooth / triangle is not done until phi2.
             if (model_5 == sid::MOS6581 && cycle >= 6 && cycle <= 11 ||
-                model_5 == sid::MOS8580 && (cycle >= 12 || cycle_16 || cycle_17))
+                model_5 == sid::MOS8580 && (cycle >= 12 && cycle <= 17))
             begin
                 if (waveform_5 == '0) begin
                     if (wav_prev_faded) begin
