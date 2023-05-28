@@ -84,6 +84,7 @@ module sid_waveform #(
     logic [5:0]  osc19_prev    = '0;
     logic [5:0]  osc19_prev_up = '0;
     logic [5:0]  pulse         = '0;
+    logic [5:0]  pulse_prev    = '0;
     logic        pulse_next;
 
     always_comb begin
@@ -135,6 +136,7 @@ module sid_waveform #(
             osc19_prev    <= { osc19_prev[4:0],    osc19_prev[5] };
             osc19_prev_up <= { osc19_prev_up[4:0], osc19_prev_up[5] };
             pulse         <= { pulse[4:0],         pulse[5] };
+            pulse_prev    <= { pulse_prev[4:0],    pulse_prev[5] };
 
             if (cycle >= 2 && cycle <= 7) begin
                 // Update oscillators.
@@ -151,7 +153,8 @@ module sid_waveform #(
                 osc19_prev_up[0] <= ~osc19_prev[5] & o5[19];
 
                 // Pulse.
-                pulse[0] <= pulse_next;
+                pulse[0]      <= pulse_next;
+                pulse_prev[0] <= pulse[5];
             end
 
             if (cycle == 4 || cycle == 7) begin
@@ -210,6 +213,8 @@ module sid_waveform #(
     logic       nclk_prev = 0;
     logic       nset;
     sid::reg8_t noise;
+    sid::reg8_t noise_lsl;
+    sid::reg8_t noise_lsl_writeback;
 
     // Noise.
     always_comb begin
@@ -221,8 +226,10 @@ module sid_waveform #(
                            NOISE_TTL_8580));
 
         // Noise bits are taken out from the noise LFSR.
-        noise = { n0.lfsr[20], n0.lfsr[18], n0.lfsr[14], n0.lfsr[11],
-                  n0.lfsr[9], n0.lfsr[5], n0.lfsr[2], n0.lfsr[0] };
+        noise     = { n0.lfsr[20], n0.lfsr[18], n0.lfsr[14], n0.lfsr[11],
+                      n0.lfsr[9], n0.lfsr[5], n0.lfsr[2], n0.lfsr[0] };
+        noise_lsl = { n0.lfsr[21], n0.lfsr[19], n0.lfsr[15], n0.lfsr[12],
+                      n0.lfsr[10], n0.lfsr[6], n0.lfsr[3], n0.lfsr[1] };
     end
 
     always_ff @(posedge clk) begin
@@ -238,7 +245,7 @@ module sid_waveform #(
                 // The LFSR stays at 'h7ffffe after reset (clocked on reset release).
                 n0.nres_prev <= nres;
                 n0.nclk_prev <= nclk;
-                nclk_prev    <= n0.nclk_prev;
+                nclk_prev    <= n5.nclk_prev;
 
                 if (~nclk || !primed) begin
                     // LFSR shift phase 1.
@@ -269,10 +276,11 @@ module sid_waveform #(
                     // Shift phase != 1 - writeback to current bits.
                     if (waveform_5 > 'h8) begin
                         { n1.lfsr[20], n1.lfsr[18], n1.lfsr[14], n1.lfsr[11],
-                          n1.lfsr[9], n1.lfsr[5], n1.lfsr[2], n1.lfsr[0] } <= wav[11-:8];
+                          n1.lfsr[9], n1.lfsr[5], n1.lfsr[2], n1.lfsr[0] } <=
+                        wav[11-:8];
                     end
 
-                    // Shift phase 2 - writeback to shifted bits.
+                    // Shift phase 1 -> 2: Writeback to shifted bits.
                     // The transition from shift phase 1 to phase 2 coincides
                     // with the transition of waveforms and waveform selectors
                     // at the rising edge of phi1. This implies that in theory,
@@ -284,18 +292,19 @@ module sid_waveform #(
                     // constant during the transition. The sawtooth and
                     // triangle waveform selectors can always transition,
                     // however.
+                    // FIXME: The check for the pulse waveform is adapted from
+                    // VICE in order to pass more tests, and should probably be
+                    // replaced with a generic model for bit zeroing (see other
+                    // FIXME below).
                     if (~nclk_prev &&
-                        wav_prev.waveform[5] > 'h8 &&  // Combined waveforms in the previous cycle.
-                        waveform_5 > 'h8)              // Combined waveforms in the current cycle.
+                        wav_prev.waveform[5] > 'h8 &&     // Combined waveforms in the previous cycle.
+                        !(wav_prev.waveform[5] == 'hc &&  // Not only noise + pulse high in the
+                          pulse_prev[3]) &&               // previous cycle.
+                        waveform_5 > 'h8)                 // Combined waveforms in the current cycle.
                     begin
-                        // For now, we assume that the corresponding previous
-                        // and current waveform bits must both be zero for a
-                        // latched noise bit to be pulled down.
-                        // FIXME: Come up with a model which better matches
-                        // reality.
                         { n1.lfsr[21], n1.lfsr[19], n1.lfsr[15], n1.lfsr[12],
                           n1.lfsr[10], n1.lfsr[6], n1.lfsr[3], n1.lfsr[1] } <=
-                            noise & (wav_prev.wav[5][11-:8] | wav[11-:8]);
+                        noise_lsl_writeback;
                     end
                 end
             end
@@ -330,8 +339,8 @@ module sid_waveform #(
 
     always_ff @(posedge clk) begin
         // Rotation on cycles 5 - 10 for update of 8580 sawtooth / triangle.
-        // Rotation on six additional cycles for final mix-in of 8580 sawtooth /
-        // triangle at phi2.
+        // Freewheeling rotation on six additional cycles for final mix-in of
+        // 8580 sawtooth / triangle at phi2.
         if (cycle >= 5 || cycle_16) begin
             { st5, st4, st3, st2, st1, st0 } <= { st4, st3, st2, st1, st0, st5 };
 
@@ -373,11 +382,12 @@ module sid_waveform #(
     sid::reg8_t sid_waveform_P_T_8580[2048];
 
     always_ff @(posedge clk) begin
-        // Cycles 5 - 10 for OSC3 output and 6581 waveforms, cycles 11 - 16 for
-        // final 8580 waveforms.
+        // Cycles 5 - 10 for OSC3 and audio output. Cycles 11 - 16 for final
+        // mix-in of 8580 sawtooth / triangle, used in 8580 noise LFSR
+        // writeback and 8580 waveform 0 output in the next SID cycle.
         if (cycle >= 5 || cycle_16) begin
             // Waveform candidates: Combined waveforms from BRAM and
-            // combinational logic, and sawtooth / triangle.
+            // combinational logic, plus sawtooth / triangle.
             // Noise and pulse are mixed in below.
             pst       <= sid_waveform_PST(model_4, saw_tri);
             ps__6581  <= sid_waveform_PS__6581[saw_tri];
@@ -390,22 +400,9 @@ module sid_waveform #(
     end
 
     sid::reg8_t noise_mask;
+    sid::reg8_t noise_lsl_mask;
 
     always_comb begin
-        // Zero noise outputs always zero the corresponding waveform bits, and can
-        // also zero neighboring bits when pulse is selected.
-        if (waveform_5[2]) begin
-            // The four lowermost bits of the noise waveform are grounded, and
-            // always pull the neighboring two bits down via the pulse line.
-            // The bit mask below is adapted from reSID in VICE. The same bit
-            // mask is used for the 6581 as well as for the 8580 here, since at
-            // least one 6581 shows the same behavior.
-            noise_mask = (noise < 'hfc) ? { noise[7:1] & noise[6:0], 1'b0 } : 'hfc;
-        end else begin
-            // Pulse not selected.
-            noise_mask = noise;
-        end
-
         // Final waveform selection / mixing, excluding noise.
         unique case (waveform_5[2:0])
           'b111: wav = { pst & { 8{pulse[3]} }, 4'b0 };
@@ -418,13 +415,40 @@ module sid_waveform #(
           'b000: wav = wav_prev.wav[5];  // Waveform 0
         endcase
 
+        // Zero noise outputs always zero the corresponding waveform bits, and
+        // can also zero neighboring bits when pulse is selected.
+        // FIXME: All combinations of noise and waveforms should be
+        // investigated for bit zeroing. For now, we adapt the 8580 pulse bit
+        // mask from VICE.
+        // We perform writeback to both shifted and current bits after any LFSR
+        // shift, in order to avoid a further delay of the waveform
+        // output. Note note that in theory, the zeroing of bits may be
+        // different for shifted (latched) and current (SRAM) bits.
+        if (waveform_5[2]) begin
+            // The four lowermost bits of the noise waveform are grounded, and
+            // always pull the neighboring two bits down via the pulse line.
+            noise_mask     = (noise < 'hfc) ? { noise[7:1] & noise[6:0], 1'b0 } : 'hfc;
+            noise_lsl_mask = (noise_lsl < 'hfc) ? { noise_lsl[7:1] & noise_lsl[6:0], 1'b0 } : 'hfc;
+        end else begin
+            // Pulse not selected.
+            noise_mask     = noise;
+            noise_lsl_mask = noise_lsl;
+        end
+
+        // Noise LFSR writeback to shifted bits at shift phase 1 -> 2.
+        // We assume that the corresponding previous and current waveform bits
+        // must both be zero for a latched noise bit to be pulled down.
+        noise_lsl_writeback =
+            (wav_prev.wav[5][11-:8] | (wav[11-:8] & noise_lsl_mask));
+
         // Mix in noise.
         if (waveform_5[3]) begin
             if (waveform_5[2:0] == '0) begin
                 // Only noise is selected.
                 wav = { noise, 4'b0 };
             end else begin
-                // Noise outputs can zero waveform output bits.
+                // Noise outputs can zero waveform output bits. The result is
+                // also written back to noise LFSR bits at shift phase != 1.
                 wav = { wav[11-:8] & noise_mask, 4'b0 };
             end
         end
@@ -439,7 +463,7 @@ module sid_waveform #(
         // Update of previous waveform selector and waveform output, for
         // noise writeback and waveform 0 output.
         if (cycle >= 6 || cycle_16 || cycle_17) begin
-            wav_prev.waveform <= { wav_prev.waveform[4:0], wav_prev.waveform[5] };
+            wav_prev.waveform <= { wav_prev.waveform[4:0], waveform_5 };
             wav_prev.wav      <= { wav_prev.wav[4:0], wav_prev.wav[5] };
             wav_prev.age      <= { wav_prev.age[4:0], wav_prev.age[5] };
 
