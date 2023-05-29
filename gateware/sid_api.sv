@@ -43,7 +43,7 @@ module sid_api (
 
     always_comb begin
         // Idling of voice pipeline.
-        voice_cycle_idle = filter_cycle == 4 || filter_cycle == 5 || filter_cycle == 9 || filter_cycle == 10;
+        voice_cycle_idle = filter_cycle == 4 || filter_cycle == 5;
         voice_cycle      = voice_cycle_idle ? 0 : voice_cycle_count;
     end
 
