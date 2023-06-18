@@ -1,16 +1,16 @@
 ;
-; pulse-saw.a65 - Sampling of 6581 pulse + sawtooth
+; combsample.a65 - Sampling of 6581 combined waveforms
 ;
 ; Dag Lem <resid@nimrod.no>
 ;
-; 6581 pulse + sawtooth cannot be correctly sampled by monotonically increasing
-; the oscillator while the combined waveform is selected, since this will zero
-; the oscillator MSB.
+; 6581 combined waveforms including sawtooth cannot be correctly sampled by
+; monotonically increasing the oscillator while the combined waveform is
+; selected, since this will zero the oscillator MSB.
 ;
 ; For each sample, the oscillator is stepped to and stopped at the desired
 ; value using a carefully timed loop, without any waveform selected. When the
-; oscillator is stopped, pulse+sawtooth is selected, and the waveform output
-; sample is stored.
+; oscillator is stopped, the combined waveform is selected, and the waveform
+; output sample is stored.
 
 .word $0801
 
@@ -33,18 +33,29 @@ kSETLFS       = $FFBA
 kSETNAM       = $FFBD
 kSAVE         = $FFD8
 
+waveform_x    = zFREKZP+2
+waveform      = zFREKZP+3
 freq_hi       = $01  ; 16 cycles between each waveform step
-waveform      = $60  ; Pulse + sawtooth
 
 ; *** text follows ***
 
     * = $0801
     .byte $0b,$08,$01,$00,$9e,$32,$30,$36,$31,$00,$00,$00
 
+    LDX #$00
+wf
+    STX waveform_x
+    LDA waveforms,X
+    BEQ ret
+    STA waveform
     JSR disable
     JSR sample
     JSR enable
     JSR save
+    LDX waveform_x
+    INX
+    BNE wf
+ret
     RTS
 
 sample
@@ -71,18 +82,17 @@ step  ; 16 cycles delay
     CPX #$01
     DEX
     SBC #$00
-    BCS cont
     NOP
+    BCS cont
     ; Stop oscillator
     LDY #$00
     STY sVoc3FreqHi
 cont
     NOP
-    NOP
     BCS step
 frozen
     ; Load waveform value
-    LDA #waveform
+    LDA waveform
     STA sVoc3Control
     LDX sVoc3Osc
     ; Next sample number
@@ -140,11 +150,22 @@ enable
     CLI
     RTS
 
+waveforms
+    ; sawtooth + triangle, pulse + triangle, pulse + sawtooth, pulse + sawtooth + triangle
+    .byte $30,$50,$60,$70,$00
 filename
-    .asc "6581WF60.DAT"
+    .asc "6581WFX0.DAT"
 
 save
     ; Set up file name
+    LDA waveform
+    LSR
+    LSR
+    LSR
+    LSR
+    CLC
+    ADC #$30
+    STA filename+6
     LDX #<filename
     LDY #>filename
     LDA #12
