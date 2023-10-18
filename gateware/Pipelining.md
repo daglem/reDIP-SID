@@ -17,9 +17,9 @@ voice 1.
 |  ----: | -------------------| -------------- |--------------- | -------------- | -------------- | ------------------------ | ------------------ | --------------------- | ----------- |
 |  1 - 3 | Control registers  | Write voice 1  | Write voice 2  | Write voice 3  |                |                          |                    |                       |             |
 |  2 - 4 | Oscillator         |                | Update osc. 1  | Update osc. 2  | Sync osc. 1-3  |                          |                    |                       |             |
-|  2 - 7 | Waveform generator |                | Buffer pulse 1 | Buffer pulse 2 | Buffer pulse 3 | Waveform select / update | Waveform writeback |                       |             |
-|  7 - 8 | Envelope generator |                |                |                |                |                          | Update counters    |                       |             |
-|  7 - 8 | Voice DCA          |                |                |                |                |                          | Buffer wav/env     | DCA = wav*env         |             |
+|  2 - 6 | Waveform generator |                | Buffer pulse 1 | Buffer pulse 2 | Buffer pulse 3 | Waveform select / update | Waveform writeback |                       |             |
+|  6     | Envelope generator |                |                |                |                |                          | Update counters    |                       |             |
+|  6 - 7 | Voice DCA          |                |                |                |                |                          | Buffer wav/env     | DCA = wav*env         |             |
 |        |                    |                |                |                |                |                          |                    |                       | Voice 1 out |
 
 The voice pipeline starts on the falling edge of the ϕ₂ clock, brought into the

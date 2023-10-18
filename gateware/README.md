@@ -44,7 +44,7 @@ the board.
 ## License
 
 This gateware is part of reDIP SID, a MOS 6581/8580 SID FPGA emulation platform.
-Copyright (C) 2022  Dag Lem \<resid@nimrod.no\>
+Copyright (C) 2022 - 2023  Dag Lem \<resid@nimrod.no\>
 
 The source describes Open Hardware and is licensed under the CERN-OHL-S v2.
 

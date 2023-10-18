@@ -1,0 +1,4 @@
+(version 1)
+(rule npth
+  (condition "A.Pad_Type == 'NPTH, mechanical'")
+  (constraint hole_clearance (min 0.18mm)))

@@ -1,7 +1,7 @@
 # reDIP SID
 
 ## MOS 6581/8580 SID FPGA emulation platform
-![Board](documentation/reDIP-SID-board.png)
+![Board](hardware/documentation/reDIP-SID-board.png)
 
 ## Overview
 The reDIP SID is an open source hardware development board which combines the following in a DIP-28 size package:
@@ -37,7 +37,7 @@ The board is supported by the DFU [Nitro Bootloader](https://github.com/no2fpga/
 * 5 audio pins (stereo line input, stereo line output, SID audio output)
 * GND
 
-All FPGA I/O is 5V tolerant, and can drive 5V TTL. JP1 can be shorted to make the 5V input pin bidirectional, e.g. to power 5V TTL devices from USB VBUS.
+All FPGA header I/O is 5V tolerant, and can drive 5V TTL. JP1 can be shorted to make the 5V input pin bidirectional, e.g. to power 5V TTL devices from USB VBUS.
 
 Note that the line inputs are not AC coupled - AC coupling must be externally added for audio applications.
 Without external AC coupling, the line inputs can conceivably be used as generic ADCs.
@@ -64,6 +64,8 @@ The board features three additional address pins which may be connected to the C
 There is also an additional EXT IN audio input pin for a second SID chip, and separate stereo line output pins which may be connected directly to audio equipment.
 Either the SID GND pin or GND on the programming header may be used as audio ground.
 
+Cycle accurate emulation of the SID chip has been implemented in [gateware](gateware/).
+
 ## Thanks
 
 Big thanks go to [Sylvain "tnt" Munaut](https://github.com/smunaut/), who has not only implemented support for the reDIP SID in his [Nitro Bootloader](https://github.com/no2fpga/no2bootloader/),
@@ -73,7 +75,7 @@ Thanks must also go to [Aidan Dodds](https://github.com/bit-hack) and [Paul Sajn
 for putting the first prototype through its paces working on Dodds' [icesid](https://github.com/bit-hack/icesid), with guidance from Munaut.
 
 ## Board Front
-![Board Front](documentation/reDIP-SID-board-front.png)
+![Board Front](hardware/documentation/reDIP-SID-board-front.png)
 
 ## Board Back
-![Board Back](documentation/reDIP-SID-board-back.png)
+![Board Back](hardware/documentation/reDIP-SID-board-back.png)
