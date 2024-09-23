@@ -16,6 +16,10 @@
 
 `default_nettype none
 
+// ./waveform-sop.pl waveforms/6581wf70.dat
+// ./waveform-sop.pl waveforms/8580wf70.dat
+// ./waveform-sop.pl waveforms/6581wf30.dat
+// ./waveform-sop.pl waveforms/8580wf30.dat
 `include "sid_waveform_PST.svh"
 `include "sid_waveform__ST.svh"
 
@@ -479,10 +483,10 @@ module sid_waveform #(
         end
     end
 
-    // od -An -tx1 -v reSID/src/wave6581_PS_.dat |             cut -b2- > sid_waveform_PS__6581.hex
-    // od -An -tx1 -v reSID/src/wave8580_PS_.dat |             cut -b2- > sid_waveform_PS__8580.hex
-    // od -An -tx1 -v reSID/src/wave6581_P_T.dat | head -128 | cut -b2- > sid_waveform_P_T_6581.hex
-    // od -An -tx1 -v reSID/src/wave8580_P_T.dat | head -128 | cut -b2- > sid_waveform_P_T_8580.hex
+    // dd ibs=1 skip=2 < waveforms/6581wf60.dat | od -An -tx1 -v |             cut -b2- > sid_waveform_PS__6581.hex
+    // dd ibs=1 skip=2 < waveforms/8580wf60.dat | od -An -tx1 -v |             cut -b2- > sid_waveform_PS__8580.hex
+    // dd ibs=1 skip=2 < waveforms/6581wf50.dat | od -An -tx1 -v | head -128 | cut -b2- > sid_waveform_P_T_6581.hex
+    // dd ibs=1 skip=2 < waveforms/8580wf50.dat | od -An -tx1 -v | head -128 | cut -b2- > sid_waveform_P_T_8580.hex
     initial begin
         $readmemh("sid_waveform_PS__6581.hex", sid_waveform_PS__6581);
         $readmemh("sid_waveform_PS__8580.hex", sid_waveform_PS__8580);
